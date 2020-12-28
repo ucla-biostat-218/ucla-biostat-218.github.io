@@ -73,7 +73,8 @@ UCLA’s Office for Equity, Diversity, and Inclusion provides resources, events,
 1. Understand the theory and application of observational designs to research problems using administrative claims and electronic health records in public health \
     Competencies:
     - MS1: Demonstrate mastery of the foundations of probability theory and biostatistical concepts
-    - MS2: Examine foundations of linear and generalized linear statistical models \
+    - MS2: Examine foundations of linear and generalized linear statistical models
+
     Assessment opportunity:
     - Homework assignments, data analysis project
 2. Perform an observational health data science analysis to answer scientific or public health objectives \
