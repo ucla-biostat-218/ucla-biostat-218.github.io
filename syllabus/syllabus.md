@@ -70,21 +70,28 @@ UCLA’s Office for Equity, Diversity, and Inclusion provides resources, events,
 
 ### Course Learning Objectives and Competencies
 
-1. Understand the theory and application of observational designs to research problems using administrative claims and electronic health records in public health \
+1. Understand the theory and application of observational designs to research problems using administrative claims and electronic health records in public health
+
     Competencies:
     - MS1: Demonstrate mastery of the foundations of probability theory and biostatistical concepts
     - MS2: Examine foundations of linear and generalized linear statistical models
 
     Assessment opportunity:
     - Homework assignments, data analysis project
-2. Perform an observational health data science analysis to answer scientific or public health objectives \
+
+2. Perform an observational health data science analysis to answer scientific or public health objectives
+
     Competencies:
-    - MS3: Employ computational methods of applied regression to analysis of biomedical data sets \
+    - MS3: Employ computational methods of applied regression to analysis of biomedical data sets
+
     Assessment opportunity:
     - Homework assignments, data analysis project
-3. Communicate an observational health data analysis to research peers \
+
+3. Communicate an observational health data analysis to research peers
+
     Competencies:
-    - MS5: Communicate results of biostatistical research both orally and in writing \
+    - MS5: Communicate results of biostatistical research both orally and in writing
+
     Assessment opportunity:
     - Data analysis project
 
