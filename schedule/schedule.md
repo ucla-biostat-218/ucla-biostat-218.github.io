@@ -7,18 +7,33 @@ title: Biostat 218
 
 Biomath 218 tentative schedule and handouts (expect frequent updates)
 
-Zoom link: <https://ucla.zoom.us/j/TODO>, for call in dial +1-669-900-6833 and enter meeting ID `TODO`
+### In-person -- 5:30 - 8:50pm
 
-| Week | Class Dates | Tentative Topic | Posts | Due |
-|:-----------|:-----------|:------------|:------------|:------------|:------------|
-|  1 |  | OHDSI / Open Science |
-|  2 |  | Common Data Model / Standardized Vocabularies |
-|  3 |  | SQL and R |
-|  4 |  | Defining Cohorts |
-|  5 |  | Cohort Characterization |
-|  6 |  | Population-Level Estimation |
-|  7 |  | Patient-Level Prediction |
-|  8 |  | Evidence Quality |
-|  9 |  | OHDSI Network Research |
-| 10 |  | Case Studies: Best Practices |
-| 11 |  | Mini-Seminars |
+Jan 11 - 12 (CHS 33-105)\
+Feb 8 - 9 (CHS 73-105)\
+Mar 8 - 9 (CHS 33-105)
+
+### Online -- 5:00 - 7:30pm
+
+Jan 21, 28\
+Feb 4, 18, 25\
+Mar 4, 18
+
+| Week | Class Dates | Where | Tentative Topic | Posts | Due |
+|:-----------|:-----------|:-----------|:------------|:------------|:------------|:------------|
+|  1 | Jan 11 | In-person | OHDSI / Open Science |
+|    | Jan 12 | In-person | Common Data Model / Standardized Vocabularies |
+|  2 |        | No class  |
+|  3 | Jan 21 | Online    | Extract-Transform-Load |
+|  4 | Jan 28 | Online    | SQL and R |
+|  5 | Feb 4  | Online    | Defining Cohorts |
+|    | Feb 8  | In-person | Cohort Characterization |
+|    | Feb 9  | In-person | Population-Level Estimation |
+|  6 |        | No class  | 
+|  7 | Feb 18 | Online    | Patient-Level Prediction |
+|  8 | Feb 25 | Online    | Evidence Quality |
+|  9 | Mar 4  | Online    | OHDSI Network Research |
+|    | Mar 8  | In-person | Case Studies: Best Practices |
+|    | Mar 9  | In-person | Evidence Synthesis |
+| 10 |        | No class  |
+| 11 | Mar 18 | Online    | Mini-Seminars |
