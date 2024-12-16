@@ -18,12 +18,18 @@ Biostat 203A, 203B and 203C.  Biostat 100A.
 
 [Marc A. Suchard, MD, PhD](https://scholar.google.com/citations?user=vF2UV4MAAAAJ&hl=en)\
 Office: 6558 Gonda\
-Phone: (310)825-7442\
+Phone: (310) 825-7442\
 Email: <msuchard@ucla.edu>
+
+### Teaching Assistant
+
+Brendon Chau\
+Email: <brendonchau@ucla.edu>
 
 ### Class Days, Times, Locations
 
-To be determined.
+In-person sessions: Sat-Sun, 5:30 - 8:50pm\
+Online sessions: Tue, 5:00 - 7:30pm
 
 ### Office Hours
 
@@ -55,11 +61,11 @@ Students are expected to attend all lectures and laboratory sessions.
 Students needing academic accommodation based on a disability should contact the Center for Accessible Education (CAE) at (310)825-1501 or in person at Murphy Hall A255. When possible, students should contact the CAE within the first two weeks of the term as reasonable notice is needed to coordinate accommodations. For more information visit <https://www.cae.ucla.edu>.
 
 ADA Contact:
-Nickey Woods
-Center for Accessible Education
-A255 Murphy Hall.
-Phone: (310)825-1501
-TTY/TTD: (310)206-6083
+Nickey Woods\
+Center for Accessible Education\
+A255 Murphy Hall\
+Phone: (310)825-1501\
+TTY/TTD: (310)206-6083\
 Fax: (310)825-9656
 
 ### Inclusivity
@@ -153,19 +159,19 @@ If you would like more information, please come see us at the Dean of Studentsâ€
 
 ## E. Course Outline
 
-| Week | Class Dates | Tentative Topic | Posts | Due |
-|:-----------|:-----------|:------------|:------------|:------------|:------------|
-|  1 |  | OHDSI / Open Science |
-|  2 |  | Common Data Model / Standardized Vocabularies |
-|  3 |  | SQL and R |
-|  4 |  | Defining Cohorts |
-|  5 |  | Cohort Characterization |
-|  6 |  | Population-Level Estimation |
-|  7 |  | Patient-Level Prediction |
-|  8 |  | Evidence Quality |
-|  9 |  | OHDSI Network Research |
-| 10 |  | Case Studies: Best Practices |
-| 11 |  | Mini-Seminars |
+| Week | Tentative Topic |
+|:-----------|:-----------|
+|  1 | OHDSI / Open Science |
+|  2 | Common Data Model / Standardized Vocabularies |
+|  3 | SQL and R |
+|  4 | Defining Cohorts |
+|  5 | Cohort Characterization |
+|  6 | Population-Level Estimation |
+|  7 | Patient-Level Prediction |
+|  8 | Evidence Quality |
+|  9 | OHDSI Network Research |
+| 10 | Case Studies: Best Practices |
+| 11 | Mini-Seminars |
 
 
 
