@@ -21,10 +21,7 @@ Mar 4, 18
 
 | Week | Class Dates | Where | Tentative Topics | Posts | Due |
 |:-----------|:-----------|:-----------|:------------|:------------|:------------|:------------|
-|  1 | Jan 11 | In-person | 
-	OHDSI \[slides: [pdf]()\] /
-	Open Science / \[slides: [pdf]()\] /
-	Tooling-up \[slides: [qmd](), [html]() \] |
+|  1 | Jan 11 | In-person | OHDSI \[slides: [pdf]()\] / Open Science / \[slides: [pdf]()\] / Tooling-up \[slides: [qmd](), [html](../qmd/tooling_up.qmd) \] |
 |    | Jan 12 | In-person | Common Data Model / Standardized Vocabularies |
 |  2 |        | No class  |
 |  3 | Jan 21 | Online    | Extract-Transform-Load |
