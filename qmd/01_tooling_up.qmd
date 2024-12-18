@@ -1,0 +1,119 @@
+---
+title: "Tooling up for OHDSI"
+subtitle: Biostat 218
+author: "Marc A Suchard @ UCLA"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+format:
+  html:
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+    embed-resources: true
+bibliography: "../ohdsi.bib"
+csl: "apa.csl"
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    fig.width: 6
+    fig.height: 4
+    message: FALSE
+    cache: false
+---
+
+## Introduction
+
+In this lecture we will learn how to:
+
+- Prepare our R environments for the OHDSI toolstack
+
+- Download a large synthetic healthcare database
+
+- Perform a basic SQL query
+
+> A journey of a thousand miles begins with a single step
+>
+> Laozi, Tao Te Ching
+
+## OHDSI toolstack
+
+- Web interface (Athena, Atlas)
+
+- HADES
+
+  - R packages, like Cyclops
+  - Java (and python) backends
+
+Follow the instructions at <https://ohdsi.github.io/Hades/> ("setting up the R environment")
+
+## RStudio and renv
+
+For convenience 
+
+- Fork <https://github.com/ucla-biostat-218/ucla-biostat-218.git> to your own GitHub account
+
+- Clone the fork on your local computer
+
+```{bash}
+#| eval: false
+# Use `bash` to clone the project
+git clone https://github.com/[USERNAME]/ucla-biostat-218.git
+```
+
+- Open RStudio by double-clicking `ucla-biostat-218.Rproj`
+
+> If you *love* GUIs: RStudio -> File -> New Project... -> Version control
+
+- Use renv to install HADES dependencies
+
+```{r}
+#| eval: false
+renv::restore()
+```
+
+## Synthetic data source
+
+- Eumonia -- who? (used primarily for continuous integration testing)
+  - SQLite
+
+- 1M patients: [download the example database](https://www.dropbox.com/scl/fi/rpqks4ud5n7kthy4i8mkg/synthetic.zip?rlkey=pye84vhflfhvfg1jsbeg703j5&st=0zcnlvgy&dl=1) . This may take a while.  Unzip it and place `synthetic.duckdb` in the `data` directory.
+  - DuckDB
+
+- Check the connections:
+
+```{r}
+#| echo: false
+library(DatabaseConnector)
+```
+
+```{r}
+#| eval: false
+library(DatabaseConnector)
+
+# Using Eunomia -- will download with each R session
+connection <- connect(Eunomia::getEunomiaConnectionDetails())
+
+querySql(connection = connection,
+         sql = "SELECT COUNT(*) AS subjects FROM person;")
+
+disconnect(connection)
+```
+
+```{r}
+# Using DuckDB
+absoluteFileName <- file.path(getwd(), "data", "synthetic.duckdb")
+
+connection <- connect(dbms = "duckdb", server = absoluteFileName)
+
+querySql(connection = connection,
+         sql = "SELECT COUNT(*) AS subjects FROM person;")
+
+disconnect(connection)
+```
+
+- Don't worry!  We just want the software and data installed properly.  Later in this class, we will learn about:
+  - Standardization across different database servers
+  - Structured query language (SQL) and how to overcome its many variants
+  - Observational Medical Outcomes Partnership (OMOP) common data model (CDM)
