@@ -22,7 +22,7 @@ Mar 4, 18
 | Week | Class Dates | Where | Tentative Topics | Posts | Due |
 |:-----------|:-----------|:-----------|:----------------------|:------------|:------------|:------------|
 |  1 | Jan 11 | In-person | OHDSI \[slides: [pdf](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/latex/01_ohdsi_intro.pdf)\] <br> Open Science \[slides: [pdf](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/latex/01_open_science.pdf)\] <br> Tooling-up \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/01_tooling_up.qmd), [html](../qmd/01_tooling_up.html)\] |
-|    | Jan 12 | In-person | Common Data Model / Standardized Vocabularies |
+|    | Jan 12 | In-person | OMOP CDM \[slides: [revealjs](../qmd/01_cdm.revealjs.html), [html](../qmd/01_cdm.html) \] |
 |  2 |        | No class  |
 |  3 | Jan 21 | Online    | Extract-Transform-Load |
 |  4 | Jan 28 | Online    | SQL and R |
