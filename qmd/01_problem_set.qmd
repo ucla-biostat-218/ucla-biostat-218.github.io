@@ -1,0 +1,46 @@
+---
+title: "Bostat 218 Problem Set 1"
+subtitle: "Due Jan 31 @ 11:59PM in PDF by email"
+author: "Marc A Suchard @ UCLA"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+format:
+  html:
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+    embed-resources: true
+bibliography: "../ohdsi.bib"
+csl: "apa.csl"
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    fig.width: 6
+    fig.height: 4
+    message: FALSE
+    cache: false
+---
+
+## OMOP CDM
+
+1. John is an African American man born on August 4, 1974.  Define an entry in the `PERSON` table that encodes this information.
+
+2. John enrolled in his current insurance on January 1st, 2015. The data from his insurance database were extracted on July 1st, 2019. Define an entry in the `OBSERVATION_PERIOD` table that encodes this information.
+
+3. John was prescribed a 30-day supply of Ibuprofen 200 MG Oral tablets (NDC code: 76168009520) on May 1st, 2019. Define an entry in the `DRUG_EXPOSURE` table that encodes this information.
+
+4. Using SQL and R, retrieve all records of the condition "Gastrointestinal hemorrhage" (with concept ID [192671](http://athena.ohdsi.org/search-terms/terms/192671)) from the `Eunomia` dataset.
+
+5. Using SQL and R, retrieve all records of the condition "Gastrointestinal hemorrhage" using source codes. This database uses ICD-10, and the relevant ICD-10 code is "K92.2" from the `Eunomia` dataset.
+
+6. Using SQL and R, retrieve the observation period of the person with `PERSON_ID` 61 from the `Eunomia dataset.
+
+## Standardize vocabularies
+
+7. What is the standard concept ID for "Gastrointestinal hemorrhage"?
+
+8. Which ICD-10CM codes map to the standard concept for "Gastrointestinal hemorrhage"? Which ICD-9CM codes map to this Standard Concept?
+
+9. What are the MedDRA preferred terms that are equivalent to the standard concept for "Gastrointestinal hemorrhage"?

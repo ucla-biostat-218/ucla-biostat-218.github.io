@@ -1,0 +1,85 @@
+---
+title: "Structured query language"
+subtitle: Biostat 218
+author: "Marc A Suchard @ UCLA"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+format:
+  html:
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+    embed-resources: true
+bibliography: "../ohdsi.bib"
+csl: "apa.csl"
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    fig.width: 6
+    fig.height: 4
+    message: FALSE
+    cache: false
+---
+
+## Introduction
+
+<!-- In this lecture we will learn how to: -->
+
+<!-- - Prepare our R environments for the OHDSI toolstack -->
+
+<!-- - Download a large synthetic healthcare database -->
+
+<!-- - Perform a basic SQL query -->
+
+<!-- > A journey of a thousand miles begins with a single step -->
+<!-- > -->
+<!-- > Laozi, Tao Te Ching -->
+
+## SQL purpose
+
+- **Domain-specific language** (DSL) for relational database management systems (RDBMS)
+
+## SQL history
+
+- Introduced in the 1970s
+
+- Based on **relational algebra** (algebraic structures for modeling tuples of data), popularized by Edgar Codd (1970, Turing Award, IBM)
+
+- Developed by Donald Clamberlin and Raymond Boyce (IBM) and initially called SEQUEL (trademark issue)
+
+- First commercially avaiable in 1979 from IBM
+
+- Also in 1979, Relational Software, Inc released Oracle V2 (targeted for US Navy, CIA)
+
+- ANSI / ISO "standards" \ldots but not!
+
+- **Most widely used database language**
+
+## SQL vs noSQL
+
+:::: {layout="[50,50]"}
+::: {#first-column}
+**SQL**
+
+- Relational
+
+- Transactional
+
+- When in doubt: your best bet!
+
+:::
+::: {#second-column}
+**NoSQL**
+
+- Value-keys, documents, wide-column (column-store), graphs
+
+- Distributed (arguably scalable)
+:::
+::::
+
+::: {.callout-note}
+## Vector databases (noSQL)
+Store / manage / search vector embeddings of unstructured data; very useful for **retrieval augmented generation** (RAG) with LLMs
+:::

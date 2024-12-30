@@ -1,0 +1,61 @@
+---
+title: "OMOP CDM and Standardized Vocabularies"
+subtitle: Biostat 218
+author: "Marc A Suchard @ UCLA"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+format: 
+  revealjs :
+    output-ext: revealjs.html
+    footer: Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)
+    logo: figures/logo.png
+    # css: assets/style.css
+    # header-includes: |
+    #   <script src="assets/custom.js" type="application/javascript"></script>
+  html:
+    output-ext: html
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+    embed-resources: true
+bibliography: "../ohdsi.bib"
+csl: "apa.csl"
+from: markdown+emoji
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    fig.width: 6
+    fig.height: 4
+    message: FALSE
+    cache: false
+---
+
+## Introduction
+
+In this lecture we will learn:
+
+- 
+
+<!-- :::: {layout="[50,50]"} -->
+<!-- ::: {#first-column} -->
+<!-- **Purpose** -->
+
+<!-- - To build software -->
+
+<!-- - To share data -->
+<!-- ::: -->
+<!-- ::: {#second-column} -->
+
+## OHDSI use cases
+
+![](figures/ohdsi_use_cases.png)
+
+## OHDSI mad libs
+
+![](figures/ohdsi_questions.png)
+
+## Engineering trust in RWE thru open science
+
+![](figures/ohdsi_engineering.png)

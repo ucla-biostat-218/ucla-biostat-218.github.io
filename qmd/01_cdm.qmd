@@ -1,0 +1,588 @@
+---
+title: "OMOP CDM and Standardized Vocabularies"
+subtitle: Biostat 218
+author: "Marc A Suchard @ UCLA"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+format: 
+  revealjs :
+    output-ext: revealjs.html
+    footer: Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)
+    logo: figures/logo.png
+  html:
+    output-ext: html
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+    embed-resources: true
+bibliography: "../ohdsi.bib"
+csl: "apa.csl"
+from: markdown+emoji
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    fig.width: 6
+    fig.height: 4
+    message: FALSE
+    cache: false
+---
+
+## Introduction
+
+In these lectures we will learn:
+
+- What are standard / common data models?
+
+- Why an OMOP CDM?
+
+- How is the OMOP CDM normalized?
+
+- About using standardized vocabularies
+
+- How to get observations into standard models
+
+## Data models are everywhere
+
+$\ldots$ but mostly implicit
+
+```{r}
+#| eval: false
+lm(speed ~ dist, data = cars) # regress y | X
+# speed (y): vector; dist (X): dense matrix 
+```
+
+:::: {layout="[50,50]"}
+::: {#first-column}
+**Purpose**
+
+- To build software
+
+- To share data
+:::
+::: {#second-column}
+**Attributes**
+
+- Relational models
+
+- Normalized models
+
+- Closed-world models
+:::
+::::
+
+## What makes a model standard?
+
+:::: {layout="[ 50, 50 ]"}
+::: {#first-column}
+**Data models**
+
+- Software controls the data
+
+- Value of software $\gg$ data
+
+- Data come to the software
+:::
+::: {#second-column}
+**Standard data models**
+
+- Data are independent
+
+- Value of data $\gg$ software
+
+- Software comes to the data
+:::
+::::
+
+## What makes a model standard?
+
+:::: {layout="[ 50, 50 ]"}
+::: {#first-column}
+**Data models**
+
+- Specific business process
+
+- Implicit in application
+
+- No name
+
+- Not or internally documented
+
+- Support as part of application
+
+- One stakeholder: vendor
+:::
+::: {#second-column}
+**Standard data models**
+
+- Broad set of use cases
+
+- Explicit, independent of one application
+
+- Branded
+
+- Thoroughly documented
+
+- Independently supported
+
+- Many stakeholders
+:::
+::::
+
+## Examples of data models in healthcare {.scrollable}
+
+<!-- ::: columns -->
+<!-- ::: {.column width="70%"} -->
+<!-- ![](images/image_1.jpg) -->
+<!-- ::: -->
+
+<!-- ::: {.column width="30%"} -->
+<!-- ![](images/image_2.jpg) -->
+
+<!-- ![](images/image_3.jpg) -->
+<!-- ::: -->
+<!-- ::: -->
+
+:::: {layout="[ 50, 50 ]"}
+::: {#first-column}
+**Data models**
+
+
+<!-- ![](figures/example_data_models.png){.r-stretch} -->
+![](figures/example_data_models.png)
+:::
+::: {#second-column}
+**Standard data models**
+
+![](figures/example_standard_data_models.png)
+
+- only one is global, and a super-set of several others
+:::
+::::
+
+## Added value of standard data models
+
+:::: {layout="[ 50, 50 ]"}
+::: {#first-column}
+**Data models**
+
+- Objects
+
+- Relationship
+:::
+::: {#second-column}
+**Standard data models**
+
+- Objects
+
+- Relationship
+
+- Context
+
+- Conventions
+
+- Training
+
+- Test cases
+:::
+::::
+
+## Standard data models provide interoperability
+
+![](figures/interoperability.png)
+
+## Formal logic in knowledge representation
+
+:::: {layout="[ 50, 50 ]"}
+::: {#first-column}
+**Open-world assumption**
+
+- What we know $\ldots$ is true
+
+- What we don't know $\ldots$ we don't know
+:::
+::: {#second-column}
+**Closed-world assumption**
+
+- What we know $\ldots$ is true
+
+- What we don't know $\ldots$ is *false*
+:::
+::::
+
+> What does it mean "what we don't know?"
+
+## Real-world data are closed-world {.smaller}
+
+For any given day:
+
+1. If we see a record of something, it happened
+2. If we don't see a record of something, it did not happen
+
+which imples
+
+* We must know everything that could happen for (2) to hold
+* Everything we want to record must be in a reference table:
+  - all drugs, conditions, procedures, devices, visits, etc
+  
+> Only the closed-world assumption allows analytics
+>
+> - Incidence (how many patients get a disease in a time-period over all patients)
+>
+> - Prevalence (how many patients have a disease at a time-point over all patients)
+>
+> - All prediction / epidemiological methods
+
+## Why an OMOP standard / common data model?
+
+:::: {layout="[ 50, 50 ]"}
+::: {#first-column}
+![](figures/citations.png)
+
+<br>
+
+Over 700 total papers using the OMOP CDM !
+
+<https://dash.ohdsi.org/research>
+:::
+::: {#second-column}
+![](figures/recent_papers.png)
+:::
+::::
+
+## OMOP CDM
+
+The OMOP CDM is a system of
+
+- **tables**
+- conventions, and
+- vocabularies
+
+that allow observational health data to be standardized.
+
+It is this standard approach that facilitaties rapid innovation in the areas of open-source development, methods research and evidence generation.
+
+<https://ohdsi.github.io/CommonDataModel/index.html>
+
+## Tables
+
+The OMOP CDM is a **person-centric** model
+
+![](figures/person_centric.png){width=50%}
+
+## Tables
+
+A typical patient journey within a healthcare system
+
+![](figures/healthcare_journey.png)
+
+## Tables
+
+A typical patient journey within a healthcare system **into data**
+
+![](figures/healthcare_journey_data.png)
+
+## Tables {.scrollable}
+
+A typical patient journey within a healthcare system **into data**
+
+::: {.column width=100%}
+
+![](figures/cdm_person.png)
+::::
+
+All clinical event tables are linked to the `PERSON` table.  Adding the date or start-date to events allows for a longitudinal view on all relevant events by person.
+
+- Exception: standardized health system data tables
+
+## Simple data model
+
+![](figures/simple_data_model.png)
+
+## Schemas and data tables {.scrollable}
+
+Database schema separate between read-only and read-write tables
+
+* CDM
+  - Clinical event tables
+  - Vocabulary tables
+
+* Results
+
+  - `COHORT` (basis of analysis)
+  - `COHORT_DEFINITION`
+  
+The CDM is platform-independent.  Data types are basic ANSI SQL 
+
+- `VARCHAR`, `BIGINT`, `INTEGER`, `FLOAT`, `DATA`, `DATATIME`, `CLOB`
+
+## Events of different nature organize into domains
+
+Events are stored in `domain-specific` tables and represented by `standard concepts`
+
+- Condition domain
+  - signs, symptoms, diagnoses
+  - `CONDITION_OCCURRENCE` table
+
+- Drug domain
+  - `DRUG_EXPOSURE` table
+
+## Semantic representation through concepts {.scrollable}
+
+Each record is fully **normalized** through concepts
+
+- Unique `CONCEPT_ID` values (foreign keys to `CONCEPT` table)
+
+All CDM instances use the *same* `CONCEPT` table as a reference 
+
+- Chief mechanism of interoperability
+
+If a standard concept does not exist (or cannot be identified) `CONCEPT_ID` = 0
+
+## Normalization in pictures
+
+![](figures/normalization_keys.png){width=100%}
+
+- Importance becomes (even more) obvious across data sources (language, coding systems)
+
+## Field name conventions {.scrollable .smaller}
+
+|Notation|Description|
+|:------------------------------|:-------------------------------------------------------|
+|[Event]_ID|Unique identifier for each record, which serves as a foreign keys establishing relationships across Event tables. For example, PERSON_ID uniquely identifies each individual. VISIT_OCCURRENCE_ID uniquely identifies a Visit.|
+|[Event]_CONCEPT_ID|Foreign key to a Standard Concept record in the CONCEPT reference table. This is the main representation of the Event, serving as the primary basis for all standardized analytics. For example, CONDITION_CONCEPT_ID = [31967](http://athena.ohdsi.org/search-terms/terms/31967) contains the reference value for the SNOMED concept of "Nausea".|
+|[Event]_SOURCE _CONCEPT_ID|Foreign key to a record in the CONCEPT reference table. This Concept is the equivalent of the Source Value (below), and it may happen to be a Standard Concept, at which point it would be identical to the [Event]_CONCEPT_ID, or another non-standard concept. For example, CONDITION_SOURCE_CONCEPT_ID = [45431665](http://athena.ohdsi.org/search-terms/terms/45431665) denotes the concept of "Nausea" in the Read terminology, and the analogous CONDITION_CONCEPT_ID is the Standard SNOMED-CT Concept [31967](http://athena.ohdsi.org/search-terms/terms/31967). The use of Source Concepts for standard analytics applications is discouraged since only Standard Concepts represent the semantic content of an Event in a unambiguous way and therefore Source Concepts are not interoperable.|
+|[Event]_TYPE_CONCEPT_ID|Foreign key to a record in the CONCEPT reference table, representing the origin of the source information, standardized within the Standardized Vocabularies. Note that despite the field name this is not a type of an Event, or type of a Concept, but declares the capture mechanism that created this record. For example, DRUG_TYPE_CONCEPT_ID discriminates if a Drug record was derived from a dispensing Event in the pharmacy ("Pharmacy dispensing") or from an e-prescribing application ("Prescription written")|
+|[Event]_SOURCE_VALUE|Verbatim code or free text string reflecting how this Event was represented in the source data. Its use is discouraged for standard analytics applications, as these Source Values are not harmonized across data sources. For example, CONDITION_SOURCE_VALUE might contain a record of "78702", corresponding to ICD-9 code 787.02 written in a notation omitting the dot.|
+
+## Explore the CDM
+
+- [OMOP CDM v5.4 schema](https://ohdsi.github.io/CommonDataModel/cdm54.html) (link)
+
+- [OMOP CDM v5.4 DDL](https://github.com/OHDSI/CommonDataModel/blob/v5.4.0/inst/ddl/5.4/sql_server/OMOPCDM_sql_server_5.4_ddl.sql) (link)
+
+::: {.callout-tip}
+## Data definition language (DDL)
+:::
+
+<!-- ## Normalization -->
+
+<!-- Defining "keys" (`concept_id`) and populating reference tables -->
+
+<!-- ![](figures/normalization_keys.png) -->
+
+## Database constraints
+
+- `NOT NULL`: must have a value
+
+- `UNIQUE KEY`: value must only exist once in table
+
+- `PRIMARY KEY`: `NOT NULL` + `UNIQUE KEY`
+
+- `FOREIGN KEY`: must have a value in a parent table / field
+
+- `CHECK`: must check out (e.g. is positive)
+
+[OMOP CDM v5.4 constraints](https://github.com/OHDSI/CommonDataModel/blob/v5.4.0/inst/ddl/5.4/sql_server/OMOPCDM_sql_server_5.4_constraints.sql) (link)
+
+## OMOP CDM
+
+The OMOP CDM is a system of
+
+- tables
+- **conventions**, and
+- vocabularies
+
+that allow observational health data to be standardized.
+
+It is this standard approach that facilitaties rapid innovation in the areas of open-source development, methods research and evidence generation.
+
+<https://ohdsi.github.io/CommonDataModel/index.html>
+
+## Conventions
+
+![](figures/conventions.png)
+
+## Technical conventions
+
+![](figures/fields.png)
+
+[OMOP CDM v5.4 conventions](https://ohdsi.github.io/CommonDataModel/dataModelConventions.html) (link)
+
+## Table-specific conventions
+
+![](figures/person_conventions.png)
+
+## Source data-specific conventions
+
+![](figures/source_conventions.png)
+
+## OMOP CDM
+
+The OMOP CDM is a system of
+
+- tables
+- conventions, and
+- **vocabularies**
+
+that allow observational health data to be standardized.
+
+It is this standard approach that facilitaties rapid innovation in the areas of open-source development, methods research and evidence generation.
+
+<https://ohdsi.github.io/CommonDataModel/index.html>
+
+## Vocabularies
+
+![](figures/cdm_voc.png)
+
+## Why do we need standard concepts?
+
+![](figures/bladder_cancer_vocab.png)
+
+## OMOP standardized vocabularies
+
+![](figures/vocab_schema.png)
+
+::: {.callout-note}
+## Example DDL diagram
+:::
+
+## Example concept
+
+![](figures/example_concept.png)
+
+## Vocabularies relate ideas (concepts)
+
+![](figures/vocab_relationships)
+
+A semantic concept is a concept that is represented in a network of interconnected concepts
+
+## Mapping to OMOP standardized vocabularies
+
+![](figures/source_to_standard.png)
+
+What is standardized:
+
+- `[TABLE]_CONCEPT_ID`: standard concept to which the source code maps, **used for analysis**
+
+- `[TABLE]_SOURCE_CONCEPT_ID`: concept representation of the source code, **helps maintain tie to raw data**
+
+- `[TABLE]_SOURCE_VALUE`: original source code as given in source table, **helps to review data quality**
+
+Way to get a source code to standard code:
+
+- `CONCEPT_RELATIONSHIP` table
+
+## How many concepts are in the OHDSI standard vocabularies? {.scrollable}
+
+:::: {.columns}
+::: {.column width="30%"}
+![](figures/all_vocabularies.png){width=100%}
+:::
+::: {.column width="70%"}
+- 111 different vocabularies (like ICD-10, RxNorm)
+
+- 78 are adopted from external sources (with differing licensing requirements)
+
+::: {.callout-important}
+## Best ways to interact with the vocabularies
+
+- [ATHENA](https://athena.ohdsi.org) (link)
+- [ATLAS](https://atlas-demo.ohdsi.org) (link) by building concept sets
+:::
+
+:::
+::::
+
+## 1-to-1 semantic relationships
+
+![](figures/maps_to.png)
+
+## 1-to-N relationships
+
+![](figures/1_to_n_mapping.png)
+
+::: {.callout-tip}
+## Mappings can even across multiple domains
+:::
+
+## OMOP standardized vocabularies in a nutshell {.scrollable}
+
+What they are:
+
+- **Standardized structure** to house existing vocabularies used in the public domain
+- **Compiled standards** from disparate public and private sources and some OMOP-grown concepts
+
+What they are not:
+
+- **Static dataset**: vocabularies update regularly to keep up with the continuous evolution of the sources
+- **Finished product**: vocabulary maintenance and improvement is an ongoing activity that requires community participation and support
+
+## Extended CDM example: endometriosis
+
+We will walk through the story of Lauren:
+
+- From the [Book of OHDSI](https://ohdsi.github.io/TheBookOfOhdsi/CommonDataModel.html#running-example-endometriosis) (link)
+
+## Vocabulary exercises
+
+Using <https://athena.ohdsi.org>, find standard concept IDs for the following conditions:
+
+- Asthma
+- Plague
+- Ingrown toenail
+
+Final standard concept IDs for the following drug ingredients:
+
+- Metformin
+- Tolazamid
+- Telmisartan
+
+## Vocabulary exercises (with solutions)
+
+Using <https://athena.ohdsi.org>, find standard concept IDs for the following conditions:
+
+- Asthma (`317009`)
+- Plague (`434271`)
+- Ingrown toenail (`4065236`, `4290993`)
+
+Final standard concept IDs for the following drug ingredients:
+
+- Metformin (`1503297`)
+- Tolazamid (`1502809`)
+- Telmisartan (`1317640`)
+
+## Some more exercises
+
+- What is the standard concept ID for ICD10 code E11.9?
+
+- What is the standard concept ID for the ICD10 code C78.0?
+
+- What ICD10 codes are mapped to the concept ID 443767?
+
+- What is the standard concept ID for the ICD10 code code X67.0?
+
+## Comparison of CDMs
+
+Balancing trade-offs in data management vs analysis complexity
+
+![](figures/trade_off.png)
+
+## Extract-transform-load {.scrollable}
+
+![](figures/etl_steps.png)
+
+- [Book of OHDSI chapter](https://ohdsi.github.io/TheBookOfOhdsi/ExtractTransformLoad.html) (link)
+
+- [Recent paper on OMOP ETL challenges across Europe](https://pubmed.ncbi.nlm.nih.gov/37952118/) (link)
+
+- [Full-day tutorial](https://github.com/OHDSI/Tutorial-ETL) (link)
+
+<!-- ::: {.absolute left="55%" top="55%" style="font-size:1.8em; padding: 0.5em 1em; background-color: rgba(255, 255, 255, .5); backdrop-filter: blur(5px); box-shadow: 0 0 1rem 0 rgba(0, 0, 0, .5); border-radius: 5px;"} -->
+<!-- Be Brave -->
+
+<!-- Take Risks -->
+<!-- ::: -->
+
+<!-- https://emilhvitfeldt.com/project/slidecraft-101/#blog-posts -->
