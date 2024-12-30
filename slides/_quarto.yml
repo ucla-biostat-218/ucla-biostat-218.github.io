@@ -1,0 +1,7 @@
+project:
+  type: website  
+  output-dir: "."
+  render:
+    - ../qmd/01_tooling_up.qmd
+    - ../qmd/01_problem_set.qmd
+    - ../qmd/01_cdm.qmd

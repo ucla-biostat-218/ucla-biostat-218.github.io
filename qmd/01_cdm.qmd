@@ -457,9 +457,13 @@ It is this standard approach that facilitaties rapid innovation in the areas of 
 
 A semantic concept is a concept that is represented in a network of interconnected concepts
 
-## Mapping to OMOP standardized vocabularies
+## Mapping to OMOP standardized vocabularies {.scrollable}
+
+::: {.column width="100%"}
 
 ![](figures/source_to_standard.png)
+
+:::
 
 What is standardized:
 
@@ -469,7 +473,7 @@ What is standardized:
 
 - `[TABLE]_SOURCE_VALUE`: original source code as given in source table, **helps to review data quality**
 
-Way to get a source code to standard code:
+Way to map a source code to standard code:
 
 - `CONCEPT_RELATIONSHIP` table
 
