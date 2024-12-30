@@ -565,7 +565,7 @@ Marc A Suchard @ UCLA
 <img data-src="figures/person_centric.png" style="width:50.0%" class="r-stretch"></section>
 <section id="tables-1" class="slide level2">
 <h2>Tables</h2>
-<p>A typical patient journey with a healthcare system</p>
+<p>A typical patient journey within a healthcare system</p>
 
 <img data-src="figures/healthcare_journey.png" class="r-stretch"></section>
 <section id="tables-2" class="slide level2">
@@ -605,7 +605,7 @@ Marc A Suchard @ UCLA
 </ul>
 <p>The CDM is platform-independent. Data types are basic ANSI SQL</p>
 <ul>
-<li><code>VARCHAR</code>, <code>BIGINT</code>, <code>INTEGER</code> <code>FLOAT</code>, <code>DATA</code>, <code>DATATIME</code>, <code>CLOB</code></li>
+<li><code>VARCHAR</code>, <code>BIGINT</code>, <code>INTEGER</code>, <code>FLOAT</code>, <code>DATA</code>, <code>DATATIME</code>, <code>CLOB</code></li>
 </ul>
 </section>
 <section id="events-of-different-nature-organize-into-domains" class="slide level2">
@@ -629,7 +629,10 @@ Marc A Suchard @ UCLA
 <ul>
 <li>Unique <code>CONCEPT_ID</code> values (foreign keys to <code>CONCEPT</code> table)</li>
 </ul>
-<p>All CDM instances use the <em>same</em> <code>CONCEPT</code> table as a reference – chief mechanism of interoperability</p>
+<p>All CDM instances use the <em>same</em> <code>CONCEPT</code> table as a reference</p>
+<ul>
+<li>Chief mechanism of interoperability</li>
+</ul>
 <p>If a standard concept does not exist (or cannot be identified) <code>CONCEPT_ID</code> = 0</p>
 </section>
 <section id="normalization-in-pictures" class="slide level2">
