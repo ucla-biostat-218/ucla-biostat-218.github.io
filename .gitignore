@@ -3,5 +3,5 @@
 .RData
 .Ruserdata
 
-**/*_files/
 data
+**/figures/*.pdf
