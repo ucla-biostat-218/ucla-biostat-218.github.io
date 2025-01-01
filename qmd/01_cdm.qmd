@@ -5,9 +5,12 @@ author: "Marc A Suchard @ UCLA"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 format: 
   revealjs :
+    width: 1280
+    height: 720
     output-ext: revealjs.html
     footer: Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)
     logo: figures/logo.png
+    chalkboard: true
   html:
     output-ext: html
     theme: cosmo

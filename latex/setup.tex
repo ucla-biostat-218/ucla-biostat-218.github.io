@@ -1,0 +1,229 @@
+%% preamble setup for OHDSI beamer template
+\usepackage[]{graphicx}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+	\ifdim\Gin@nat@width>\linewidth
+	\linewidth
+	\else
+	\Gin@nat@width
+	\fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+	\def\at@end@of@kframe{}%
+	\ifinner\ifhmode%
+	\def\at@end@of@kframe{\end{minipage}}%
+\begin{minipage}{\columnwidth}%
+	\fi\fi%
+	\def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+		\colorbox{shadecolor}{##1}\hskip-\fboxsep
+		% There is no \\@totalrightmargin, so:
+		\hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+	\MakeFramed {\advance\hsize-\width
+		\@totalleftmargin\z@ \linewidth\hsize
+		\@setminipage}}%
+{\par\unskip\endMakeFramed%
+	\at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\hypersetup{pdfpagemode=FullScreen}
+
+% \mode<presentation>
+% {
+%   \usetheme{Warsaw}
+%   \setbeamercovered{transparent}
+%   % or whatever (possibly just delete it)
+% }
+
+\usepackage[english]{babel}
+% or whatever
+
+\usepackage[utf8]{inputenc}
+% or whatever
+
+\usepackage{listings}
+\usepackage{times}
+\usepackage{color}
+\usepackage{wasysym}
+\usepackage{amstext, amssymb, amsthm, amsmath,graphicx,rotating,array}
+\usepackage{algorithmic,algorithm,booktabs,url,colortbl}
+%\usepackage{natbib} % commented out due to weird errors
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+
+\usepackage{eso-pic}
+% \usepackage[absolute,overlay]{textpos}
+\usepackage{textpos}
+
+\usepackage{tikz}
+\usepackage{pgf}
+%\usepackage{cancel}
+\usepackage{soul}
+
+%\usepackage{movie15}
+% Or whatever. Note that the encoding and the font should match. If T1
+% does not look nice, try deleting the line with the fontenc.
+
+\newcommand{\argmax}{\operatornamewithlimits{argmax}}
+
+\definecolorset{rgb}{}{}{darkred,0.8,0,0;darkgreen,0,0.5,0;darkblue,0,0,0.5}
+\newcommand{\bm}[1]{\mathbf{#1}}
+
+\usepackage{color}
+\usepackage{ulem}
+\usepackage{wrapfig}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{inputenc}
+
+% START
+
+%\definecolor{Red}{rgb}{1,0,0}
+\definecolor{ohdsiblue}{rgb}{0.125,0.259,0.353} %{0.0,0.204,0.416}
+\definecolor{darkgreen}{rgb}{0.1,0.6,0.1}
+
+\definecolorset{rgb}{}{}{darkred,0.8,0,0;darkgreen,0,0.5,0;darkblue,0,0,0.5}
+
+\definecolor{trevorblue}{rgb}{0.330, 0.484, 0.828}
+\definecolor{trevoryellow}{rgb}{0.829, 0.680, 0.306}
+\definecolor{yaleblue}{rgb}{0.0,0.204,0.416}
+
+\usetheme{Boadilla}
+\usecolortheme{beaver}
+\usenavigationsymbolstemplate{} % no navigation symbols
+
+\setbeamertemplate{enumerate item}[default]
+
+\useoutertheme{infolines}
+
+\newcommand{\myskip}{1em}
+
+% \setbeamercolor{author in head/foot}{fg=ohdsiblue,bg=black!5}
+\setbeamercolor{author in head/foot}{fg=ohdsiblue,bg=white}
+\setbeamercolor{frametitle}{fg=ohdsiblue,bg=black!5}
+\setbeamercolor{block title}{bg=yaleblue!10,fg=black}
+
+\setbeamertemplate{frametitle}{%
+	\vskip-1pt
+	\begin{beamercolorbox}[sep=0.3cm,wd=\paperwidth]{frametitle}
+		\usebeamerfont{frametitle}%
+		%\vbox{}\vskip-1ex%
+		\vskip-9pt
+		\hskip-9pt
+		\parbox{1.5cm}{%
+			\includegraphics[width=1.5cm]{figures/logo.png}
+		}
+		%\hskip-2em
+		%\hbox{}\vskip-3em
+		\strut\insertframetitle\strut\par%
+		\vskip-8pt
+	\end{beamercolorbox}
+}
+
+\def\Put(#1,#2)#3{\leavevmode\makebox(0,0){\put(#1,#2){#3}}}
+
+\setbeamertemplate{footline}[text line]{%
+	\hbox{\begin{beamercolorbox}[wd=\paperwidth,ht=1em,dp=1.125ex,leftskip=.3cm plus1fill,rightskip=.3cm]{author in head/foot}%
+			\usebeamerfont{author in head/foot}
+			{\makebox[\paperwidth]{\hfill\makebox[10pt]{\tiny \insertframenumber}}}
+			\centering \includegraphics[width=\paperwidth,height=1em]{figures/footer.png}
+			% \centering A \insertauthor \hspace{4em} \insertshortinstitute \hspace{4em} \insertshorttitle
+		\end{beamercolorbox}%
+} }
+
+%\setbeamertemplate{footline}{%
+%	
+
+% \newcommand\AtPageMyUpperLeft[1]{\AtPageLowerLeft{%
+% \put(\LenToUnit{0.9\paperwidth},\LenToUnit{0.9\paperheight}){#1}}}
+% \AddToShipoutPictureFG{
+%   \AtPageMyUpperLeft{{\includegraphics[width=1.5cm,keepaspectratio]{OHDSI_logo_only_colored}}}
+% }%
+
+% \usepackage{pgf}
+% \logo{\includegraphics[height=1cm]{OHDSI_logo_only_colored}}
+% \logo{\pgfputat{\pgfxy(2,2)}{\pgfbox[center,base]{\includegraphics[width=1.7cm]{OHDSI_logo_only_colored}}}}
+% \logo{\pgfputat{\pgfxy(0,8)}{\pgfbox[right,base]{\includegraphics[height=1cm]{{OHDSI_logo_only_colored}}}}}
+%\logo{\pgfputat{\pgfxy(0,8)}{\pgfbox[right,base]{\includegraphics[height=1cm]{logo.pdf}}}}
+% \newcommand{\nologo}{\setbeamertemplate{logo}{}}
+
+%\pgfdeclareimage[height=2.5cm, width=2.5cm]{logo}{OHDSI_logo_only_colored}
+
+% \addtobeamertemplate{frametitle}{}{%
+% % \begin{textblock*}{100mm}(.05\textwidth,-1cm)
+% % \includegraphics[height=2cm,width=2cm]{OHDSI_logo_only_colored}
+% % \end{textblock*}
+% \begin{tikzpicture}[remember picture,overlay]
+% \node[anchor=north west,yshift=-4pt] at (current page.north west) {\includegraphics[height=1.5cm]{OHDSI_logo_only_colored}};
+% \end{tikzpicture}
+% }
+
+
+% \addtobeamertemplate{headline}{}
+% {%
+% \pgfuseimage{logo}
+% % \begin{tikzpicture}[remember picture,overlay]
+% % \pgfuseimage{logo}
+% % \draw [line width=1mm,opacity=.25]
+% % (current page.north east) circle (3cm);
+% % \end{tikzpicture}
+% }
+
+
+% \logo{\pgfuseimage{logo}}
+
+% END
+
+
+% Delete this, if you do not want the table of contents to pop up at
+% the beginning of each section:
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection,currentsubsection]
+  \end{frame}
+}
+
+
+% If you wish to uncover everything in a step-wise fashion, uncomment
+% the following command:
+
+%\beamerdefaultoverlayspecification{<+->}
+
+
+\setcounter{algorithm}{1}
+\newcommand{\myalgorithm}[1]{
+	\vspace{0.5cm}
+	\begin{quote}
+		{{\sc Algorithm} \arabic{algorithm}: #1}
+	\end{quote}
+	\vspace{1cm}
+	\stepcounter{algorithm}
+}
+
+\newcommand{\HeaderA}[3]{#1 #2 #3}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}

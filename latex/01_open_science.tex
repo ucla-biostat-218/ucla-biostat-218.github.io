@@ -1,0 +1,203 @@
+% OHDSI slides template
+\documentclass[11pt
+%,serif,marthserif
+,fragile=singleslide
+%%dvips
+%%,draft
+,xcolor=dvipsnames, 
+aspectratio=169 % update this if you want narrow screen; 16:9 wide screen is recommended
+]{beamer}
+
+%% include the preamble and all setup
+\input{setup.tex}
+
+\usepackage{setspace}
+
+% for highlight
+\newcommand{\hlfb}[1]{{\textcolor{Cerulean}{#1}}}
+% for blank footnote
+\newcommand\blfootnote[1]{%
+	\begingroup
+	\renewcommand\thefootnote{}\footnote{#1}%
+	\addtocounter{footnote}{-1}%
+	\endgroup
+}
+
+
+% Specifiy title here
+\title[
+OHDSI Biostat218
+]
+{
+OHDSI Biostat218
+}
+\subtitle
+{} % (optional subtitle)
+
+\author{Marc A Suchard}
+
+\institute[OHDSI] % (optional, but mostly needed)
+{
+	Department of Greatness \\
+	School of Awesome Health Data Science Research
+	% - Use the \inst command only if there are several affiliations.
+	% - Keep it simple, no one is interested in your street address.
+}
+\date{Jan 1, 2024}
+
+
+% start the slides
+\begin{document}
+	
+	\begin{frame}
+		%  \titlepage
+		\begin{columns}
+			\begin{column}{0.33\textwidth}
+				\includegraphics[width=1.0\textwidth]{figures/logo_title_page}
+			\end{column}
+			\begin{column}{0.66\textwidth}
+				\begin{center}
+					{\LARGE
+						Open Science} \\[2em]
+					
+						Marc A Suchard, MD, PhD \\[0.5em]
+						Department of Biostatistics \\ 
+						UCLA Fielding School of Public Health\\[1em]
+%						{\small Joint work with other OHDSI collaborators}
+					%				}
+				\end{center}
+			\end{column}
+		\end{columns}
+		\vspace{1em}
+		\vspace{1em}
+		
+	\end{frame}
+	
+\begin{frame}
+	\frametitle{OHDSI is an open science community}
+
+	\centerline{\includegraphics[width=0.75\textwidth]{figures/evidence_journey}}
+
+	\begin{columns}[T]
+	\begin{column}{0.5\textwidth}
+	Different observational data types:
+	\begin{itemize}
+		\item {\small Populations, care settings, capture process, health system}
+	\end{itemize}
+	\end{column}
+	\begin{column}{0.5\textwidth}
+	Types of evidence desired:
+	\begin{itemize}
+		\item {\small Cohort identification, clinical characterization, population-level effects, patient-level prediction}
+	\end{itemize}
+	\end{column}
+	\end{columns}
+
+	\begin{block}{OHDSI's mission}
+	\begin{itemize}
+\item To improve health, by empowering a community to collaboratively generate the evidence that promotes better health decisions and better care
+\end{itemize}
+	\end{block}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Open science movement}
+
+	\begin{block}{Open science aims}
+	\begin{itemize}
+	\item To make scientific research (including publications, data, samples and software) and its dissemination accessible to all levels of an inquiring society
+\end{itemize}
+	\end{block}
+  
+\vspace{1em}  
+  
+Addresses a number of perceived problems within current scientific practice, namely
+\begin{itemize}
+  \item Inclusivity of participants
+  \item Publication bias, $p$-hacking
+  \item Challenges in \textbf{reproducibility} / \textbf{reliability}
+\end{itemize}
+
+\vspace{1em}
+
+All important to ``empower a community'' \ldots ``better health decisions''
+  
+\end{frame}
+
+\begin{frame}
+  \frametitle{Four principles of open science}
+  
+  \begin{itemize}
+    \item Open standards \\[2em]
+    \item Open source \\[2em]
+    \item Open data \\[2em]
+    \item Open discourse
+  \end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Open standards examples}
+
+  \begin{itemize}
+    \item OMOP common data model -- scoped to capture observational healthcare data and now a world-wide standard (PCORnet, AllOfUs \ldots just subsets)  \\[2em]
+    \item Standardized vocabularies to map the hundreds of medical coding systems used world-wide   \\[2em]
+  \end{itemize}
+
+\begin{block}{Example}
+  \centerline{ATHENA -- \url{https://athena.ohdsi.org} (``Ozempic'' $\rightarrow$ ``semaglutide'')}
+\end{block}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Open source examples}
+  
+  \begin{itemize}
+    \item ATLAS to define reproducible patient cohorts \\[2em]
+    
+    \item Health analytics data-to-evidence suite (HADES) of \texttt{R} packages to perform standardized analyses  \\[2em]
+  \end{itemize}
+  
+\begin{block}{Example}
+  \centerline{CohortMethod -- \url{https://github.com/OHDSI/CohortMethod} (read a vignette)}
+\end{block}  
+    
+\end{frame}
+
+\begin{frame}
+  \frametitle{Open data examples}
+  
+  \begin{itemize}
+  	\item All population-level summarizes are publicly accessible!  \\[2em]  
+  \end{itemize}
+  
+\begin{block}{Example}
+  \centerline{LEGEND-T2DM}
+  \centerline{\url{https://data.ohdsi.org/LegendT2dmClassEvidenceExplorer/}}
+  \centerline{(DDP4I vs GLP1RA for MACE)}
+\end{block}    
+
+\vspace{1em}
+
+NB: Patient-privacy and ethics preclude sharing individual-level information
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Open discourse examples}
+
+  \begin{itemize}
+    \item Anyone interested in promoting OHDSI's mission can join \\[2em]
+    \item Anyone can lead (former undergraduate workgroup chair) \\[2em]
+    \item Public forums, weekly community class, 20+ workgroups \\[2em]
+ 
+\begin{block}{How to join}
+  \centerline{\url{https://www.ohdsi.org}}
+\end{block}        
+    
+  \end{itemize}
+  
+\end{frame}
+
+\end{document}
