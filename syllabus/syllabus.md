@@ -110,9 +110,9 @@ Homework assignments will generally come from the exercises provided in _The Boo
 ### Data Analysis Project
 
 Students are expected to perform an original observational health data science analysis project during this course and present their theoretical or empirical findings in a mini-seminar series (approximately 15-20 mins per student) during Finals week.
-Additionally, a written report of your work (max. 10 typed pages) is due on
-[add date] by 5PM via email (PDF).  Students are responsible for finding an appropriate health domain and designing their study. One page project proposals are due
-[add date] by 5PM via email (PDF).  Students should plan on attending several Biostatistics (Wednesdays at 3:30PM) and Bioinformatics (Mondays at 11:00AM) department seminars to get a feeling for the appropriate format.
+Additionally, a written report of your work (max. 5 typed pages) is due on
+March 21, 2025 by 5PM via email (PDF).  Students are responsible for finding an appropriate health domain and designing their study. One page project proposals are due
+February 28, 2025 by 5PM via email (PDF).  Students should plan on attending several Biostatistics (Wednesdays at 3:30PM) and Bioinformatics (Mondays at 11:00AM) department seminars to get a feeling for the appropriate format.
 
 ### Grading
 
