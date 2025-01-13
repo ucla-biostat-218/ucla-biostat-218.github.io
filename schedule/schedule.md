@@ -25,7 +25,7 @@ Mar 4, 18
 |    | Jan 12 | In-person | OMOP CDM 1 \[slides: [html](../slides/01_cdm.revealjs.html)\] |
 |  2 |        | No class  |
 |  3 | Jan 21 | Online    | OMOP CDM 2  |
-|  4 | Jan 28 | Online    | SQL and R |
+|  4 | Jan 28 | Online    | SQL and R | | Problem set 1 (due 1/31) \[slides: [html](../slides/01_problem_set.html)\]
 |  5 | Feb 4  | Online    | Defining Cohorts |
 |    | Feb 8  | In-person | Cohort Characterization |
 |    | Feb 9  | In-person | Population-Level Estimation |
