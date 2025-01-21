@@ -1,8 +1,8 @@
 ---
 title: "Bostat 218 Problem Set 1"
-subtitle: "Due Jan 31 @ 11:59PM in PDF by email"
+subtitle: "Due Feb 07 @ 11:59PM in PDF by email"
 author: "Marc A Suchard @ UCLA"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "January 6, 2025"
 format:
   html:
     theme: cosmo
@@ -43,3 +43,11 @@ knitr:
 8. Which ICD-10CM codes map to the standard concept for "Gastrointestinal hemorrhage"? Which ICD-9CM codes map to this Standard Concept?
 
 9. What are the MedDRA preferred terms that are equivalent to the standard concept for "Gastrointestinal hemorrhage"?
+
+## Advanced SQL
+
+10. What is the minimum, maximum, and mean length (in days) of observation from the `synthetic` dataset? (Hint: you can use the `DATEDIFF` function to compute the time between two dates.)
+
+11. How many people have at least one prescription of celecoxib from the `synthetic` dataset? (Note: there’s an easy way to do this, using `DRUG_ERA`, and a harder way using `DRUG_EXPOSURE` and `CONCEPT_ANCESTOR`. Can you do both?)
+
+12. During which period in time (calender start and end date) did people start a celecoxib prescription from the `synthetic` dataset?

@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.433">
+<meta name="generator" content="quarto-1.3.353">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Marc A Suchard @ UCLA">
-<meta name="dcterms.date" content="2024-12-30">
+<meta name="dcterms.date" content="2025-01-06">
 
 <title>Bostat 218 Problem Set 1</title>
 <style>
@@ -56,8 +56,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-submit-button-title": "Submit"
   }
 }</script>
 
@@ -77,6 +76,7 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#omop-cdm" id="toc-omop-cdm" class="nav-link active" data-scroll-target="#omop-cdm"><span class="header-section-number">1</span> OMOP CDM</a></li>
   <li><a href="#standardize-vocabularies" id="toc-standardize-vocabularies" class="nav-link" data-scroll-target="#standardize-vocabularies"><span class="header-section-number">2</span> Standardize vocabularies</a></li>
+  <li><a href="#advanced-sql" id="toc-advanced-sql" class="nav-link" data-scroll-target="#advanced-sql"><span class="header-section-number">3</span> Advanced SQL</a></li>
   </ul>
 </nav>
 </nav>
@@ -90,7 +90,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">Bostat 218 Problem Set 1</h1>
-<p class="subtitle lead">Due Jan 31 @ 11:59PM in PDF by email</p>
+<p class="subtitle lead">Due Feb 07 @ 11:59PM in PDF by email</p>
 </div>
 
 
@@ -107,7 +107,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">December 30, 2024</p>
+      <p class="date">January 6, 2025</p>
     </div>
   </div>
   
@@ -134,6 +134,14 @@ ul.task-list li input[type="checkbox"] {
 <li><p>What is the standard concept ID for “Gastrointestinal hemorrhage”?</p></li>
 <li><p>Which ICD-10CM codes map to the standard concept for “Gastrointestinal hemorrhage”? Which ICD-9CM codes map to this Standard Concept?</p></li>
 <li><p>What are the MedDRA preferred terms that are equivalent to the standard concept for “Gastrointestinal hemorrhage”?</p></li>
+</ol>
+</section>
+<section id="advanced-sql" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="advanced-sql"><span class="header-section-number">3</span> Advanced SQL</h2>
+<ol start="10" type="1">
+<li><p>What is the minimum, maximum, and mean length (in days) of observation from the <code>synthetic</code> dataset? (Hint: you can use the <code>DATEDIFF</code> function to compute the time between two dates.)</p></li>
+<li><p>How many people have at least one prescription of celecoxib from the <code>synthetic</code> dataset? (Note: there’s an easy way to do this, using <code>DRUG_ERA</code>, and a harder way using <code>DRUG_EXPOSURE</code> and <code>CONCEPT_ANCESTOR</code>. Can you do both?)</p></li>
+<li><p>During which period in time (calender start and end date) did people start a celecoxib prescription from the <code>synthetic</code> dataset?</p></li>
 </ol>
 
 

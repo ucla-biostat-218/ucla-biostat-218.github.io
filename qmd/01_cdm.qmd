@@ -2,7 +2,7 @@
 title: "OMOP CDM and Standardized Vocabularies"
 subtitle: Biostat 218
 author: "Marc A Suchard @ UCLA"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+date: "January 6, 2025"
 format: 
   revealjs :
     width: 1280
@@ -11,6 +11,8 @@ format:
     footer: Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)
     logo: figures/logo.png
     chalkboard: true
+    highlight-style: a11y
+    theme: [default, custom.sccs]    
   html:
     output-ext: html
     theme: cosmo
@@ -19,6 +21,7 @@ format:
     toc-depth: 4
     toc-location: left
     code-fold: false
+    highlight-style: a11y
 bibliography: "../ohdsi.bib"
 csl: "apa.csl"
 from: markdown+emoji
@@ -317,7 +320,7 @@ Database schema separate between read-only and read-write tables
   
 The CDM is platform-independent.  Data types are basic ANSI SQL 
 
-- `VARCHAR`, `BIGINT`, `INTEGER`, `FLOAT`, `DATA`, `DATATIME`, `CLOB`
+- `VARCHAR`, `BIGINT`, `INTEGER`, `FLOAT`, `DATE`, `DATETIME`, `CLOB`
 
 ## Events of different nature organize into domains
 

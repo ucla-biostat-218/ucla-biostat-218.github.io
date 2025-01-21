@@ -8,10 +8,10 @@
 <link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.3.433">
+  <meta name="generator" content="quarto-1.3.353">
 
   <meta name="author" content="Marc A Suchard @ UCLA">
-  <meta name="dcterms.date" content="2024-12-30">
+  <meta name="dcterms.date" content="2025-01-06">
   <title>OMOP CDM and Standardized Vocabularies</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -35,6 +35,8 @@
   <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
   <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
 
@@ -337,7 +339,7 @@ Marc A Suchard @ UCLA
 </div>
 </div>
 
-  <p class="date">2024-12-30</p>
+  <p class="date">2025-01-06</p>
 </section>
 <section id="introduction" class="slide level2">
 <h2>Introduction</h2>
@@ -605,7 +607,7 @@ Marc A Suchard @ UCLA
 </ul>
 <p>The CDM is platform-independent. Data types are basic ANSI SQL</p>
 <ul>
-<li><code>VARCHAR</code>, <code>BIGINT</code>, <code>INTEGER</code>, <code>FLOAT</code>, <code>DATA</code>, <code>DATATIME</code>, <code>CLOB</code></li>
+<li><code>VARCHAR</code>, <code>BIGINT</code>, <code>INTEGER</code>, <code>FLOAT</code>, <code>DATE</code>, <code>DATETIME</code>, <code>CLOB</code></li>
 </ul>
 </section>
 <section id="events-of-different-nature-organize-into-domains" class="slide level2">
@@ -785,16 +787,18 @@ Marc A Suchard @ UCLA
 
 <img data-src="figures/vocab_relationships.png" class="r-stretch"><p>A semantic concept is a concept that is represented in a network of interconnected concepts</p>
 </section>
-<section id="mapping-to-omop-standardized-vocabularies" class="slide level2 scollable">
+<section id="mapping-to-omop-standardized-vocabularies" class="slide level2 scrollable">
 <h2>Mapping to OMOP standardized vocabularies</h2>
-
-<img data-src="figures/source_to_standard.png" class="r-stretch"><p>What is standardized:</p>
+<div class="column" style="width:100%;">
+<p><img data-src="figures/source_to_standard.png"></p>
+</div>
+<p>What is standardized:</p>
 <ul>
 <li><p><code>[TABLE]_CONCEPT_ID</code>: standard concept to which the source code maps, <strong>used for analysis</strong></p></li>
 <li><p><code>[TABLE]_SOURCE_CONCEPT_ID</code>: concept representation of the source code, <strong>helps maintain tie to raw data</strong></p></li>
 <li><p><code>[TABLE]_SOURCE_VALUE</code>: original source code as given in source table, <strong>helps to review data quality</strong></p></li>
 </ul>
-<p>Way to get a source code to standard code:</p>
+<p>Way to map a source code to standard code:</p>
 <ul>
 <li><code>CONCEPT_RELATIONSHIP</code> table</li>
 </ul>
@@ -942,6 +946,7 @@ Marc A Suchard @ UCLA
   <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
   <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
   <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
   <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
@@ -963,7 +968,8 @@ Marc A Suchard @ UCLA
 'autoAnimateEasing': "ease",
 'autoAnimateDuration': 1,
 'autoAnimateUnmatched': true,
-'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
 'smaller': false,
  
         // Display controls in the bottom right corner
@@ -1109,9 +1115,9 @@ Marc A Suchard @ UCLA
         // The "normal" size of the presentation, aspect ratio will be preserved
         // when the presentation is scaled to fit different resolutions. Can be
         // specified using percentage units.
-        width: 1050,
+        width: 1280,
 
-        height: 700,
+        height: 720,
 
         // Factor of the display size that should remain empty around the content
         margin: 0.1,
@@ -1134,7 +1140,7 @@ Marc A Suchard @ UCLA
         },
 
         // reveal.js plugins
-        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
 
           RevealMath,
           RevealNotes,

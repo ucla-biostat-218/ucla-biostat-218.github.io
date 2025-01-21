@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.433">
+<meta name="generator" content="quarto-1.3.353">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Marc A Suchard @ UCLA">
-<meta name="dcterms.date" content="2024-12-30">
+<meta name="dcterms.date" content="2025-01-06">
 
 <title>OMOP CDM and Standardized Vocabularies</title>
 <style>
@@ -90,8 +90,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
     "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-submit-button-title": "Submit"
   }
 }</script>
 
@@ -186,7 +185,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">December 30, 2024</p>
+      <p class="date">January 6, 2025</p>
     </div>
   </div>
   
@@ -466,7 +465,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>The CDM is platform-independent. Data types are basic ANSI SQL</p>
 <ul>
-<li><code>VARCHAR</code>, <code>BIGINT</code>, <code>INTEGER</code>, <code>FLOAT</code>, <code>DATA</code>, <code>DATATIME</code>, <code>CLOB</code></li>
+<li><code>VARCHAR</code>, <code>BIGINT</code>, <code>INTEGER</code>, <code>FLOAT</code>, <code>DATE</code>, <code>DATETIME</code>, <code>CLOB</code></li>
 </ul>
 </section>
 <section id="events-of-different-nature-organize-into-domains" class="level2" data-number="18">
@@ -646,16 +645,18 @@ Example DDL diagram
 <p><img src="figures/vocab_relationships.png" class="img-fluid"></p>
 <p>A semantic concept is a concept that is represented in a network of interconnected concepts</p>
 </section>
-<section id="mapping-to-omop-standardized-vocabularies" class="level2 scollable" data-number="35">
-<h2 class="scollable anchored" data-number="35" data-anchor-id="mapping-to-omop-standardized-vocabularies"><span class="header-section-number">35</span> Mapping to OMOP standardized vocabularies</h2>
+<section id="mapping-to-omop-standardized-vocabularies" class="level2 scrollable" data-number="35">
+<h2 class="scrollable anchored" data-number="35" data-anchor-id="mapping-to-omop-standardized-vocabularies"><span class="header-section-number">35</span> Mapping to OMOP standardized vocabularies</h2>
+<div class="column" style="width:100%;">
 <p><img src="figures/source_to_standard.png" class="img-fluid"></p>
+</div>
 <p>What is standardized:</p>
 <ul>
 <li><p><code>[TABLE]_CONCEPT_ID</code>: standard concept to which the source code maps, <strong>used for analysis</strong></p></li>
 <li><p><code>[TABLE]_SOURCE_CONCEPT_ID</code>: concept representation of the source code, <strong>helps maintain tie to raw data</strong></p></li>
 <li><p><code>[TABLE]_SOURCE_VALUE</code>: original source code as given in source table, <strong>helps to review data quality</strong></p></li>
 </ul>
-<p>Way to get a source code to standard code:</p>
+<p>Way to map a source code to standard code:</p>
 <ul>
 <li><code>CONCEPT_RELATIONSHIP</code> table</li>
 </ul>
