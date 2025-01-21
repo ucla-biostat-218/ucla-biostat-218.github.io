@@ -22,10 +22,10 @@ Mar 4, 18
 | Week | Class Dates | Where | Tentative Topics | Posts | Due |
 |:-----------|:-----------|:-----------|:----------------------|:------------|:------------|:------------|
 |  1 | Jan 11 | In-person | OHDSI \[slides: [pdf](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/latex/01_ohdsi_intro.pdf)\] <br> Open Science \[slides: [pdf](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/latex/01_open_science.pdf)\] <br> Tooling-up \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/01_tooling_up.qmd), [html](../slides/01_tooling_up.html)\] |
-|    | Jan 12 | In-person | OMOP CDM 1 \[slides: [html](../slides/01_cdm.html)\] |
+|    | Jan 12 | In-person | OMOP CDM 1 \[slides: [html](../slides/01_cdm.reveal.js.html)\] |
 |  2 |        | No class  |
 |  3 | Jan 21 | Online    | OMOP CDM 2  |
-|  4 | Jan 28 | Online    | SQL and R \[slides: [html](../slides/03_sql.html) \] | | 
+|  4 | Jan 28 | Online    | SQL and R \[slides: [html](../slides/03_sql.reveal.js.html) \] | | 
 |  5 | Feb 4  | Online    | Defining Cohorts | | Problem set 1 (due 2/7) \[slides: [html](../slides/01_problem_set.html)\]
 |    | Feb 8  | In-person | Cohort Characterization |
 |    | Feb 9  | In-person | Population-Level Estimation |
