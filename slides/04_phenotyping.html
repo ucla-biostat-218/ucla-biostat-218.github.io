@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Marc A Suchard @ UCLA">
+<meta name="dcterms.date" content="2025-01-28">
+
+<title>Phenotyping</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="floating">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#what-is-real-world-evidence" id="toc-what-is-real-world-evidence" class="nav-link" data-scroll-target="#what-is-real-world-evidence"><span class="header-section-number">2</span> What is real-world evidence?</a></li>
+  <li><a href="#types-and-sources-of-real-world-data" id="toc-types-and-sources-of-real-world-data" class="nav-link" data-scroll-target="#types-and-sources-of-real-world-data"><span class="header-section-number">3</span> Types and sources of real-world data</a></li>
+  <li><a href="#turning-data-into-evidence" id="toc-turning-data-into-evidence" class="nav-link" data-scroll-target="#turning-data-into-evidence"><span class="header-section-number">4</span> Turning data into evidence</a></li>
+  <li><a href="#typical-questions-to-ask-from-rwd" id="toc-typical-questions-to-ask-from-rwd" class="nav-link" data-scroll-target="#typical-questions-to-ask-from-rwd"><span class="header-section-number">5</span> Typical questions to ask from RWD</a></li>
+  <li><a href="#ohdsi-standardization-of-use-cases" id="toc-ohdsi-standardization-of-use-cases" class="nav-link" data-scroll-target="#ohdsi-standardization-of-use-cases"><span class="header-section-number">6</span> OHDSI standardization of use cases</a></li>
+  <li><a href="#ohdsi-standardization-of-questions" id="toc-ohdsi-standardization-of-questions" class="nav-link" data-scroll-target="#ohdsi-standardization-of-questions"><span class="header-section-number">7</span> OHDSI standardization of questions</a></li>
+  <li><a href="#evidence-of-interest-an-example" id="toc-evidence-of-interest-an-example" class="nav-link" data-scroll-target="#evidence-of-interest-an-example"><span class="header-section-number">8</span> Evidence of interest – an example</a></li>
+  <li><a href="#evidence-of-interest-an-example-1" id="toc-evidence-of-interest-an-example-1" class="nav-link" data-scroll-target="#evidence-of-interest-an-example-1"><span class="header-section-number">9</span> Evidence of interest – an example</a></li>
+  <li><a href="#what-is-a-phenotype" id="toc-what-is-a-phenotype" class="nav-link" data-scroll-target="#what-is-a-phenotype"><span class="header-section-number">10</span> What is a phenotype?</a></li>
+  <li><a href="#phenotypes-in-rwe" id="toc-phenotypes-in-rwe" class="nav-link" data-scroll-target="#phenotypes-in-rwe"><span class="header-section-number">11</span> Phenotypes in RWE</a></li>
+  <li><a href="#quick-summary" id="toc-quick-summary" class="nav-link" data-scroll-target="#quick-summary"><span class="header-section-number">12</span> Quick summary</a></li>
+  <li><a href="#what-are-the-primary-purpose-of-rwd" id="toc-what-are-the-primary-purpose-of-rwd" class="nav-link" data-scroll-target="#what-are-the-primary-purpose-of-rwd"><span class="header-section-number">13</span> What are the primary purpose of RWD?</a></li>
+  <li><a href="#rwd-implications-for-clinical-research" id="toc-rwd-implications-for-clinical-research" class="nav-link" data-scroll-target="#rwd-implications-for-clinical-research"><span class="header-section-number">14</span> RWD implications for clinical research</a></li>
+  <li><a href="#rwd-implications-for-clinical-research-1" id="toc-rwd-implications-for-clinical-research-1" class="nav-link" data-scroll-target="#rwd-implications-for-clinical-research-1"><span class="header-section-number">15</span> RWD implications for clinical research</a></li>
+  <li><a href="#rwd-implications-for-clinical-research-2" id="toc-rwd-implications-for-clinical-research-2" class="nav-link" data-scroll-target="#rwd-implications-for-clinical-research-2"><span class="header-section-number">16</span> RWD implications for clinical research</a></li>
+  <li><a href="#rwd-implications-for-clinical-research-3" id="toc-rwd-implications-for-clinical-research-3" class="nav-link" data-scroll-target="#rwd-implications-for-clinical-research-3"><span class="header-section-number">17</span> RWD implications for clinical research</a></li>
+  <li><a href="#rwd-implications-for-clinical-research-4" id="toc-rwd-implications-for-clinical-research-4" class="nav-link" data-scroll-target="#rwd-implications-for-clinical-research-4"><span class="header-section-number">18</span> RWD implications for clinical research</a></li>
+  <li><a href="#why-do-we-phenotype" id="toc-why-do-we-phenotype" class="nav-link" data-scroll-target="#why-do-we-phenotype"><span class="header-section-number">19</span> Why do we phenotype?</a></li>
+  <li><a href="#phenotyping-is-challenging" id="toc-phenotyping-is-challenging" class="nav-link" data-scroll-target="#phenotyping-is-challenging"><span class="header-section-number">20</span> Phenotyping is challenging</a></li>
+  <li><a href="#criteria-are-like-lego-bricks-for-phenotyping" id="toc-criteria-are-like-lego-bricks-for-phenotyping" class="nav-link" data-scroll-target="#criteria-are-like-lego-bricks-for-phenotyping"><span class="header-section-number">21</span> Criteria are like Lego bricks for phenotyping</a></li>
+  <li><a href="#what-goes-in-a-lego-brick-concept_set-expressions" id="toc-what-goes-in-a-lego-brick-concept_set-expressions" class="nav-link" data-scroll-target="#what-goes-in-a-lego-brick-concept_set-expressions"><span class="header-section-number">22</span> What goes in a Lego brick? <code>concept_set</code> expressions</a></li>
+  <li><a href="#concept_set-expressions" id="toc-concept_set-expressions" class="nav-link" data-scroll-target="#concept_set-expressions"><span class="header-section-number">23</span> <code>concept_set</code> expressions</a></li>
+  <li><a href="#how-do-we-use-lego-bricks-for-phenotyping" id="toc-how-do-we-use-lego-bricks-for-phenotyping" class="nav-link" data-scroll-target="#how-do-we-use-lego-bricks-for-phenotyping"><span class="header-section-number">24</span> How do we use Lego bricks for phenotyping?</a></li>
+  <li><a href="#optimization-requirements" id="toc-optimization-requirements" class="nav-link" data-scroll-target="#optimization-requirements"><span class="header-section-number">25</span> Optimization requirements</a></li>
+  <li><a href="#from-phenotype-to-cohort" id="toc-from-phenotype-to-cohort" class="nav-link" data-scroll-target="#from-phenotype-to-cohort"><span class="header-section-number">26</span> From phenotype to cohort</a></li>
+  <li><a href="#phenotying-steps" id="toc-phenotying-steps" class="nav-link" data-scroll-target="#phenotying-steps"><span class="header-section-number">27</span> Phenotying steps</a></li>
+  <li><a href="#ohdsi-engineering" id="toc-ohdsi-engineering" class="nav-link" data-scroll-target="#ohdsi-engineering"><span class="header-section-number">28</span> OHDSI engineering</a></li>
+  <li><a href="#standardized-phenotying" id="toc-standardized-phenotying" class="nav-link" data-scroll-target="#standardized-phenotying"><span class="header-section-number">29</span> Standardized phenotying</a></li>
+  <li><a href="#ohdsi-tools-to-support-phenotype-development-and-evaluation" id="toc-ohdsi-tools-to-support-phenotype-development-and-evaluation" class="nav-link" data-scroll-target="#ohdsi-tools-to-support-phenotype-development-and-evaluation"><span class="header-section-number">30</span> OHDSI tools to support phenotype development and evaluation</a></li>
+  <li><a href="#ohdsi-phenotype-library" id="toc-ohdsi-phenotype-library" class="nav-link" data-scroll-target="#ohdsi-phenotype-library"><span class="header-section-number">31</span> OHDSI phenotype library</a></li>
+  <li><a href="#lack-of-reproducible-phenotypes" id="toc-lack-of-reproducible-phenotypes" class="nav-link" data-scroll-target="#lack-of-reproducible-phenotypes"><span class="header-section-number">32</span> Lack of reproducible phenotypes</a></li>
+  <li><a href="#current-state-of-art-of-phenotypes-in-publications" id="toc-current-state-of-art-of-phenotypes-in-publications" class="nav-link" data-scroll-target="#current-state-of-art-of-phenotypes-in-publications"><span class="header-section-number">33</span> Current state-of-art of phenotypes in publications</a></li>
+  <li><a href="#example-fully-specified-phenotype" id="toc-example-fully-specified-phenotype" class="nav-link" data-scroll-target="#example-fully-specified-phenotype"><span class="header-section-number">34</span> Example: fully specified phenotype</a></li>
+  <li><a href="#standardized-phenotypes-and-their-cohorts" id="toc-standardized-phenotypes-and-their-cohorts" class="nav-link" data-scroll-target="#standardized-phenotypes-and-their-cohorts"><span class="header-section-number">35</span> Standardized phenotypes and their cohorts</a></li>
+  <li><a href="#what-we-have-observational-data-for-a-single-person" id="toc-what-we-have-observational-data-for-a-single-person" class="nav-link" data-scroll-target="#what-we-have-observational-data-for-a-single-person"><span class="header-section-number">36</span> What we have – observational data for a single person</a></li>
+  <li><a href="#what-we-want-longitudinal-health-status-for-a-single-person" id="toc-what-we-want-longitudinal-health-status-for-a-single-person" class="nav-link" data-scroll-target="#what-we-want-longitudinal-health-status-for-a-single-person"><span class="header-section-number">37</span> What we want – longitudinal health status for a single person</a></li>
+  <li><a href="#errors-from-disease-phenotyping" id="toc-errors-from-disease-phenotyping" class="nav-link" data-scroll-target="#errors-from-disease-phenotyping"><span class="header-section-number">38</span> Errors from disease phenotyping</a></li>
+  <li><a href="#evaluating-phenotypes" id="toc-evaluating-phenotypes" class="nav-link" data-scroll-target="#evaluating-phenotypes"><span class="header-section-number">39</span> Evaluating phenotypes</a></li>
+  <li><a href="#steps-for-developing-and-evaluating-phenotypes" id="toc-steps-for-developing-and-evaluating-phenotypes" class="nav-link" data-scroll-target="#steps-for-developing-and-evaluating-phenotypes"><span class="header-section-number">40</span> Steps for developing and evaluating phenotypes</a></li>
+  <li><a href="#dissecting-the-anatomy-of-a-cohort-phenotype-definition" id="toc-dissecting-the-anatomy-of-a-cohort-phenotype-definition" class="nav-link" data-scroll-target="#dissecting-the-anatomy-of-a-cohort-phenotype-definition"><span class="header-section-number">41</span> Dissecting the anatomy of a cohort (phenotype) definition</a></li>
+  <li><a href="#questions-to-answer-when-defining-a-cohort" id="toc-questions-to-answer-when-defining-a-cohort" class="nav-link" data-scroll-target="#questions-to-answer-when-defining-a-cohort"><span class="header-section-number">42</span> Questions to answer when defining a cohort</a></li>
+  <li><a href="#dissecting-the-anatomy-of-a-cohort-phenotype-definition-1" id="toc-dissecting-the-anatomy-of-a-cohort-phenotype-definition-1" class="nav-link" data-scroll-target="#dissecting-the-anatomy-of-a-cohort-phenotype-definition-1"><span class="header-section-number">43</span> Dissecting the anatomy of a cohort (phenotype) definition</a></li>
+  <li><a href="#what-initial-events-define-cohort-entry" id="toc-what-initial-events-define-cohort-entry" class="nav-link" data-scroll-target="#what-initial-events-define-cohort-entry"><span class="header-section-number">44</span> What initial event(s) define cohort entry?</a></li>
+  <li><a href="#dissecting-the-anatomy-of-a-cohort-phenotype-definition-2" id="toc-dissecting-the-anatomy-of-a-cohort-phenotype-definition-2" class="nav-link" data-scroll-target="#dissecting-the-anatomy-of-a-cohort-phenotype-definition-2"><span class="header-section-number">45</span> Dissecting the anatomy of a cohort (phenotype) definition</a></li>
+  <li><a href="#what-inclusion-criteria-are-applied-to-the-initial-events" id="toc-what-inclusion-criteria-are-applied-to-the-initial-events" class="nav-link" data-scroll-target="#what-inclusion-criteria-are-applied-to-the-initial-events"><span class="header-section-number">46</span> What inclusion criteria are applied to the initial events?</a></li>
+  <li><a href="#dissecting-the-anatomy-of-a-cohort-phenotype-definition-3" id="toc-dissecting-the-anatomy-of-a-cohort-phenotype-definition-3" class="nav-link" data-scroll-target="#dissecting-the-anatomy-of-a-cohort-phenotype-definition-3"><span class="header-section-number">47</span> Dissecting the anatomy of a cohort (phenotype) definition</a></li>
+  <li><a href="#what-defines-a-persons-cohort-exit" id="toc-what-defines-a-persons-cohort-exit" class="nav-link" data-scroll-target="#what-defines-a-persons-cohort-exit"><span class="header-section-number">48</span> What defines a person’s cohort exit?</a></li>
+  <li><a href="#deriving-all-exposure-cohorts-from-base-cohorts" id="toc-deriving-all-exposure-cohorts-from-base-cohorts" class="nav-link" data-scroll-target="#deriving-all-exposure-cohorts-from-base-cohorts"><span class="header-section-number">49</span> Deriving all exposure cohorts from base cohorts</a></li>
+  <li><a href="#building-cohorts-together" id="toc-building-cohorts-together" class="nav-link" data-scroll-target="#building-cohorts-together"><span class="header-section-number">50</span> Building cohorts together</a></li>
+  <li><a href="#hands-on-examples" id="toc-hands-on-examples" class="nav-link" data-scroll-target="#hands-on-examples"><span class="header-section-number">51</span> Hands-on examples</a></li>
+  <li><a href="#notes-for-mas-1" id="toc-notes-for-mas-1" class="nav-link" data-scroll-target="#notes-for-mas-1"><span class="header-section-number">52</span> Notes for MAS 1</a></li>
+  <li><a href="#notes-for-mas-2" id="toc-notes-for-mas-2" class="nav-link" data-scroll-target="#notes-for-mas-2"><span class="header-section-number">53</span> Notes for MAS 2</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="04_phenotyping.revealjs.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Phenotyping</h1>
+<p class="subtitle lead">Biostat 218</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Marc A Suchard @ UCLA </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 28, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
+<p>In these lectures we will learn:</p>
+<ul>
+<li><p>About RWE / RWD</p></li>
+<li><p>What is a (clinical) phenotype</p></li>
+<li><p>How to phenotype</p></li>
+</ul>
+</section>
+<section id="what-is-real-world-evidence" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="what-is-real-world-evidence"><span class="header-section-number">2</span> What is real-world evidence?</h2>
+<p><strong>Real-world evidence</strong> (RWE) is the clinical evidence regarding the usage and potential benefits or risks of a medical product derived from analysis of real-world data (RWD). RWE can be generated by different study designs or analyses, including, but not limited to, randomized trials, including large simple trials, pragmatic trials, and observational studies (prospective and/or retrospective). (FDA, 2020)</p>
+<p><img src="figures/rwe_rwd1.png" class="img-fluid"></p>
+</section>
+<section id="types-and-sources-of-real-world-data" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="types-and-sources-of-real-world-data"><span class="header-section-number">3</span> Types and sources of real-world data</h2>
+<p><img src="figures/rwd_sources.png" class="img-fluid"></p>
+</section>
+<section id="turning-data-into-evidence" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="turning-data-into-evidence"><span class="header-section-number">4</span> Turning data into evidence</h2>
+<p><img src="figures/rwe_rwd2.png" class="img-fluid"></p>
+</section>
+<section id="typical-questions-to-ask-from-rwd" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="typical-questions-to-ask-from-rwd"><span class="header-section-number">5</span> Typical questions to ask from RWD</h2>
+<p><img src="figures/typical_questions.png" class="img-fluid"></p>
+</section>
+<section id="ohdsi-standardization-of-use-cases" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="ohdsi-standardization-of-use-cases"><span class="header-section-number">6</span> OHDSI standardization of use cases</h2>
+<p><img src="figures/ohdsi_use_cases.png" class="img-fluid"></p>
+</section>
+<section id="ohdsi-standardization-of-questions" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="ohdsi-standardization-of-questions"><span class="header-section-number">7</span> OHDSI standardization of questions</h2>
+<p><img src="figures/ohdsi_questions.png" class="img-fluid"></p>
+</section>
+<section id="evidence-of-interest-an-example" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="evidence-of-interest-an-example"><span class="header-section-number">8</span> Evidence of interest – an example</h2>
+<ul>
+<li>How many patients with bladder cancer experience venous thromboembolism within six months of treatment with cisplatin-based chemotherapy?</li>
+</ul>
+</section>
+<section id="evidence-of-interest-an-example-1" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="evidence-of-interest-an-example-1"><span class="header-section-number">9</span> Evidence of interest – an example</h2>
+<ul>
+<li>How many <span style="text-decoration: underline;">patients with bladder cancer</span> experience <span style="text-decoration: underline;">venous thromboembolism</span> within six months of <span style="text-decoration: underline;">treatment with cisplatin-based chemotherapy</span></li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>These clinical features are called phenotypes</p>
+</div>
+</div>
+</section>
+<section id="what-is-a-phenotype" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="what-is-a-phenotype"><span class="header-section-number">10</span> What is a phenotype?</h2>
+<ul>
+<li><p>From ancient Greek <span class="math inline">\(\phi \alpha \iota \nu \omega\)</span> ‘to appear, show’ and <span class="math inline">\(\tau \upsilon \pi \omicron \sigma\)</span> ‘mark, type’</p></li>
+<li><p>First introduced in 1909 by Danish botanist and geneticist Wilhelm Johannsen to describe observable and measurable phenomena of organisms:</p>
+<ul>
+<li>“All ’types’ of organisms, distinguishable by direct inspection or only by finer methods of measuring or description […]”</li>
+</ul></li>
+</ul>
+</section>
+<section id="phenotypes-in-rwe" class="level2" data-number="11">
+<h2 data-number="11" class="anchored" data-anchor-id="phenotypes-in-rwe"><span class="header-section-number">11</span> Phenotypes in RWE</h2>
+<p><img src="figures/phenotype_hripcsak.png" class="img-fluid"></p>
+<ul>
+<li>A phenotype is a specification of an <strong>observable</strong>, potentially <strong>changing state</strong> of an organism (as distinguished from the genotype, derived from genetic markeup)</li>
+</ul>
+</section>
+<section id="quick-summary" class="level2" data-number="12">
+<h2 data-number="12" class="anchored" data-anchor-id="quick-summary"><span class="header-section-number">12</span> Quick summary</h2>
+<ul>
+<li><p>A <strong>phenotype</strong> is the clinical idea we want to study</p></li>
+<li><p>The data are imperfect; the <strong>phenotype algorithm</strong> provides a proxy that attempts to represent the “phenotype” given the available data</p></li>
+<li><p><strong>Phenotyping</strong> is the process of transforming the data into clinical relevant features</p></li>
+</ul>
+<p><img src="figures/phenotyping.png" class="img-fluid"></p>
+</section>
+<section id="what-are-the-primary-purpose-of-rwd" class="level2 scrollable" data-number="13">
+<h2 class="scrollable anchored" data-number="13" data-anchor-id="what-are-the-primary-purpose-of-rwd"><span class="header-section-number">13</span> What are the primary purpose of RWD?</h2>
+<ul>
+<li>Clinical care:
+<ul>
+<li>Support diagnostics, treatment and monitoring of patients</li>
+<li>Document patient encounters and medical history</li>
+</ul></li>
+<li>Practice management:
+<ul>
+<li>Manage appointments, resource allocation</li>
+<li>Enhance operational efficiency within healthcare facilities</li>
+</ul></li>
+<li>Billing and reimbursement:
+<ul>
+<li>Facilitate billing and reimbursement for healthcare serives provided</li>
+<li>Ensure compliance with payer policies and healthcare regulations</li>
+</ul></li>
+<li>Healthcare utilization monitoring:
+<ul>
+<li>Track usage of healthcare serives, procedures and medications</li>
+<li>Analyze patterns and trends in healthcare delivery for policy and decision-making</li>
+</ul></li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>None of these are <strong>clinical research</strong></p>
+</div>
+</div>
+</section>
+<section id="rwd-implications-for-clinical-research" class="level2" data-number="14">
+<h2 data-number="14" class="anchored" data-anchor-id="rwd-implications-for-clinical-research"><span class="header-section-number">14</span> RWD implications for clinical research</h2>
+<p><img src="figures/rwd_trouble1.png" class="img-fluid"></p>
+</section>
+<section id="rwd-implications-for-clinical-research-1" class="level2" data-number="15">
+<h2 data-number="15" class="anchored" data-anchor-id="rwd-implications-for-clinical-research-1"><span class="header-section-number">15</span> RWD implications for clinical research</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li>Inaccuracies introduced at any time during a clinical visit</li>
+<li>Errors occur anywhere in the process from observing the patients to recording them in the record, and billing requirements and liability avoidance influence recording</li>
+<li>Some errors may be at random; many errors – such as the influence of billing – are <strong>systematic</strong></li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="figures/rwd_trouble2.png" class="img-fluid"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="rwd-implications-for-clinical-research-2" class="level2" data-number="16">
+<h2 data-number="16" class="anchored" data-anchor-id="rwd-implications-for-clinical-research-2"><span class="header-section-number">16</span> RWD implications for clinical research</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li>Data are occasionally missing by mistake</li>
+<li>Data are only recorded during healthcare episodes that usually correspond to illness</li>
+<li>Much information is implicit, under the assumption that the human reader will infer the missing information (pertinent negative findings)</li>
+<li><strong>Missingness is not at random</strong></li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="figures/rwd_trouble3.png" class="img-fluid"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="rwd-implications-for-clinical-research-3" class="level2" data-number="17">
+<h2 data-number="17" class="anchored" data-anchor-id="rwd-implications-for-clinical-research-3"><span class="header-section-number">17</span> RWD implications for clinical research</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li>Patients move among institutions for their care and change insurance, so that individual databases contain only part of their experience</li>
+<li>Health information exchange is insufficiently pervasive to address this issue</li>
+<li>Variability in data entry formats, terminologies and coding systems can lead to inconsistencies and fragmentation</li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="figures/rwd_trouble4.png" class="img-fluid"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="rwd-implications-for-clinical-research-4" class="level2" data-number="18">
+<h2 data-number="18" class="anchored" data-anchor-id="rwd-implications-for-clinical-research-4"><span class="header-section-number">18</span> RWD implications for clinical research</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li>Differences in medical practice across geographies and settings, reporting patterns to payers and coding</li>
+<li>Data are biased towards sicker individuals</li>
+<li>Missingness and systematic errors can result in significant bias when RWD are used <strong>naively</strong> for clinical research</li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="figures/rwd_trouble5.png" class="img-fluid"></p>
+</div>
+</div>
+</div>
+<!-- ## Trouble overview -->
+<!-- ![](figures/rwd_trouble6.png) -->
+</section>
+<section id="why-do-we-phenotype" class="level2 scrollable" data-number="19">
+<h2 class="scrollable anchored" data-number="19" data-anchor-id="why-do-we-phenotype"><span class="header-section-number">19</span> Why do we phenotype?</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p>RWD are not perfect</p>
+<ul>
+<li><p>Diagnosis, clinical testing and treatment data are generated for medical care purposes</p></li>
+<li><p>They often represent an evolving understanding of the patient’s health status</p></li>
+<li><p>They are incomplete (only a snapshot)</p></li>
+<li><p>There are differences in medical practice across geography and healthcare settings, reporting patterns to payers and coding</p></li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="figures/rwd_trouble6.png" class="img-fluid"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="phenotyping-is-challenging" class="level2 scrollable" data-number="20">
+<h2 class="scrollable anchored" data-number="20" data-anchor-id="phenotyping-is-challenging"><span class="header-section-number">20</span> Phenotyping is challenging</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="figures/multiple_components.png" class="img-fluid"></p>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li><p>The data do not always contain exact what you want to study</p></li>
+<li><p>The data have quality issues</p></li>
+<li><p>The data are redundant and may contain information in multiple forms</p></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We can use different data components to derive an optimal phenotype and evaluate its fitness for use</p>
+</div>
+</div>
+</section>
+<section id="criteria-are-like-lego-bricks-for-phenotyping" class="level2" data-number="21">
+<h2 data-number="21" class="anchored" data-anchor-id="criteria-are-like-lego-bricks-for-phenotyping"><span class="header-section-number">21</span> Criteria are like Lego bricks for phenotyping</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: center;">
+<p><img src="figures/lego1.png" class="img-fluid"></p>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 70.0%;justify-content: center;">
+<ul>
+<li><p>A <strong>criterion</strong> (Lego block) is a domain-specific data query and is a fundamental building block of a phenotype</p></li>
+<li><p>Combining Lego bricks improves the phenotyping performance: matching the clinical idea meeting the optimization requirements</p></li>
+<li><p>But remember that phenotypes are <strong>never</strong> perfect</p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="what-goes-in-a-lego-brick-concept_set-expressions" class="level2" data-number="22">
+<h2 data-number="22" class="anchored" data-anchor-id="what-goes-in-a-lego-brick-concept_set-expressions"><span class="header-section-number">22</span> What goes in a Lego brick? <code>concept_set</code> expressions</h2>
+<p><img src="figures/lego2.png" class="img-fluid" style="width:200.0%"></p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Always with respect to some time-interval</li>
+<li>Use the vocabularies</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="concept_set-expressions" class="level2 scrollable" data-number="23">
+<h2 class="scrollable anchored" data-number="23" data-anchor-id="concept_set-expressions"><span class="header-section-number">23</span> <code>concept_set</code> expressions</h2>
+<ul>
+<li>A <code>concept_set</code> is a list of concepts in the OHDSI vocabularies
+<ul>
+<li>List of 1 or more concepts</li>
+<li>Optional operators for each concept in the list:
+<ul>
+<li><code>descendants</code>: use <code>concept_ancestor</code> to identify standard concepts which have descendant ancestral relationship with selected concept</li>
+<li><code>exclude</code>: remove concept (and optionally descendants) from list</li>
+<li><code>mapped</code>: use <code>concept_relationship</code> to materialize non-standard concepts for all included concepts</li>
+</ul></li>
+</ul></li>
+<li>A <code>concept_set</code> expression can be materialized into a list of concepts using any instance of the OHDSI vocabularies</li>
+</ul>
+<p>Possible example: <code>201826</code> in ATLAS</p>
+</section>
+<section id="how-do-we-use-lego-bricks-for-phenotyping" class="level2" data-number="24">
+<h2 data-number="24" class="anchored" data-anchor-id="how-do-we-use-lego-bricks-for-phenotyping"><span class="header-section-number">24</span> How do we use Lego bricks for phenotyping?</h2>
+<p><img src="figures/lego3.png" class="img-fluid"></p>
+<ul>
+<li>Choice of Lego bricks and their combination-logic depends on the clinical idea and the optimization requirements of the phenotype under development</li>
+</ul>
+</section>
+<section id="optimization-requirements" class="level2 scrollable" data-number="25">
+<h2 class="scrollable anchored" data-number="25" data-anchor-id="optimization-requirements"><span class="header-section-number">25</span> Optimization requirements</h2>
+<ul>
+<li><strong>Event/phenotype start date:</strong>
+<ul>
+<li>The point in time the clinical event begins</li>
+<li>Essential for accurately tracking disease onset of treatment initiation</li>
+</ul></li>
+<li><strong>Sensitivity</strong>:
+<ul>
+<li>Ability of correctly identify true cases of the phenotype</li>
+<li>Important for minimizing false negatives</li>
+</ul></li>
+<li><strong>Specificity</strong>:
+<ul>
+<li>Ability of correcdtly exclude non-cases</li>
+<li>Important for identifying the target population</li>
+</ul></li>
+<li><strong>Event/phenotype end date:</strong>
+<ul>
+<li>The point in time when the clinical event ends</li>
+<li>Essential for understanding the duration of the condition or time-at-risk</li>
+</ul></li>
+</ul>
+</section>
+<section id="from-phenotype-to-cohort" class="level2" data-number="26">
+<h2 data-number="26" class="anchored" data-anchor-id="from-phenotype-to-cohort"><span class="header-section-number">26</span> From phenotype to cohort</h2>
+<ul>
+<li>A <strong>cohort</strong> is a set of persons who satisfy one or more inclusion critieria (a phenotype) for a duration of time</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Objective consequences based on this cohort definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>One person may belong to multiple cohorts</li>
+<li>One person may belong to the same cohort multiple different time periods</li>
+<li>One person may not belong to the same cohort multiple times during the same period of time</li>
+<li>One cohort may have zero or more members</li>
+<li>A <code>codeset</code> is <strong>not</strong> a cohort
+<ul>
+<li>logic for how to use the codeset in a criterion is required</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="phenotying-steps" class="level2" data-number="27">
+<h2 data-number="27" class="anchored" data-anchor-id="phenotying-steps"><span class="header-section-number">27</span> Phenotying steps</h2>
+<p><img src="figures/phenotyping_steps.png" class="img-fluid"></p>
+</section>
+<section id="ohdsi-engineering" class="level2" data-number="28">
+<h2 data-number="28" class="anchored" data-anchor-id="ohdsi-engineering"><span class="header-section-number">28</span> OHDSI engineering</h2>
+<p>Remember: phenotyping is just part of a process</p>
+<p><img src="figures/ohdsi_engineering.png" class="img-fluid"></p>
+</section>
+<section id="standardized-phenotying" class="level2" data-number="29">
+<h2 data-number="29" class="anchored" data-anchor-id="standardized-phenotying"><span class="header-section-number">29</span> Standardized phenotying</h2>
+<p><img src="figures/standardized_phenotyping.png" class="img-fluid"></p>
+</section>
+<section id="ohdsi-tools-to-support-phenotype-development-and-evaluation" class="level2 scrollable" data-number="30">
+<h2 class="scrollable anchored" data-number="30" data-anchor-id="ohdsi-tools-to-support-phenotype-development-and-evaluation"><span class="header-section-number">30</span> OHDSI tools to support phenotype development and evaluation</h2>
+<p>Phenotype development tools:</p>
+<ul>
+<li><a href="https://atlas-demo.ohdsi.org">ATLAS</a> (concept set expressions, cohort definitions, patient profiles)</li>
+<li><a href="https://ohdsi.github.io/Capr">CapR</a> (programmable cohort definitions in <code>R</code>)</li>
+</ul>
+<p>Phenotype evaluation tools:</p>
+<ul>
+<li><a href="https://ohdsi.github.io/CohortExplorer">CohortExplorer</a> (review individual cases)</li>
+<li><a href="https://ohdsi.github.io/CohortDiagnostics">CohortDiagnostics</a> (population-level characterization to identify sensitivity / specificity errors and index date misspecification)</li>
+<li><a href="https://ohdsi.github.io/PheValuator">PheValuator</a> (train predictive models to directly estimate sensitivity and specificify)</li>
+</ul>
+<!-- Phenotype Library -->
+</section>
+<section id="ohdsi-phenotype-library" class="level2" data-number="31">
+<h2 data-number="31" class="anchored" data-anchor-id="ohdsi-phenotype-library"><span class="header-section-number">31</span> OHDSI phenotype library</h2>
+<p>Good phenotyping is blend of art (practice) and science (evaluation)</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+As a consequence
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Best to reuse standardized objects</p>
+</div>
+</div>
+<ul>
+<li><p><a href="https://data.ohdsi.org/PhenotypeLibrary/">OHDSI phenotype library</a></p></li>
+<li><p><a href="https://data.ohdsi.org/PhenotypeLibrary/">Full diagnostics</a></p></li>
+</ul>
+</section>
+<section id="lack-of-reproducible-phenotypes" class="level2" data-number="32">
+<h2 data-number="32" class="anchored" data-anchor-id="lack-of-reproducible-phenotypes"><span class="header-section-number">32</span> Lack of reproducible phenotypes</h2>
+<p><img src="figures/bad_phenotypes.png" class="img-fluid"></p>
+</section>
+<section id="current-state-of-art-of-phenotypes-in-publications" class="level2" data-number="33">
+<h2 data-number="33" class="anchored" data-anchor-id="current-state-of-art-of-phenotypes-in-publications"><span class="header-section-number">33</span> Current state-of-art of phenotypes in publications</h2>
+<ul>
+<li>Heterogeneous and all over the place, ranging from
+<ul>
+<li>Nothing</li>
+<li>Reporting code lists</li>
+<li><span class="math inline">\(\pm\)</span> free text describing phenotyping approach</li>
+<li><span class="math inline">\(\pm\)</span> evaluation or validation results</li>
+<li>Rarely accompanied by analytic code use for reuse</li>
+</ul></li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Significantly impacts the validity and reproducibility of RWE
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</section>
+<section id="example-fully-specified-phenotype" class="level2" data-number="34">
+<h2 data-number="34" class="anchored" data-anchor-id="example-fully-specified-phenotype"><span class="header-section-number">34</span> Example: fully specified phenotype</h2>
+<p>Primary source:</p>
+<ul>
+<li><a href="https://github.com/ohdsi-studies/LegendT2dm/blob/master/inst/cohorts/class/ID101100000.json">JSON LEGEND-T2DM cohort</a></li>
+</ul>
+<p>Secondary source:</p>
+<ul>
+<li><p><a href="https://ohdsi-studies.github.io/LegendT2dm/Protocol.html#A_Exposure_Cohort_Definitions">Human-readable LEGEND-T2DM cohort</a></p></li>
+<li><p><a href="https://github.com/ohdsi-studies/LegendT2dm/blob/master/inst/sql/sql_server/class/ID101100000.sql">SQL LEGEND-T2DM cohort</a></p></li>
+</ul>
+</section>
+<section id="standardized-phenotypes-and-their-cohorts" class="level2" data-number="35">
+<h2 data-number="35" class="anchored" data-anchor-id="standardized-phenotypes-and-their-cohorts"><span class="header-section-number">35</span> Standardized phenotypes and their cohorts</h2>
+<p><img src="figures/cohort_use_cases.png" class="img-fluid"></p>
+</section>
+<section id="what-we-have-observational-data-for-a-single-person" class="level2" data-number="36">
+<h2 data-number="36" class="anchored" data-anchor-id="what-we-have-observational-data-for-a-single-person"><span class="header-section-number">36</span> What we have – observational data for a single person</h2>
+<p><img src="figures/t2dm_patient1.png" class="img-fluid"></p>
+</section>
+<section id="what-we-want-longitudinal-health-status-for-a-single-person" class="level2" data-number="37">
+<h2 data-number="37" class="anchored" data-anchor-id="what-we-want-longitudinal-health-status-for-a-single-person"><span class="header-section-number">37</span> What we want – longitudinal health status for a single person</h2>
+<p><img src="figures/t2dm_patient2.png" class="img-fluid"></p>
+</section>
+<section id="errors-from-disease-phenotyping" class="level2" data-number="38">
+<h2 data-number="38" class="anchored" data-anchor-id="errors-from-disease-phenotyping"><span class="header-section-number">38</span> Errors from disease phenotyping</h2>
+<p><img src="figures/t2dm_patient3.png" class="img-fluid"></p>
+</section>
+<section id="evaluating-phenotypes" class="level2" data-number="39">
+<h2 data-number="39" class="anchored" data-anchor-id="evaluating-phenotypes"><span class="header-section-number">39</span> Evaluating phenotypes</h2>
+<ul>
+<li><p>Objective: estimate the extent to which the inference from the phenotype algorithm consistent with the true health state of the patients?</p></li>
+<li><p>Measurement error measures:</p>
+<ul>
+<li>Sensitivity, specificity, positive predictive value, negative predictive value</li>
+</ul></li>
+<li><p>‘A phenotype is fit-for-use’ = the measurement error of the phenotype in the dataset is sufficiently small that it will not negatively impact the interpretation of analysis results</p></li>
+</ul>
+</section>
+<section id="steps-for-developing-and-evaluating-phenotypes" class="level2 scrollable" data-number="40">
+<h2 class="scrollable anchored" data-number="40" data-anchor-id="steps-for-developing-and-evaluating-phenotypes"><span class="header-section-number">40</span> Steps for developing and evaluating phenotypes</h2>
+<ol type="1">
+<li>Identify the persons who might have the disease</li>
+</ol>
+<ul>
+<li>Aim: Increase sensitivity</li>
+<li>Task: Create inclusive conceptsets used in cohort entry events</li>
+</ul>
+<ol start="2" type="1">
+<li>Restrict persons who likely do not have disease</li>
+</ol>
+<ul>
+<li>Aim: Increase specificity / positive predictive value</li>
+<li>Task: Add inclusion criteria</li>
+</ul>
+<ol start="3" type="1">
+<li>Determine the start and end dates for each disease episode</li>
+</ol>
+<ul>
+<li>Aim: Reduce index date misspecification</li>
+<li>Task: Set exit strategy, refine entry events and inclusion criteria</li>
+</ul>
+</section>
+<section id="dissecting-the-anatomy-of-a-cohort-phenotype-definition" class="level2" data-number="41">
+<h2 data-number="41" class="anchored" data-anchor-id="dissecting-the-anatomy-of-a-cohort-phenotype-definition"><span class="header-section-number">41</span> Dissecting the anatomy of a cohort (phenotype) definition</h2>
+<p><img src="figures/cohort_anatomy.png" class="img-fluid"></p>
+</section>
+<section id="questions-to-answer-when-defining-a-cohort" class="level2 scrollable" data-number="42">
+<h2 class="scrollable anchored" data-number="42" data-anchor-id="questions-to-answer-when-defining-a-cohort"><span class="header-section-number">42</span> Questions to answer when defining a cohort</h2>
+<ul>
+<li><p>What event(s) let you enter the cohort?</p></li>
+<li><p>What inclusion criteria are applied to those events?</p></li>
+<li><p>For each event, how long do you satisfy the inclusion criteria?</p></li>
+<li><p>How should events be combined into cohort eras?</p></li>
+</ul>
+</section>
+<section id="dissecting-the-anatomy-of-a-cohort-phenotype-definition-1" class="level2" data-number="43">
+<h2 data-number="43" class="anchored" data-anchor-id="dissecting-the-anatomy-of-a-cohort-phenotype-definition-1"><span class="header-section-number">43</span> Dissecting the anatomy of a cohort (phenotype) definition</h2>
+<p><img src="figures/cohort_anatomy2.png" class="img-fluid"></p>
+</section>
+<section id="what-initial-events-define-cohort-entry" class="level2 scrollable" data-number="44">
+<h2 class="scrollable anchored" data-number="44" data-anchor-id="what-initial-events-define-cohort-entry"><span class="header-section-number">44</span> What initial event(s) define cohort entry?</h2>
+<ul>
+<li>Do:
+<ul>
+<li>Define by existence of any observation in any domain</li>
+</ul></li>
+<li>Don’t:
+<ul>
+<li>Define by absence of an observation - when does absence occur?</li>
+<li>Define by age - year of birth is constant, but requires index date to anchor age calculation</li>
+</ul></li>
+<li>Caution:
+<ul>
+<li>Defining a cohort by calendar date can cause observation bias, since that date unlikely to be at point of health service utilization, ex: cases matched to controls. Consider instead defining by a visit that occurs within a calendar timeframe.</li>
+</ul></li>
+</ul>
+</section>
+<section id="dissecting-the-anatomy-of-a-cohort-phenotype-definition-2" class="level2" data-number="45">
+<h2 data-number="45" class="anchored" data-anchor-id="dissecting-the-anatomy-of-a-cohort-phenotype-definition-2"><span class="header-section-number">45</span> Dissecting the anatomy of a cohort (phenotype) definition</h2>
+<p><img src="figures/cohort_anatomy3.png" class="img-fluid"></p>
+</section>
+<section id="what-inclusion-criteria-are-applied-to-the-initial-events" class="level2 scrollable" data-number="46">
+<h2 class="scrollable anchored" data-number="46" data-anchor-id="what-inclusion-criteria-are-applied-to-the-initial-events"><span class="header-section-number">46</span> What inclusion criteria are applied to the initial events?</h2>
+<ul>
+<li>Do:
+<ul>
+<li>Specify all criteria as inclusion criteria to avoid confusion of Boolean logic around inclusion vs.&nbsp;exclusion</li>
+<li>Use information on or before index event (think like a randomized trial: index event is study start, can’t predict future)</li>
+</ul></li>
+<li>Don’t:
+<ul>
+<li>Assume temporal logic, but always provide relative time window to evaluate criteria</li>
+</ul></li>
+<li>Caution:
+<ul>
+<li>There’s a difference between “first time in history with &gt;365d prior observation” vs.&nbsp;“no prior observation in last 365 days”</li>
+<li>One person may have multiple initial events, criteria are applied to each event (not person)</li>
+</ul></li>
+</ul>
+</section>
+<section id="dissecting-the-anatomy-of-a-cohort-phenotype-definition-3" class="level2" data-number="47">
+<h2 data-number="47" class="anchored" data-anchor-id="dissecting-the-anatomy-of-a-cohort-phenotype-definition-3"><span class="header-section-number">47</span> Dissecting the anatomy of a cohort (phenotype) definition</h2>
+<p><img src="figures/cohort_anatomy4.png" class="img-fluid"></p>
+</section>
+<section id="what-defines-a-persons-cohort-exit" class="level2 scrollable" data-number="48">
+<h2 class="scrollable anchored" data-number="48" data-anchor-id="what-defines-a-persons-cohort-exit"><span class="header-section-number">48</span> What defines a person’s cohort exit?</h2>
+<ul>
+<li>Do:
+<ul>
+<li>Specify a cohort exit, even if you are not intending to use it for your analytic use case</li>
+</ul></li>
+<li>Don’t:
+<ul>
+<li>Confuse censoring for analytical purposes with cohort definition (which can be analysis-independent) ex: censoring at time of outcome</li>
+</ul></li>
+<li>Caution:
+<ul>
+<li>Time-of-cohort participation can be different from analysis time-at-risk ex: acute effects can be studied using a fixed window post-exposure start, intent-to-treat analysis can follow person through observation period end</li>
+</ul></li>
+</ul>
+</section>
+<section id="deriving-all-exposure-cohorts-from-base-cohorts" class="level2" data-number="49">
+<h2 data-number="49" class="anchored" data-anchor-id="deriving-all-exposure-cohorts-from-base-cohorts"><span class="header-section-number">49</span> Deriving all exposure cohorts from base cohorts</h2>
+<p><img src="figures/indication_cohort.png" class="img-fluid"></p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Caution
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Future-looking, not discussed in class</p>
+</div>
+</div>
+</section>
+<section id="building-cohorts-together" class="level2" data-number="50">
+<h2 data-number="50" class="anchored" data-anchor-id="building-cohorts-together"><span class="header-section-number">50</span> Building cohorts together</h2>
+<ul>
+<li><p>Target: GLP1RA exposures</p></li>
+<li><p>Comparator: DPP4I exposures</p></li>
+<li><p>Indication: Type 2 diabetes mellitus</p></li>
+<li><p>Outcome 1: Acute myocardial infarction</p></li>
+<li><p>Outcome 2: Diarrhea</p></li>
+</ul>
+</section>
+<section id="hands-on-examples" class="level2" data-number="51">
+<h2 data-number="51" class="anchored" data-anchor-id="hands-on-examples"><span class="header-section-number">51</span> Hands-on examples</h2>
+<ul>
+<li>Cohorts in ATLAS
+<ul>
+<li><a href="https://atlas-demo.ohdsi.org/#/cohortdefinition/1791474">Type 2 diabetes</a></li>
+<li><a href="https://atlas-demo.ohdsi.org/#/cohortdefinition/1791473">GLP1RA exposure</a></li>
+<li><a href="https://atlas-demo.ohdsi.org/#/cohortdefinition/1791478">Acute myocardial infarction</a></li>
+</ul></li>
+</ul>
+</section>
+<section id="notes-for-mas-1" class="level2" data-number="52">
+<h2 data-number="52" class="anchored" data-anchor-id="notes-for-mas-1"><span class="header-section-number">52</span> Notes for MAS 1</h2>
+<p><img src="figures/365_prior_obs.png" class="img-fluid"></p>
+</section>
+<section id="notes-for-mas-2" class="level2" data-number="53">
+<h2 data-number="53" class="anchored" data-anchor-id="notes-for-mas-2"><span class="header-section-number">53</span> Notes for MAS 2</h2>
+<p><img src="figures/no_prior_drug.png" class="img-fluid"></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

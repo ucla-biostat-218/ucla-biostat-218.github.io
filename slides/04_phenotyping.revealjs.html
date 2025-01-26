@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-html/tabby.min.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.3.433">
+
+  <meta name="author" content="Marc A Suchard @ UCLA">
+  <meta name="dcterms.date" content="2025-01-28">
+  <title>Phenotyping</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="site_libs/revealjs/dist/theme/quarto.css">
+  <link href="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+
+  .callout {
+    margin-top: 1em;
+    margin-bottom: 1em;  
+    border-radius: .25rem;
+  }
+
+  .callout.callout-style-simple { 
+    padding: 0em 0.5em;
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+    display: flex;
+  }
+
+  .callout.callout-style-default {
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+  }
+
+  .callout .callout-body-container {
+    flex-grow: 1;
+  }
+
+  .callout.callout-style-simple .callout-body {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-style-default .callout-body {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-titled.callout-style-simple .callout-body {
+    margin-top: 0.2em;
+  }
+
+  .callout:not(.callout-titled) .callout-body {
+      display: flex;
+  }
+
+  .callout:not(.no-icon).callout-titled.callout-style-simple .callout-content {
+    padding-left: 1.6em;
+  }
+
+  .callout.callout-titled .callout-header {
+    padding-top: 0.2em;
+    margin-bottom: -0.2em;
+  }
+
+  .callout.callout-titled .callout-title  p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+    
+  .callout.callout-titled.callout-style-simple .callout-content  p {
+    margin-top: 0;
+  }
+
+  .callout.callout-titled.callout-style-default .callout-content  p {
+    margin-top: 0.7em;
+  }
+
+  .callout.callout-style-simple div.callout-title {
+    border-bottom: none;
+    font-size: .9rem;
+    font-weight: 600;
+    opacity: 75%;
+  }
+
+  .callout.callout-style-default  div.callout-title {
+    border-bottom: none;
+    font-weight: 600;
+    opacity: 85%;
+    font-size: 0.9rem;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-default div.callout-content {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-simple .callout-icon::before {
+    height: 1rem;
+    width: 1rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+  }
+
+  .callout.callout-style-default .callout-icon::before {
+    height: 0.9rem;
+    width: 0.9rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 0.9rem 0.9rem;
+  }
+
+  .callout-title {
+    display: flex
+  }
+    
+  .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  .callout.no-icon::before {
+    display: none !important;
+  }
+
+  .callout.callout-titled .callout-body > .callout-content > :last-child {
+    margin-bottom: 0.5rem;
+  }
+
+  .callout.callout-titled .callout-icon::before {
+    margin-top: .5rem;
+    padding-right: .5rem;
+  }
+
+  .callout:not(.callout-titled) .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  /* Callout Types */
+
+  div.callout-note {
+    border-left-color: #4582ec !important;
+  }
+
+  div.callout-note .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEU0lEQVRYCcVXTWhcVRQ+586kSUMMxkyaElstCto2SIhitS5Ek8xUKV2poatCcVHtUlFQk8mbaaziwpWgglJwVaquitBOfhQXFlqlzSJpFSpIYyXNjBNiTCck7x2/8/LeNDOZxDuEkgOXe++553zfefee+/OYLOXFk3+1LLrRdiO81yNqZ6K9cG0P3MeFaMIQjXssE8Z1JzLO9ls20MBZX7oG8w9GxB0goaPrW5aNMp1yOZIa7Wv6o2ykpLtmAPs/vrG14Z+6d4jpbSKuhdcSyq9wGMPXjonwmESXrriLzFGOdDBLB8Y6MNYBu0dRokSygMA/mrun8MGFN3behm6VVAwg4WR3i6FvYK1T7MHo9BK7ydH+1uurECoouk5MPRyVSBrBHMYwVobG2aOXM07sWrn5qgB60rc6mcwIDJtQrnrEr44kmy+UO9r0u9O5/YbkS9juQckLed3DyW2XV/qWBBB3ptvI8EUY3I9p/67OW+g967TNr3Sotn3IuVlfMLVnsBwH4fsnebJvyGm5GeIUA3jljERmrv49SizPYuq+z7c2H/jlGC+Ghhupn/hcapqmcudB9jwJ/3jvnvu6vu5lVzF1fXyZuZZ7U8nRmVzytvT+H3kilYvH09mLWrQdwFSsFEsxFVs5fK7A0g8gMZjbif4ACpKbjv7gNGaD8bUrlk8x+KRflttr22JEMRUbTUwwDQScyzPgedQHZT0xnx7ujw2jfVfExwYHwOsDTjLdJ2ebmeQIlJ7neo41s/DrsL3kl+W2lWvAga0tR3zueGr6GL78M3ifH0rGXrBC2aAR8uYcIA5gwV8zIE8onoh8u0Fca/ciF7j1uOzEnqcIm59sEXoGc0+z6+H45V1CvAvHcD7THztu669cnp+L0okAeIc6zjbM/24LgGM1gZk7jnRu1aQWoU9sfUOuhrmtaPIO3YY1KLLWZaEO5TKUbMY5zx8W9UJ6elpLwKXbsaZ4EFl7B4bMtDv0iRipKoDQT2sNQI9b1utXFdYisi+wzZ/ri/1m7QfDgEuvgUUEIJPq3DhX/5DWNqIXDOweC2wvIR90Oq3lDpdMIgD2r0dXvGdsEW5H6x6HLRJYU7C69VefO1x8Gde1ZFSJLfWS1jbCnhtOPxmpfv2LXOA2Xk2tvnwKKPFuZ/oRmwBwqRQDcKNeVQkYcOjtWVBuM/JuYw5b6isojIkYxyYAFn5K7ZBF10fea52y8QltAg6jnMqNHFBmGkQ1j+U43HMi2xMar1Nv0zGsf1s8nUsmUtPOOrbFIR8bHFDMB5zL13Gmr/kGlCkUzedTzzmzsaJXhYawnA3UmARpiYj5ooJZiUoxFRtK3X6pgNPv+IZVPcnwbOl6f+aBaO1CNvPW9n9LmCp01nuSaTRF2YxHqZ8DYQT6WsXT+RD6eUztwYLZ8rM+rcPxamv1VQzFUkzFXvkiVrySGQgJNvXHJAxiU3/NwiC03rSf05VBaPtu/Z7/B8Yn/w7eguloAAAAAElFTkSuQmCC');
+  }
+
+  div.callout-note.callout-style-default .callout-title {
+    background-color: #dae6fb
+  }
+
+  div.callout-important {
+    border-left-color: #d9534f !important;
+  }
+
+  div.callout-important .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEKklEQVRYCcVXTWhcVRS+575MJym48A+hSRFr00ySRQhURRfd2HYjk2SSTokuBCkU2o0LoSKKraKIBTcuFCoidGFD08nkBzdREbpQ1EDNIv8qSGMFUboImMSZd4/f9zJv8ibJMC8xJQfO3HPPPef7zrvvvnvviIkpC9nsw0UttFunbUhpFzFtarSd6WJkStVMw5xyVqYTvkwfzuf/5FgtkVoB0729j1rjXwThS7Vio+Mo6DNnvLfahoZ+i/o32lULuJ3NNiz7q6+pyAUkJaFF6JwaM2lUJlV0MlnQn5aTRbEu0SEqHUa0A4AdiGuB1kFXRfVyg5d87+Dg4DL6m2TLAub60ilj7A1Ec4odSAc8X95sHh7+ZRPCFo6Fnp7HfU/fBng/hi10CjCnWnJjsxvDNxWw0NfV6Rv5GgP3I3jGWXumdTD/3cbEOP2ZbOZp69yniG3FQ9z1jD7bnBu9Fc2tKGC2q+uAJOQHBDRiZX1x36o7fWBs7J9ownbtO+n0/qWkvW7UPIfc37WgT6ZGR++EOJyeQDSb9UB+DZ1G6DdLDzyS+b/kBCYGsYgJbSQHuThGKRcw5xdeQf8YdNHsc6ePXrlSYMBuSIAFTGAtQo+VuALo4BX83N190NWZWbynBjhOHsmNfFWLeL6v+ynsA58zDvvAC8j5PkbOcXCMg2PZFk3q8MjI7WAG/Dp9AwP7jdGBOOQkAvlFUB+irtm16I1Zw9YBcpGTGXYmk3kQIC/Cds55l+iMI3jqhjAuaoe+am2Jw5GT3Nbz3CkE12NavmzN5+erJW7046n/CH1RO/RVa8lBLozXk9uqykkGAyRXLWlLv5jyp4RFsG5vGVzpDLnIjTWgnRy2Rr+tDKvRc7Y8AyZq10jj8DqXdnIRNtFZb+t/ZRtXcDiVnzpqx8mPcDWxgARUqx0W1QB9MeUZiNrV4qP+Ehc+BpNgATsTX8ozYKL2NtFYAHc84fG7ndxUPr+AR/iQSns7uSUufAymwDOb2+NjK27lEFocm/EE2WpyIy/Hi66MWuMKJn8RvxIcj87IM5Vh9663ziW36kR0HNenXuxmfaD8JC7tfKbrhFr7LiZCrMjrzTeGx+PmkosrkNzW94ObzwocJ7A1HokLolY+AvkTiD/q1H0cN48c5EL8Crkttsa/AXQVDmutfyku0E7jShx49XqV3MFK8IryDhYVbj7Sj2P2eBxwcXoe8T8idsKKPRcnZw1b+slFTubwUwhktrfnAt7J++jwQtLZcm3sr9LQrjRzz6cfMv9aLvgmnAGvpoaGLxM4mAEaLV7iAzQ3oU0IvD5x9ix3yF2RAAuYAOO2f7PEFWCXZ4C9Pb2UsgDeVnFSpbFK7/IWu7TPTvBqzbGdCHOJQSxiEjt6IyZmxQyEJHv6xyQsYk//moVFsN2zP6fRImjfq7/n/wFDguUQFNEwugAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-important.callout-style-default .callout-title {
+    background-color: #f7dddc
+  }
+
+  div.callout-warning {
+    border-left-color: #f0ad4e !important;
+  }
+
+  div.callout-warning .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAETklEQVRYCeVWW2gcVRg+58yaTUnizqbipZeX4uWhBEniBaoUX1Ioze52t7sRq6APio9V9MEaoWlVsFasRq0gltaAPuxms8lu0gcviE/FFOstVbSIxgcv6SU7EZqmdc7v9+9mJtNks51NTUH84ed889/PP+cmxP+d5FIbMJmNbpREu4WUkiTtCicKny0l1pIKmBzovF2S+hIJHX8iEu3hZJ5lNZGqyRrGSIQpq15AzF28jgpeY6yk6GVdrfFqdrD6Iw+QlB8g0YS2g7dyQmXM/IDhBhT0UCiRf59lfqmmDvzRt6kByV/m4JjtzuaujMUM2c5Z2d6JdKrRb3K2q6mA+oYVz8JnDdKPmmNthzkAk/lN63sYPgevrguc72aZX/L9C6x09GYyxBgCX4NlvyGUHOKELlm5rXeR1kchuChJt4SSwyddZRXgvwMGvYo4QSlk3/zkHD8UHxwVJA6zjZZqP8v8kK8OWLnIZtLyCAJagYC4rTGW/9Pqj92N/c+LUaAj27movwbi19tk/whRCIE7Q9vyI6yvRpftAKVTdUjOW40X3h5OXsKCdmFcx0xlLJoSuQngnrJe7Kcjm4OMq9FlC7CMmScQANuNvjfP3PjGXDBaUQmbp296S5L4DrpbrHN1T87ZVEZVCzg1FF0Ft+dKrlLukI+/c9ENo+TvlTDbYFvuKPtQ9+l052rXrgKoWkDAFnvh0wTOmYn8R5f4k/jN/fZiCM1tQx9jQQ4ANhqG4hiL0qIFTGViG9DKB7GYzgubnpofgYRwO+DFjh0Zin2m4b/97EDkXkc+f6xYAPX0KK2I/7fUQuwzuwo/L3AkcjugPNixC8cHf0FyPjWlItmLxWw4Ou9YsQCr5fijMGoD/zpdRy95HRysyXA74MWOnscpO4j2y3HAVisw85hX5+AFBRSHt4ShfLFkIMXTqyKFc46xdzQM6XbAi702a7sy04J0+feReMFKp5q9esYLCqAZYw/k14E/xcLLsFElaornTuJB0svMuJINy8xkIYuL+xPAlWRceH6+HX7THJ0djLUom46zREu7tTkxwmf/FdOZ/sh6Q8qvEAiHpm4PJ4a/doJe0gH1t+aHRgCzOvBvJedEK5OFE5jpm4AGP2a8Dxe3gGJ/pAutug9Gp6he92CsSsWBaEcxGx0FHytmIpuqGkOpldqNYQK8cSoXvd+xLxXADw0kf6UkJNFtdo5MOgaLjiQOQHcn+A6h5NuL2s0qsC2LOM75PcF3yr5STuBSAcGG+meA14K/CI21HcS4LBT6tv0QAh8Dr5l93AhZzG5ZJ4VxAqdZUEl9z7WJ4aN+svMvwHHL21UKTd1mqvChH7/Za5xzXBBKrUcB0TQ+Ulgkfbi/H/YT5EptrGzsEK7tR1B7ln9BBwckYfMiuSqklSznIuoIIOM42MQO+QnduCoFCI0bpkzjCjddHPN/F+2Yu+sd9bKNpVwHhbS3LluK/0zgfwD0xYI5dXuzlQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-warning.callout-style-default .callout-title {
+    background-color: #fcefdc
+  }
+
+  div.callout-tip {
+    border-left-color: #02b875 !important;
+  }
+
+  div.callout-tip .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAADr0lEQVRYCe1XTWgTQRj9ZjZV8a9SPIkKgj8I1bMHsUWrqYLVg4Ue6v9BwZOxSYsIerFao7UiUryIqJcqgtpimhbBXoSCVxUFe9CTiogUrUp2Pt+3aUI2u5vdNh4dmMzOzHvvezuz8xNFM0mjnbXaNu1MvFWRXkXEyE6aYOYJpdW4IXuA4r0fo8qqSMDBU0v1HJUgVieAXxzCsdE/YJTdFcVIZQNMyhruOMJKXYFoLfIfIvVIMWdsrd+Rpd86ZmyzzjJmLStqRn0v8lzkb4rVIXvnpScOJuAn2ACC65FkPzEdEy4TPWRLJ2h7z4cArXzzaOdKlbOvKKX25Wl00jSnrwVxAg3o4dRxhO13RBSdNvH0xSARv3adTXbBdTf64IWO2vH0LT+cv4GR1DJt+DUItaQogeBX/chhbTBxEiZ6gftlDNXTrvT7co4ub5A6gp9HIcHvzTa46OS5fBeP87Qm0fQkr4FsYgVQ7Qg+ZayaDg9jhg1GkWj8RG6lkeSacrrHgDaxdoBiZPg+NXV/KifMuB6//JmYH4CntVEHy/keA6x4h4CU5oFy8GzrBS18cLJMXcljAKB6INjWsRcuZBWVaS3GDrqB7rdapVIeA+isQ57Eev9eCqzqOa81CY05VLd6SamW2wA2H3SiTbnbSxmzfp7WtKZkqy4mdyAlGx7ennghYf8voqp9cLSgKdqNfa6RdRsAAkPwRuJZNbpByn+RrJi1RXTwdi8RQF6ymDwGMAtZ6TVE+4uoKh+MYkcLsT0Hk8eAienbiGdjJHZTpmNjlbFJNKDVAp2fJlYju6IreQxQ08UJDNYdoLSl6AadO+fFuCQqVMB1NJwPm69T04Wv5WhfcWyfXQB+wXRs1pt+nCknRa0LVzSA/2B+a9+zQJadb7IyyV24YAxKp2Jqs3emZTuNnKxsah+uabKbMk7CbTgJx/zIgQYErIeTKRQ9yD9wxVof5YolPHqaWo7TD6tJlh7jQnK5z2n3+fGdggIOx2kaa2YI9QWarc5Ce1ipNWMKeSG4DysFF52KBmTNMmn5HqCFkwy34rDg05gDwgH3bBi+sgFhN/e8QvRn8kbamCOhgrZ9GJhFDgfcMHzFb6BAtjKpFhzTjwv1KCVuxHvCbsSiEz4CANnj84cwHdFXAbAOJ4LTSAawGWFn5tDhLMYz6nWeU2wJfIhmIJBefcd/A5FWQWGgrWzyORZ3Q6HuV+Jf0Bj+BTX69fm1zWgK7By1YTXchFDORywnfQ7GpzOo6S+qECrsx2ifVQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-tip.callout-style-default .callout-title {
+    background-color: #ccf1e3
+  }
+
+  div.callout-caution {
+    border-left-color: #fd7e14 !important;
+  }
+
+  div.callout-caution .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAACV0lEQVRYCdVWzWoUQRCuqp2ICBLJXgITZL1EfQDBW/bkzUMUD7klD+ATSHBEfAIfQO+iXsWDxJsHL96EHAwhgzlkg8nBg25XWb0zIb0zs9muYYWkoKeru+vn664fBqElyZNuyh167NXJ8Ut8McjbmEraKHkd7uAnAFku+VWdb3reSmRV8PKSLfZ0Gjn3a6Xlcq9YGb6tADjn+lUfTXtVmaZ1KwBIvFI11rRXlWlatwIAAv2asaa9mlB9wwygiDX26qaw1yYPzFXg2N1GgG0FMF8Oj+VIx7E/03lHx8UhvYyNZLN7BwSPgekXXLribw7w5/c8EF+DBK5idvDVYtEEwMeYefjjLAdEyQ3M9nfOkgnPTEkYU+sxMq0BxNR6jExrAI31H1rzvLEfRIdgcv1XEdj6QTQAS2wtstEALLG1yEZ3QhH6oDX7ExBSFEkFINXH98NTrme5IOaaA7kIfiu2L8A3qhH9zRbukdCqdsA98TdElyeMe5BI8Rs2xHRIsoTSSVFfCFCWGPn9XHb4cdobRIWABNf0add9jakDjQJpJ1bTXOJXnnRXHRf+dNL1ZV1MBRCXhMbaHqGI1JkKIL7+i8uffuP6wVQAzO7+qVEbF6NbS0LJureYcWXUUhH66nLR5rYmva+2tjRFtojkM2aD76HEGAD3tPtKM309FJg5j/K682ywcWJ3PASCcycH/22u+Bh7Aa0ehM2Fu4z0SAE81HF9RkB21c5bEn4Dzw+/qNOyXr3DCTQDMBOdhi4nAgiFDGCinIa2owCEChUwD8qzd03PG+qdW/4fDzjUMcE1ZpIAAAAASUVORK5CYII=');
+  }
+
+  div.callout-caution.callout-style-default .callout-title {
+    background-color: #ffe5d0
+  }
+
+  </style>
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Phenotyping</h1>
+  <p class="subtitle">Biostat 218</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Marc A Suchard @ UCLA 
+</div>
+</div>
+</div>
+
+  <p class="date">2025-01-28</p>
+</section>
+<section id="introduction" class="slide level2">
+<h2>Introduction</h2>
+<p>In these lectures we will learn:</p>
+<ul>
+<li><p>About RWE / RWD</p></li>
+<li><p>What is a (clinical) phenotype</p></li>
+<li><p>How to phenotype</p></li>
+</ul>
+</section>
+<section id="what-is-real-world-evidence" class="slide level2">
+<h2>What is real-world evidence?</h2>
+<p><strong>Real-world evidence</strong> (RWE) is the clinical evidence regarding the usage and potential benefits or risks of a medical product derived from analysis of real-world data (RWD). RWE can be generated by different study designs or analyses, including, but not limited to, randomized trials, including large simple trials, pragmatic trials, and observational studies (prospective and/or retrospective). (FDA, 2020)</p>
+
+<img data-src="figures/rwe_rwd1.png" class="r-stretch"></section>
+<section id="types-and-sources-of-real-world-data" class="slide level2">
+<h2>Types and sources of real-world data</h2>
+
+<img data-src="figures/rwd_sources.png" class="r-stretch"></section>
+<section id="turning-data-into-evidence" class="slide level2">
+<h2>Turning data into evidence</h2>
+
+<img data-src="figures/rwe_rwd2.png" class="r-stretch"></section>
+<section id="typical-questions-to-ask-from-rwd" class="slide level2">
+<h2>Typical questions to ask from RWD</h2>
+
+<img data-src="figures/typical_questions.png" class="r-stretch"></section>
+<section id="ohdsi-standardization-of-use-cases" class="slide level2">
+<h2>OHDSI standardization of use cases</h2>
+
+<img data-src="figures/ohdsi_use_cases.png" class="r-stretch"></section>
+<section id="ohdsi-standardization-of-questions" class="slide level2">
+<h2>OHDSI standardization of questions</h2>
+
+<img data-src="figures/ohdsi_questions.png" class="r-stretch"></section>
+<section id="evidence-of-interest-an-example" class="slide level2">
+<h2>Evidence of interest – an example</h2>
+<ul>
+<li>How many patients with bladder cancer experience venous thromboembolism within six months of treatment with cisplatin-based chemotherapy?</li>
+</ul>
+</section>
+<section id="evidence-of-interest-an-example-1" class="slide level2">
+<h2>Evidence of interest – an example</h2>
+<ul>
+<li>How many <span style="text-decoration: underline;">patients with bladder cancer</span> experience <span style="text-decoration: underline;">venous thromboembolism</span> within six months of <span style="text-decoration: underline;">treatment with cisplatin-based chemotherapy</span></li>
+</ul>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important</strong></p>
+</div>
+<div class="callout-content">
+<p>These clinical features are called phenotypes</p>
+</div>
+</div>
+</div>
+</section>
+<section id="what-is-a-phenotype" class="slide level2">
+<h2>What is a phenotype?</h2>
+<ul>
+<li><p>From ancient Greek <span class="math inline">\(\phi \alpha \iota \nu \omega\)</span> ‘to appear, show’ and <span class="math inline">\(\tau \upsilon \pi \omicron \sigma\)</span> ‘mark, type’</p></li>
+<li><p>First introduced in 1909 by Danish botanist and geneticist Wilhelm Johannsen to describe observable and measurable phenomena of organisms:</p>
+<ul>
+<li>“All ’types’ of organisms, distinguishable by direct inspection or only by finer methods of measuring or description […]”</li>
+</ul></li>
+</ul>
+</section>
+<section id="phenotypes-in-rwe" class="slide level2">
+<h2>Phenotypes in RWE</h2>
+
+<img data-src="figures/phenotype_hripcsak.png" class="r-stretch"><ul>
+<li>A phenotype is a specification of an <strong>observable</strong>, potentially <strong>changing state</strong> of an organism (as distinguished from the genotype, derived from genetic markeup)</li>
+</ul>
+</section>
+<section id="quick-summary" class="slide level2">
+<h2>Quick summary</h2>
+<ul>
+<li><p>A <strong>phenotype</strong> is the clinical idea we want to study</p></li>
+<li><p>The data are imperfect; the <strong>phenotype algorithm</strong> provides a proxy that attempts to represent the “phenotype” given the available data</p></li>
+<li><p><strong>Phenotyping</strong> is the process of transforming the data into clinical relevant features</p></li>
+</ul>
+
+<img data-src="figures/phenotyping.png" class="r-stretch"></section>
+<section id="what-are-the-primary-purpose-of-rwd" class="slide level2 scrollable">
+<h2>What are the primary purpose of RWD?</h2>
+<ul>
+<li>Clinical care:
+<ul>
+<li>Support diagnostics, treatment and monitoring of patients</li>
+<li>Document patient encounters and medical history</li>
+</ul></li>
+<li>Practice management:
+<ul>
+<li>Manage appointments, resource allocation</li>
+<li>Enhance operational efficiency within healthcare facilities</li>
+</ul></li>
+<li>Billing and reimbursement:
+<ul>
+<li>Facilitate billing and reimbursement for healthcare serives provided</li>
+<li>Ensure compliance with payer policies and healthcare regulations</li>
+</ul></li>
+<li>Healthcare utilization monitoring:
+<ul>
+<li>Track usage of healthcare serives, procedures and medications</li>
+<li>Analyze patterns and trends in healthcare delivery for policy and decision-making</li>
+</ul></li>
+</ul>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important</strong></p>
+</div>
+<div class="callout-content">
+<p>None of these are <strong>clinical research</strong></p>
+</div>
+</div>
+</div>
+</section>
+<section id="rwd-implications-for-clinical-research" class="slide level2">
+<h2>RWD implications for clinical research</h2>
+
+<img data-src="figures/rwd_trouble1.png" class="r-stretch"></section>
+<section id="rwd-implications-for-clinical-research-1" class="slide level2">
+<h2>RWD implications for clinical research</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li>Inaccuracies introduced at any time during a clinical visit</li>
+<li>Errors occur anywhere in the process from observing the patients to recording them in the record, and billing requirements and liability avoidance influence recording</li>
+<li>Some errors may be at random; many errors – such as the influence of billing – are <strong>systematic</strong></li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img data-src="figures/rwd_trouble2.png"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="rwd-implications-for-clinical-research-2" class="slide level2">
+<h2>RWD implications for clinical research</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li>Data are occasionally missing by mistake</li>
+<li>Data are only recorded during healthcare episodes that usually correspond to illness</li>
+<li>Much information is implicit, under the assumption that the human reader will infer the missing information (pertinent negative findings)</li>
+<li><strong>Missingness is not at random</strong></li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img data-src="figures/rwd_trouble3.png"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="rwd-implications-for-clinical-research-3" class="slide level2">
+<h2>RWD implications for clinical research</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li>Patients move among institutions for their care and change insurance, so that individual databases contain only part of their experience</li>
+<li>Health information exchange is insufficiently pervasive to address this issue</li>
+<li>Variability in data entry formats, terminologies and coding systems can lead to inconsistencies and fragmentation</li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img data-src="figures/rwd_trouble4.png"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="rwd-implications-for-clinical-research-4" class="slide level2">
+<h2>RWD implications for clinical research</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li>Differences in medical practice across geographies and settings, reporting patterns to payers and coding</li>
+<li>Data are biased towards sicker individuals</li>
+<li>Missingness and systematic errors can result in significant bias when RWD are used <strong>naively</strong> for clinical research</li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img data-src="figures/rwd_trouble5.png"></p>
+</div>
+</div>
+</div>
+<!-- ## Trouble overview -->
+<!-- ![](figures/rwd_trouble6.png) -->
+</section>
+<section id="why-do-we-phenotype" class="slide level2 scrollable">
+<h2>Why do we phenotype?</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p>RWD are not perfect</p>
+<ul>
+<li><p>Diagnosis, clinical testing and treatment data are generated for medical care purposes</p></li>
+<li><p>They often represent an evolving understanding of the patient’s health status</p></li>
+<li><p>They are incomplete (only a snapshot)</p></li>
+<li><p>There are differences in medical practice across geography and healthcare settings, reporting patterns to payers and coding</p></li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img data-src="figures/rwd_trouble6.png"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="phenotyping-is-challenging" class="slide level2 scrollable">
+<h2>Phenotyping is challenging</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img data-src="figures/multiple_components.png"></p>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li><p>The data do not always contain exact what you want to study</p></li>
+<li><p>The data have quality issues</p></li>
+<li><p>The data are redundant and may contain information in multiple forms</p></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important</strong></p>
+</div>
+<div class="callout-content">
+<p>We can use different data components to derive an optimal phenotype and evaluate its fitness for use</p>
+</div>
+</div>
+</div>
+</section>
+<section id="criteria-are-like-lego-bricks-for-phenotyping" class="slide level2">
+<h2>Criteria are like Lego bricks for phenotyping</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: center;">
+<p><img data-src="figures/lego1.png"></p>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 70.0%;justify-content: center;">
+<ul>
+<li><p>A <strong>criterion</strong> (Lego block) is a domain-specific data query and is a fundamental building block of a phenotype</p></li>
+<li><p>Combining Lego bricks improves the phenotyping performance: matching the clinical idea meeting the optimization requirements</p></li>
+<li><p>But remember that phenotypes are <strong>never</strong> perfect</p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="what-goes-in-a-lego-brick-concept_set-expressions" class="slide level2">
+<h2>What goes in a Lego brick? <code>concept_set</code> expressions</h2>
+
+<img data-src="figures/lego2.png" style="width:200.0%" class="r-stretch"><div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>Always with respect to some time-interval</li>
+<li>Use the vocabularies</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="concept_set-expressions" class="slide level2 scrollable">
+<h2><code>concept_set</code> expressions</h2>
+<ul>
+<li>A <code>concept_set</code> is a list of concepts in the OHDSI vocabularies
+<ul>
+<li>List of 1 or more concepts</li>
+<li>Optional operators for each concept in the list:
+<ul>
+<li><code>descendants</code>: use <code>concept_ancestor</code> to identify standard concepts which have descendant ancestral relationship with selected concept</li>
+<li><code>exclude</code>: remove concept (and optionally descendants) from list</li>
+<li><code>mapped</code>: use <code>concept_relationship</code> to materialize non-standard concepts for all included concepts</li>
+</ul></li>
+</ul></li>
+<li>A <code>concept_set</code> expression can be materialized into a list of concepts using any instance of the OHDSI vocabularies</li>
+</ul>
+<p>Possible example: <code>201826</code> in ATLAS</p>
+</section>
+<section id="how-do-we-use-lego-bricks-for-phenotyping" class="slide level2">
+<h2>How do we use Lego bricks for phenotyping?</h2>
+
+<img data-src="figures/lego3.png" class="r-stretch"><ul>
+<li>Choice of Lego bricks and their combination-logic depends on the clinical idea and the optimization requirements of the phenotype under development</li>
+</ul>
+</section>
+<section id="optimization-requirements" class="slide level2 scrollable">
+<h2>Optimization requirements</h2>
+<ul>
+<li><strong>Event/phenotype start date:</strong>
+<ul>
+<li>The point in time the clinical event begins</li>
+<li>Essential for accurately tracking disease onset of treatment initiation</li>
+</ul></li>
+<li><strong>Sensitivity</strong>:
+<ul>
+<li>Ability of correctly identify true cases of the phenotype</li>
+<li>Important for minimizing false negatives</li>
+</ul></li>
+<li><strong>Specificity</strong>:
+<ul>
+<li>Ability of correcdtly exclude non-cases</li>
+<li>Important for identifying the target population</li>
+</ul></li>
+<li><strong>Event/phenotype end date:</strong>
+<ul>
+<li>The point in time when the clinical event ends</li>
+<li>Essential for understanding the duration of the condition or time-at-risk</li>
+</ul></li>
+</ul>
+</section>
+<section id="from-phenotype-to-cohort" class="slide level2">
+<h2>From phenotype to cohort</h2>
+<ul>
+<li>A <strong>cohort</strong> is a set of persons who satisfy one or more inclusion critieria (a phenotype) for a duration of time</li>
+</ul>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Objective consequences based on this cohort definition</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>One person may belong to multiple cohorts</li>
+<li>One person may belong to the same cohort multiple different time periods</li>
+<li>One person may not belong to the same cohort multiple times during the same period of time</li>
+<li>One cohort may have zero or more members</li>
+<li>A <code>codeset</code> is <strong>not</strong> a cohort
+<ul>
+<li>logic for how to use the codeset in a criterion is required</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="phenotying-steps" class="slide level2">
+<h2>Phenotying steps</h2>
+
+<img data-src="figures/phenotyping_steps.png" class="r-stretch"></section>
+<section id="ohdsi-engineering" class="slide level2">
+<h2>OHDSI engineering</h2>
+<p>Remember: phenotyping is just part of a process</p>
+
+<img data-src="figures/ohdsi_engineering.png" class="r-stretch"></section>
+<section id="standardized-phenotying" class="slide level2">
+<h2>Standardized phenotying</h2>
+
+<img data-src="figures/standardized_phenotyping.png" class="r-stretch"></section>
+<section id="ohdsi-tools-to-support-phenotype-development-and-evaluation" class="slide level2 scrollable">
+<h2>OHDSI tools to support phenotype development and evaluation</h2>
+<p>Phenotype development tools:</p>
+<ul>
+<li><a href="https://atlas-demo.ohdsi.org">ATLAS</a> (concept set expressions, cohort definitions, patient profiles)</li>
+<li><a href="https://ohdsi.github.io/Capr">CapR</a> (programmable cohort definitions in <code>R</code>)</li>
+</ul>
+<p>Phenotype evaluation tools:</p>
+<ul>
+<li><a href="https://ohdsi.github.io/CohortExplorer">CohortExplorer</a> (review individual cases)</li>
+<li><a href="https://ohdsi.github.io/CohortDiagnostics">CohortDiagnostics</a> (population-level characterization to identify sensitivity / specificity errors and index date misspecification)</li>
+<li><a href="https://ohdsi.github.io/PheValuator">PheValuator</a> (train predictive models to directly estimate sensitivity and specificify)</li>
+</ul>
+<!-- Phenotype Library -->
+</section>
+<section id="ohdsi-phenotype-library" class="slide level2">
+<h2>OHDSI phenotype library</h2>
+<p>Good phenotyping is blend of art (practice) and science (evaluation)</p>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>As a consequence </strong></p>
+</div>
+<div class="callout-content">
+<p>Best to reuse standardized objects</p>
+</div>
+</div>
+</div>
+<ul>
+<li><p><a href="https://data.ohdsi.org/PhenotypeLibrary/">OHDSI phenotype library</a></p></li>
+<li><p><a href="https://data.ohdsi.org/PhenotypeLibrary/">Full diagnostics</a></p></li>
+</ul>
+</section>
+<section id="lack-of-reproducible-phenotypes" class="slide level2">
+<h2>Lack of reproducible phenotypes</h2>
+
+<img data-src="figures/bad_phenotypes.png" class="r-stretch"></section>
+<section id="current-state-of-art-of-phenotypes-in-publications" class="slide level2">
+<h2>Current state-of-art of phenotypes in publications</h2>
+<ul>
+<li>Heterogeneous and all over the place, ranging from
+<ul>
+<li>Nothing</li>
+<li>Reporting code lists</li>
+<li><span class="math inline">\(\pm\)</span> free text describing phenotyping approach</li>
+<li><span class="math inline">\(\pm\)</span> evaluation or validation results</li>
+<li>Rarely accompanied by analytic code use for reuse</li>
+</ul></li>
+</ul>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Significantly impacts the validity and reproducibility of RWE</strong></p>
+</div>
+<div class="callout-content">
+
+</div>
+</div>
+</div>
+</section>
+<section id="example-fully-specified-phenotype" class="slide level2">
+<h2>Example: fully specified phenotype</h2>
+<p>Primary source:</p>
+<ul>
+<li><a href="https://github.com/ohdsi-studies/LegendT2dm/blob/master/inst/cohorts/class/ID101100000.json">JSON LEGEND-T2DM cohort</a></li>
+</ul>
+<p>Secondary source:</p>
+<ul>
+<li><p><a href="https://ohdsi-studies.github.io/LegendT2dm/Protocol.html#A_Exposure_Cohort_Definitions">Human-readable LEGEND-T2DM cohort</a></p></li>
+<li><p><a href="https://github.com/ohdsi-studies/LegendT2dm/blob/master/inst/sql/sql_server/class/ID101100000.sql">SQL LEGEND-T2DM cohort</a></p></li>
+</ul>
+</section>
+<section id="standardized-phenotypes-and-their-cohorts" class="slide level2">
+<h2>Standardized phenotypes and their cohorts</h2>
+
+<img data-src="figures/cohort_use_cases.png" class="r-stretch"></section>
+<section id="what-we-have-observational-data-for-a-single-person" class="slide level2">
+<h2>What we have – observational data for a single person</h2>
+
+<img data-src="figures/t2dm_patient1.png" class="r-stretch"></section>
+<section id="what-we-want-longitudinal-health-status-for-a-single-person" class="slide level2">
+<h2>What we want – longitudinal health status for a single person</h2>
+
+<img data-src="figures/t2dm_patient2.png" class="r-stretch"></section>
+<section id="errors-from-disease-phenotyping" class="slide level2">
+<h2>Errors from disease phenotyping</h2>
+
+<img data-src="figures/t2dm_patient3.png" class="r-stretch"></section>
+<section id="evaluating-phenotypes" class="slide level2">
+<h2>Evaluating phenotypes</h2>
+<ul>
+<li><p>Objective: estimate the extent to which the inference from the phenotype algorithm consistent with the true health state of the patients?</p></li>
+<li><p>Measurement error measures:</p>
+<ul>
+<li>Sensitivity, specificity, positive predictive value, negative predictive value</li>
+</ul></li>
+<li><p>‘A phenotype is fit-for-use’ = the measurement error of the phenotype in the dataset is sufficiently small that it will not negatively impact the interpretation of analysis results</p></li>
+</ul>
+</section>
+<section id="steps-for-developing-and-evaluating-phenotypes" class="slide level2 scrollable">
+<h2>Steps for developing and evaluating phenotypes</h2>
+<ol type="1">
+<li>Identify the persons who might have the disease</li>
+</ol>
+<ul>
+<li>Aim: Increase sensitivity</li>
+<li>Task: Create inclusive conceptsets used in cohort entry events</li>
+</ul>
+<ol start="2" type="1">
+<li>Restrict persons who likely do not have disease</li>
+</ol>
+<ul>
+<li>Aim: Increase specificity / positive predictive value</li>
+<li>Task: Add inclusion criteria</li>
+</ul>
+<ol start="3" type="1">
+<li>Determine the start and end dates for each disease episode</li>
+</ol>
+<ul>
+<li>Aim: Reduce index date misspecification</li>
+<li>Task: Set exit strategy, refine entry events and inclusion criteria</li>
+</ul>
+</section>
+<section id="dissecting-the-anatomy-of-a-cohort-phenotype-definition" class="slide level2">
+<h2>Dissecting the anatomy of a cohort (phenotype) definition</h2>
+
+<img data-src="figures/cohort_anatomy.png" class="r-stretch"></section>
+<section id="questions-to-answer-when-defining-a-cohort" class="slide level2 scrollable">
+<h2>Questions to answer when defining a cohort</h2>
+<ul>
+<li><p>What event(s) let you enter the cohort?</p></li>
+<li><p>What inclusion criteria are applied to those events?</p></li>
+<li><p>For each event, how long do you satisfy the inclusion criteria?</p></li>
+<li><p>How should events be combined into cohort eras?</p></li>
+</ul>
+</section>
+<section id="dissecting-the-anatomy-of-a-cohort-phenotype-definition-1" class="slide level2">
+<h2>Dissecting the anatomy of a cohort (phenotype) definition</h2>
+
+<img data-src="figures/cohort_anatomy2.png" class="r-stretch"></section>
+<section id="what-initial-events-define-cohort-entry" class="slide level2 scrollable">
+<h2>What initial event(s) define cohort entry?</h2>
+<ul>
+<li>Do:
+<ul>
+<li>Define by existence of any observation in any domain</li>
+</ul></li>
+<li>Don’t:
+<ul>
+<li>Define by absence of an observation - when does absence occur?</li>
+<li>Define by age - year of birth is constant, but requires index date to anchor age calculation</li>
+</ul></li>
+<li>Caution:
+<ul>
+<li>Defining a cohort by calendar date can cause observation bias, since that date unlikely to be at point of health service utilization, ex: cases matched to controls. Consider instead defining by a visit that occurs within a calendar timeframe.</li>
+</ul></li>
+</ul>
+</section>
+<section id="dissecting-the-anatomy-of-a-cohort-phenotype-definition-2" class="slide level2">
+<h2>Dissecting the anatomy of a cohort (phenotype) definition</h2>
+
+<img data-src="figures/cohort_anatomy3.png" class="r-stretch"></section>
+<section id="what-inclusion-criteria-are-applied-to-the-initial-events" class="slide level2 scrollable">
+<h2>What inclusion criteria are applied to the initial events?</h2>
+<ul>
+<li>Do:
+<ul>
+<li>Specify all criteria as inclusion criteria to avoid confusion of Boolean logic around inclusion vs.&nbsp;exclusion</li>
+<li>Use information on or before index event (think like a randomized trial: index event is study start, can’t predict future)</li>
+</ul></li>
+<li>Don’t:
+<ul>
+<li>Assume temporal logic, but always provide relative time window to evaluate criteria</li>
+</ul></li>
+<li>Caution:
+<ul>
+<li>There’s a difference between “first time in history with &gt;365d prior observation” vs.&nbsp;“no prior observation in last 365 days”</li>
+<li>One person may have multiple initial events, criteria are applied to each event (not person)</li>
+</ul></li>
+</ul>
+</section>
+<section id="dissecting-the-anatomy-of-a-cohort-phenotype-definition-3" class="slide level2">
+<h2>Dissecting the anatomy of a cohort (phenotype) definition</h2>
+
+<img data-src="figures/cohort_anatomy4.png" class="r-stretch"></section>
+<section id="what-defines-a-persons-cohort-exit" class="slide level2 scrollable">
+<h2>What defines a person’s cohort exit?</h2>
+<ul>
+<li>Do:
+<ul>
+<li>Specify a cohort exit, even if you are not intending to use it for your analytic use case</li>
+</ul></li>
+<li>Don’t:
+<ul>
+<li>Confuse censoring for analytical purposes with cohort definition (which can be analysis-independent) ex: censoring at time of outcome</li>
+</ul></li>
+<li>Caution:
+<ul>
+<li>Time-of-cohort participation can be different from analysis time-at-risk ex: acute effects can be studied using a fixed window post-exposure start, intent-to-treat analysis can follow person through observation period end</li>
+</ul></li>
+</ul>
+</section>
+<section id="deriving-all-exposure-cohorts-from-base-cohorts" class="slide level2">
+<h2>Deriving all exposure cohorts from base cohorts</h2>
+
+<img data-src="figures/indication_cohort.png" class="r-stretch"><div class="callout callout-caution callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Caution</strong></p>
+</div>
+<div class="callout-content">
+<p>Future-looking, not discussed in class</p>
+</div>
+</div>
+</div>
+</section>
+<section id="building-cohorts-together" class="slide level2">
+<h2>Building cohorts together</h2>
+<ul>
+<li><p>Target: GLP1RA exposures</p></li>
+<li><p>Comparator: DPP4I exposures</p></li>
+<li><p>Indication: Type 2 diabetes mellitus</p></li>
+<li><p>Outcome 1: Acute myocardial infarction</p></li>
+<li><p>Outcome 2: Diarrhea</p></li>
+</ul>
+</section>
+<section id="hands-on-examples" class="slide level2">
+<h2>Hands-on examples</h2>
+<ul>
+<li>Cohorts in ATLAS
+<ul>
+<li><a href="https://atlas-demo.ohdsi.org/#/cohortdefinition/1791474">Type 2 diabetes</a></li>
+<li><a href="https://atlas-demo.ohdsi.org/#/cohortdefinition/1791473">GLP1RA exposure</a></li>
+<li><a href="https://atlas-demo.ohdsi.org/#/cohortdefinition/1791478">Acute myocardial infarction</a></li>
+</ul></li>
+</ul>
+</section>
+<section id="notes-for-mas-1" class="slide level2">
+<h2>Notes for MAS 1</h2>
+
+<img data-src="figures/365_prior_obs.png" class="r-stretch"></section>
+<section id="notes-for-mas-2" class="slide level2">
+<h2>Notes for MAS 2</h2>
+<p><img data-src="figures/no_prior_drug.png"></p>
+
+<p><img src="figures/logo.png" class="slide-logo"></p>
+<div class="footer footer-default">
+<p>Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)</p>
+</div>
+</section>
+    </div>
+  </div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'smaller': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 720,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button', {
+        text: function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+      });
+      clipboard.on('success', function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      });
+      function tippyHover(el, contentFn) {
+        const config = {
+          allowHTML: true,
+          content: contentFn,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start'
+        };
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          return note.innerHTML;
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>
