@@ -59,3 +59,11 @@ In this lecture we will learn:
 ## Engineering trust in RWE thru open science
 
 ![](figures/ohdsi_engineering.png)
+
+## Notes for MAS 1
+
+![](figures/365_prior_obs.png)
+
+## Notes for MAS 2
+
+![](figures/no_prior_drug.png)

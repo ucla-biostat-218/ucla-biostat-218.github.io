@@ -504,10 +504,3 @@ Future-looking, not discussed in class
   - [GLP1RA exposure](https://atlas-demo.ohdsi.org/#/cohortdefinition/1791473)
   - [Acute myocardial infarction](https://atlas-demo.ohdsi.org/#/cohortdefinition/1791478)
   
-## Notes for MAS 1
-
-![](figures/365_prior_obs.png)
-
-## Notes for MAS 2
-
-![](figures/no_prior_drug.png)  
