@@ -64,7 +64,7 @@ In this lecture we will learn how to:
 
 - Developed by Donald Clamberlin and Raymond Boyce (IBM) and initially called SEQUEL (trademark issue)
 
-- First commercially avaiable in 1979 from IBM
+- First commercially available in 1979 from IBM
 
 - Also in 1979, Relational Software, Inc released Oracle V2 (targeted for US Navy, CIA)
 
@@ -543,7 +543,7 @@ renderTranslateExecuteSql(conn, sql,
 
 ::: {.callout-note}
 ## Notes
-- Join `CONDITION_OCCURRENCE` to `CONCEPT_ANCESTOR` to find all occurrences of angioedemia or any of its descendents (more later)
+- Join `CONDITION_OCCURRENCE` to `CONCEPT_ANCESTOR` to find all occurrences of AMI or any of its descendents (more later)
 - Use `DISTINCT` to select at most one record per day
 - Join `VISIT_OCCURENCE` to ensure diagnosis was in-patient or ER
 :::
@@ -593,10 +593,10 @@ LEFT JOIN (
       age,
       COUNT(*) AS events
   FROM tar
-  INNER JOIN @cohort_db_schema.@cohort_table angioedema
-    ON tar.subject_id = angioedema.subject_id
-      AND tar.cohort_start_date <= angioedema.cohort_start_date
-      AND tar.cohort_end_date >= angioedema.cohort_start_date
+  INNER JOIN @cohort_db_schema.@cohort_table ami
+    ON tar.subject_id = ami.subject_id
+      AND tar.cohort_start_date <= ami.cohort_start_date
+      AND tar.cohort_end_date >= ami.cohort_start_date
   WHERE cohort_definition_id = 2 -- Outcome
   GROUP BY gender,
     age
