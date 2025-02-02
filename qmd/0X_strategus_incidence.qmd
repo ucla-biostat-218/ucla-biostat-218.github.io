@@ -1,0 +1,372 @@
+---
+title: "Strategus"
+subtitle: Biostat 218
+author: "Marc A Suchard @ UCLA"
+date: "February 2, 2025"
+format:
+  revealjs :
+    width: 1280
+    height: 720
+    output-ext: revealjs.html
+    footer: Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)
+    logo: figures/logo.png
+    chalkboard: true
+    highlight-style: a11y
+    theme: [default, custom.sccs]
+    code-line-numbers: false
+  html:
+    output-ext: html
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+    highlight-style: a11y
+    code-line-numbers: false
+bibliography: "../ohdsi.bib"
+csl: "apa.csl"
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    fig.width: 6
+    fig.height: 4
+    message: FALSE
+    cache: false
+    echo: true
+---
+
+## Introduction
+
+In these lectures we will learn:
+
+- TODO
+
+![](figures/hades.png)
+
+## `CohortIncidence`
+
+- We want to compute the incidence of heart attacks (acute myocardial infarctions) among (newly diagnosed) hypertensive patients
+
+- We need to define 2 cohorts: **AMI** and **hypertension**
+
+- Then we will use `Capr` and `CohortIncidence` packages to handle the hard-work
+
+## Cohorts {.scrollable}
+
+```{r}
+library(Capr)
+
+# Hypertension
+essentialHypertension <- cs(
+  descendants(320128),
+  name = "Essential hypertension"
+)
+
+sbp <- cs(3004249, name = "SBP")
+dbp <- cs(3012888, name = "DBP")
+
+hypertensionCohort <- cohort(
+  entry = entry(                 # Entrance based on any of these
+    conditionOccurrence(essentialHypertension),
+    measurement(sbp, valueAsNumber(gte(130)), unit(8876)),
+    measurement(dbp, valueAsNumber(gte(80)), unit(8876))
+  ),
+  exit = exit(
+    endStrategy = observationExit()
+  )
+)
+
+# Acute myocardial infarction
+myocardialInfarction <- cs(
+  descendants(4329847),
+  exclude(descendants(314666)), # Old myocardial infarction
+  name = "Myocardial infarction"
+)
+inpatientOrEr <- cs(
+  descendants(9201),
+  descendants(262),
+  name = "Inpatient or ER"
+)
+amiCohort <- cohort(
+  entry = entry(
+    conditionOccurrence(myocardialInfarction),
+    additionalCriteria = withAll(
+      atLeast(1,
+              visit(inpatientOrEr),
+              aperture = duringInterval(eventStarts(-Inf, 0), eventEnds(0, Inf)))
+    ),
+    primaryCriteriaLimit = "All",
+    qualifiedLimit = "All"
+  ),
+  attrition = attrition(
+    "No prior AMI" = withAll(
+      exactly(0,
+              conditionOccurrence(myocardialInfarction),
+              duringInterval(eventStarts(-365, -1)))
+    )
+  ),
+  exit = exit(
+    endStrategy = fixedExit(index = "startDate", offsetDays = 1)
+  )
+)
+cohortDefinitionSet <- makeCohortSet(hypertensionCohort, amiCohort)
+
+cohortDefinitionSet
+```
+
+::: {.callout-important}
+- By default, cohort IDs are 1, 2, 3 ... 
+- Often useful to renumber (to avoid conflicts in `cohort` table)
+:::
+
+## Cohort generation specification {.scrollable}
+
+Use `CohortGeneratorModule` to create a **shareable** JSON specification
+
+
+```{r}
+source("https://raw.githubusercontent.com/OHDSI/CohortGeneratorModule/v0.4.0/SettingsFunctions.R")
+# Currently there's a mismatch in types. See https://github.com/OHDSI/CohortGenerator/issues/146
+cohortDefinitionSet$cohortId <- as.numeric(cohortDefinitionSet$cohortId)
+
+cohortDefinitionShared <- createCohortSharedResourceSpecifications(cohortDefinitionSet)
+
+cohortGeneratorModuleSpecifications <- createCohortGeneratorModuleSpecifications()
+```
+
+::: {.callout-important}
+Note that the cohort specifications are not part of the `CohortGeneratorModule` specification.  Cohort definitions are considered to be a **shared** resource, often used by multiple modules
+:::
+
+## Incidence analysis specification {.scrollable}
+
+Build a `CohortIncidenceModule` specification
+
+```{r}
+source("https://raw.githubusercontent.com/OHDSI/CohortIncidenceModule/v0.4.1/SettingsFunctions.R")
+
+# Target cohort is hypertension:
+targetList <- list(CohortIncidence::createCohortRef(
+  id = cohortDefinitionSet$cohortId[1],
+  name = cohortDefinitionSet$cohortName[1]))
+
+# Outcome cohort is AMI:
+outcomeList <- list(CohortIncidence::createOutcomeDef(
+  id = 1,
+  name = cohortDefinitionSet$cohortName[2], 
+  cohortId = cohortDefinitionSet$cohortId[2], 
+  cleanWindow = 365))
+
+# Specify the time-at-risk to coincide with the cohort start and end:
+tars <- list(CohortIncidence::createTimeAtRiskDef(
+  id = 1, 
+  startWith = "start", 
+  endWith = "end", 
+  startOffset = 0,
+  endOffset = 0))
+
+# All together:
+analysisList <- list(CohortIncidence::createIncidenceAnalysis(
+  targets = cohortDefinitionSet$cohortId[1],
+  outcomes = 1,
+  tars = 1))
+irDesign <- CohortIncidence::createIncidenceDesign(
+  targetDefs = targetList,
+  outcomeDefs = outcomeList,
+  tars = tars,
+  analysisList = analysisList,
+  strataSettings = CohortIncidence::createStrataSettings(
+    byYear = TRUE,
+    byGender = TRUE,
+    byAge = TRUE,
+    ageBreaks = seq(0, 110, by = 10)
+  )
+)
+cohortIncidenceModuleSpecifications <- createCohortIncidenceModuleSpecifications(
+  irDesign = irDesign$toList()
+)
+```
+
+## Full analysis specification {.scrollable}
+
+Combine the specifications (Legos) together
+
+```{r}
+analysisSpecifications <- Strategus::createEmptyAnalysisSpecificiations() %>%
+  Strategus::addSharedResources(cohortDefinitionShared) %>%
+  Strategus::addModuleSpecifications(cohortGeneratorModuleSpecifications) %>%
+  Strategus::addModuleSpecifications(cohortIncidenceModuleSpecifications) 
+
+ParallelLogger::saveSettingsToJson(
+  analysisSpecifications,
+  file.path(getwd(), "data", "studySpecifications.json"))
+```
+
+::: {.callout-important}
+## Federated analysis
+The file `studySpecification.json` is **all** that needs to be shared with data partners
+:::
+
+## Running `Strategus` {.scrollable}
+
+Read the specification
+
+```{r}
+analysisSpecifications <- ParallelLogger::loadSettingsFromJson(
+  file.path(getwd(), "data", "studySpecifications.json"))
+```
+
+Define the (local database) execution settings 
+
+```{r}
+connectionDetails <- DatabaseConnector::createConnectionDetails(
+  dbms = "duckdb", 
+  server = file.path(getwd(), "data", "synthetic.duckdb"))
+
+executionSettings <- Strategus::createCdmExecutionSettings(
+  workDatabaseSchema = "main",
+  cdmDatabaseSchema = "main",
+  cohortTableNames = CohortGenerator::getCohortTableNames(
+    cohortTable = "my_cohorts"),
+  workFolder = file.path(getwd(), "strategusWork"),
+  resultsFolder = file.path(getwd(), "strategusOutput"),
+  minCellCount = 5)
+```
+
+Execute
+
+```{r}
+#| output: false
+Strategus::execute(
+  analysisSpecifications = analysisSpecifications,
+  executionSettings = executionSettings,
+  connectionDetails = connectionDetails
+)
+```
+
+## Managing results (overview) {.scrollable}
+
+- All results are in `strategusOutput`.  We can inspect the CSV files and safely share these with others
+
+- Often we upload these files to a database using the `ResultsModelManager` package, and
+
+- View the results in a Shiny app using the `ShinyAppBuilder` package
+
+## Placing results in a database {.scrollable}
+
+Specify the RDBMS and location
+
+```{r}
+#| echo: false
+#| output: false
+fileName <- file.path(getwd(), "data", "results.sqlite")
+if (file.exists(fileName)) {
+  file.remove(fileName)
+}
+```
+
+```{r}
+#| output: false
+resultsDatabaseSchema <- "main"
+resultsConnectionDetails <- DatabaseConnector::createConnectionDetails(
+  dbms = "sqlite",
+  server = file.path(getwd(), "data", "results.sqlite")
+)
+```
+
+Create the results data model on the RDBMS
+
+```{r}
+#| output: false
+analysisSpecifications <- ParallelLogger::loadSettingsFromJson(
+  file.path(getwd(), "data", "studySpecifications.json")
+)
+resultsDataModelSettings <- Strategus::createResultsDataModelSettings(
+  resultsDatabaseSchema = resultsDatabaseSchema,
+  resultsFolder = file.path(getwd(), "strategusOutput")
+)
+Strategus::createResultDataModel(
+  analysisSpecifications = analysisSpecifications,
+  resultsDataModelSettings = resultsDataModelSettings,
+  resultsConnectionDetails = resultsConnectionDetails
+)
+
+```
+
+Upload results
+
+```{r}
+#| output: false
+Strategus::uploadResults(
+  analysisSpecifications = analysisSpecifications,
+  resultsDataModelSettings = resultsDataModelSettings,
+  resultsConnectionDetails = resultsConnectionDetails)
+```
+
+Sneak a peak
+
+```{r}
+#| eval: false
+library(DatabaseConnector)
+connection <- connect(resultsConnectionDetails)
+# explore
+disconnect(connection)
+```
+
+
+## Create the Shiny app {.scrollable}
+
+```{r}
+#| eval: false
+library(ShinyAppBuilder)
+library(OhdsiShinyModules)
+
+shinyConfig <- initializeModuleConfig() |>
+  addModuleConfig(
+    createDefaultAboutConfig()
+  )  |>
+  addModuleConfig(
+    createDefaultDatasourcesConfig()
+  )  |>
+  addModuleConfig(
+    createDefaultCohortGeneratorConfig()
+  ) |>
+  addModuleConfig(
+    createDefaultCohortDiagnosticsConfig()
+  ) |>
+  addModuleConfig(
+    createDefaultCharacterizationConfig()
+  ) |>
+  addModuleConfig(
+    createDefaultPredictionConfig()
+  ) |>
+  addModuleConfig(
+    createDefaultEstimationConfig()
+  ) 
+
+# now create the shiny app based on the config file and view the results
+# based on the connection 
+ShinyAppBuilder::createShinyApp(
+  config = shinyConfig, 
+  connectionDetails = resultsConnectionDetails,
+  resultDatabaseSettings = createDefaultResultDatabaseSettings(schema = resultsDatabaseSchema)
+)
+```
+
+::: {.callout-important}
+## Remainder of course
+We will discuss each of other analysis types; they are much more interesting
+:::
+
+## Open science results
+
+OHDSI study artifacts are all **publicly** available.  See, e.g.
+
+- [data.ohdsi.org](https://data.ohdsi.org)
+
+- [results.ohdsi.org](https://results.ohdsi.org)
+
+::: {.callout-important}
+## Consider using these for your class projects
+:::

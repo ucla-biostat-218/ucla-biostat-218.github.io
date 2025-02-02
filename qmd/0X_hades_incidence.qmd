@@ -1,0 +1,302 @@
+---
+title: "Basic characterization (incidence rates)"
+subtitle: Biostat 218
+author: "Marc A Suchard @ UCLA"
+date: "February 2, 2025"
+format:
+  revealjs :
+    width: 1280
+    height: 720
+    output-ext: revealjs.html
+    footer: Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)
+    logo: figures/logo.png
+    chalkboard: true
+    highlight-style: a11y
+    theme: [default, custom.sccs]
+    code-line-numbers: false
+  html:
+    output-ext: html
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+    highlight-style: a11y
+    code-line-numbers: false
+bibliography: "../ohdsi.bib"
+csl: "apa.csl"
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    fig.width: 6
+    fig.height: 4
+    message: FALSE
+    cache: false
+    echo: true
+---
+
+## Introduction
+
+In these lectures we will learn:
+
+- TODO
+
+- TODO
+
+- TODO
+
+## Cohort characterization {.scrollable}
+
+$\ldots$ describes the baseline and post-index characteristics of people in a cohort
+
+- Who gets the disease / outcome ?
+
+Standardized OHDSI approaches provide describe statistics of **all** conditions, drug and device exposures, procedures and other clinical observations (generally at index-date, O(10,000))
+
+:::: {layout="[50,50]"}
+::: {#first-column}
+![](figures/characteristics1.png)
+:::
+::: {#second-column}
+![](figures/characteristics2.png)
+:::
+::::
+
+- Example from a [comparative effectiveness study](https://www.thelancet.com/journals/landig/article/PIIS2589-7500(20)30289-2/fulltext)
+
+## Incidence rates {.scrollable}
+
+Characterization along with incidence rates (how often do people get the disease / outcome) are often of sufficient research interest along to warrant publication
+
+:::: {layout="[50,50]"}
+::: {#first-column}
+![](figures/bmj_rates.png)
+:::
+::: {#second-column}
+- Incidence rate of drug initiation: centerpiece of a drug-utilization study (DUS)
+:::
+::::
+
+## Incidence {.scrollable}
+
+Incidence rates (and proportions) assess the occurrence a new outcome in a population during a **time-at-risk** (TAR)
+
+![](figures/incidenceTimeline.png)
+
+Two metrics:
+
+$$
+\text{Incidence proportion} = \frac{
+\text{# persons in cohort with new outcome during TAR}
+}{
+\text{# persons in cohort with TAR}
+}
+$$
+
+- Proportion of the population of interest that developed the outcome in a defined timeframe
+
+
+$$
+\text{Incidence rate} = \frac{
+\text{# persons in cohort with new outcome during TAR}
+}{
+\text{person time at risk contributed by persons in cohort}
+}
+$$
+
+- Number of outcomes during the cumulative TAR for the population. (individual contribution to TAR stops at outcome occurrence)
+
+## Using `CohortIncidence`
+
+- We want to compute the incidence of heart attacks (acute myocardial infarctions) among (newly diagnosed) hypertensive patients
+
+- We need to define 2 cohorts: **AMI** and **hypertension**
+
+- Then we will use `Capr` and `CohortIncidence` packages to handle the hard-work
+
+::: {.border}
+![](figures/hades.png){width=50% fig-align="center"}
+:::
+
+## Cohorts {.scrollable}
+
+```{r}
+library(Capr)
+
+# Hypertension
+essentialHypertension <- cs(
+  descendants(320128),
+  name = "Essential hypertension"
+)
+
+sbp <- cs(3004249, name = "SBP")
+dbp <- cs(3012888, name = "DBP")
+
+hypertensionCohort <- cohort(
+  entry = entry(                 # Entrance based on any of these
+    conditionOccurrence(essentialHypertension),
+    measurement(sbp, valueAsNumber(gte(130)), unit(8876)),
+    measurement(dbp, valueAsNumber(gte(80)), unit(8876))
+  ),
+  exit = exit(
+    endStrategy = observationExit()
+  )
+)
+
+# Acute myocardial infarction
+myocardialInfarction <- cs(
+  descendants(4329847),
+  exclude(descendants(314666)), # Old myocardial infarction
+  name = "Myocardial infarction"
+)
+inpatientOrEr <- cs(
+  descendants(9201),
+  descendants(262),
+  name = "Inpatient or ER"
+)
+amiCohort <- cohort(
+  entry = entry(
+    conditionOccurrence(myocardialInfarction),
+    additionalCriteria = withAll(
+      atLeast(1,
+              visit(inpatientOrEr),
+              aperture = duringInterval(eventStarts(-Inf, 0), eventEnds(0, Inf)))
+    ),
+    primaryCriteriaLimit = "All",
+    qualifiedLimit = "All"
+  ),
+  attrition = attrition(
+    "No prior AMI" = withAll(
+      exactly(0,
+              conditionOccurrence(myocardialInfarction),
+              duringInterval(eventStarts(-365, -1)))
+    )
+  ),
+  exit = exit(
+    endStrategy = fixedExit(index = "startDate", offsetDays = 1)
+  )
+)
+cohortDefinitionSet <- makeCohortSet(hypertensionCohort, amiCohort)
+
+cohortDefinitionSet
+```
+
+::: {.callout-important}
+- By default, cohort IDs are 1, 2, 3 ... 
+- Often useful to renumber (to avoid conflicts in `cohort` table)
+:::
+
+## Cohort generation {.scrollable}
+
+Use `CohortGenerator` ([link](https://ohdsi.github.io/CohortGenerator/)) to build the `cohort` tables and instantiate our cohorts
+
+```{r}
+#| output: false
+connectionDetails <- DatabaseConnector::createConnectionDetails(
+  dbms = "duckdb", 
+  server = file.path(getwd(), "data", "synthetic.duckdb"))
+
+cohortTableNames <- CohortGenerator::getCohortTableNames(
+  cohortTable = "my_cohorts")
+
+CohortGenerator::createCohortTables(
+  connectionDetails = connectionDetails,
+  cohortDatabaseSchema = "main",
+  cohortTableNames = cohortTableNames)
+
+cohortsGenerated <- CohortGenerator::generateCohortSet(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = "main",
+  cohortDatabaseSchema = "main",
+  cohortTableNames = cohortTableNames,
+  cohortDefinitionSet = cohortDefinitionSet)
+```
+
+```{r}
+CohortGenerator::getCohortCounts(
+  connectionDetails = connectionDetails,
+  cohortDatabaseSchema = "main",
+  cohortTable = cohortTableNames$cohortTable
+)
+```
+
+## Incidence computation {.scrollable}
+
+Use `CohortIncidence` ([link](https://ohdsi.github.io/CohortIncidence/)) to do the heavy-lifting
+
+- Plenty of sublety (e.g. cenoring TAR at event or observation end)
+
+```{r}
+#| output: false
+# Target cohort is hypertension:
+targetList <- list(CohortIncidence::createCohortRef(
+  id = cohortDefinitionSet$cohortId[1],
+  name = cohortDefinitionSet$cohortName[1]))
+
+# Outcome cohort is AMI:
+outcomeList <- list(CohortIncidence::createOutcomeDef(
+  id = 1,
+  name = cohortDefinitionSet$cohortName[2], 
+  cohortId = cohortDefinitionSet$cohortId[2], 
+  cleanWindow = 365))
+
+# Specify the time-at-risk to coincide with the cohort start and end:
+tars <- list(CohortIncidence::createTimeAtRiskDef(
+  id = 1, 
+  startWith = "start", 
+  endWith = "end", 
+  startOffset = 0,
+  endOffset = 0))
+
+# All together:
+analysisList <- list(CohortIncidence::createIncidenceAnalysis(
+  targets = cohortDefinitionSet$cohortId[1],
+  outcomes = 1,
+  tars = 1))
+
+irDesign <- CohortIncidence::createIncidenceDesign(
+  targetDefs = targetList,
+  outcomeDefs = outcomeList,
+  tars = tars,
+  analysisList = analysisList,
+  strataSettings = CohortIncidence::createStrataSettings(
+    byYear = TRUE,
+    byGender = TRUE,
+    byAge = TRUE,
+    ageBreaks = seq(0, 110, by = 10)
+  )
+)
+
+buildOptions <- CohortIncidence::buildOptions(
+  cohortTable = cohortTableNames$cohortTable,
+  cdmDatabaseSchema = "main",
+  sourceName = "synthetic",
+  refId = 1)
+
+executeResults <- CohortIncidence::executeAnalysis(
+  connectionDetails = connectionDetails,
+  incidenceDesign = irDesign,
+  buildOptions = buildOptions)
+
+```
+
+## Preliminary results {.scrollable}
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+results <- executeResults$incidence_summary
+names(results) <- tolower(names(results))
+results <- results %>% filter(is.na(start_year),
+                              !is.na(gender_name),
+                              !is.na(age_group_id))
+
+ggplot(results, aes(x = age_group_id, 
+                    y = incidence_rate_p100py,
+                    group = gender_name, color = gender_name)) +
+  geom_point() +
+  xlab("Age group") +
+  ylab("Incidence (per 100 patient year)")
+```

@@ -29,3 +29,15 @@ knitr:
 2. How many people have at least one prescription of celecoxib from the `synthetic` dataset? (Note: there’s an easy way to do this, using `DRUG_ERA`, and a harder way using `DRUG_EXPOSURE` and `CONCEPT_ANCESTOR`. Can you do both?)
 
 3. During which period in time (calender start and end date) did people start a celecoxib prescription from the `synthetic` dataset?
+
+## Programmatic cohorts
+
+X. First create a cohort definition using `Capr` for hypertensive patients.  Define hypertension as
+- an occurrence of "Essential hypertension" (320128) and any of its descendants,
+- a systolic blood pressure (3004249) >= 130 mmHg (8876), or
+- a diastolic blood pressure (3012888) >= 80 mmHg
+Patients enter the cohort at the first of any of these events, and remain in the cohort until their end of observation.
+
+Then translate this cohort into SQL for the `duckdb` RDMS using `CohortGenerator`.  Provide a print-out of the SQL.
+
+Finally, how many patients enter this cohort in our `synthetic` database?

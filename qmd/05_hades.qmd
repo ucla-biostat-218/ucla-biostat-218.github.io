@@ -1,0 +1,667 @@
+---
+title: "Hades - open-source software for observational research
+"
+subtitle: Biostat 218
+author: "Marc A Suchard @ UCLA"
+date: "February 2, 2025"
+format:
+  revealjs :
+    width: 1280
+    height: 720
+    output-ext: revealjs.html
+    footer: Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)
+    logo: figures/logo.png
+    chalkboard: true
+    highlight-style: a11y
+    theme: [default, custom.sccs]
+    code-line-numbers: false
+  html:
+    output-ext: html
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+    highlight-style: a11y
+    code-line-numbers: false
+bibliography: "../ohdsi.bib"
+csl: "apa.csl"
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    fig.width: 6
+    fig.height: 4
+    message: FALSE
+    cache: false
+---
+
+## Introduction
+
+In these lectures we will learn:
+
+- TODO
+
+![](figures/hades.png)
+
+<!-- ![](figures/hades_small.png) -->
+
+## What is HADES?
+
+Health analytics data to evidence suite (HADES)
+
+- Collection of 35 `R` packages used in almost every OHDSI study
+
+- Run directly against data in the OMOP CDM
+  * Health care insurance claims
+  * Electronic health records
+  
+- Performan observational analyses
+  * Characterization
+  * Causal effect estimation
+  * Patient-level prediction
+  
+[Main HADES website](https://ohdsi.github.io/Hades/)
+
+## HADES design priniciples
+
+- Promote **open science** through open source
+
+- Execute directly against the **OMOP CDM**
+
+- Implement **best practices** as informed by methods research
+
+- Provide **high quality software** (documented, maintained, tested, validated)
+
+- Facilitate **large-scale analytics**, answering many questions at once
+
+- Support **big data**, covering hundreds of millions of lives
+
+- Enable **federated** analyses
+
+- Run across a **wide variety of technical infrastructures**
+
+## HADES paper
+
+- HADES paper goes deeper into HADES design prinicples
+
+- Please **cite it** when you use HADES
+
+![](figures/hades_paper.png)
+
+Schuemie M, Reps J, Black A, et al. 2024 Health-Analytics Data to Evidence Suite (HADES): Open-Source Software for Observational Research. Stud Health Technol Inform. 2024 Jan 25:310:966-970. doi: [0.3233/SHTI231108](https://pmc.ncbi.nlm.nih.gov/articles/PMC10868467/)
+
+## HADES supporting packages
+
+- `DatabaseConnector` + `SqlRender`: write code once, run on all supported platforms (SQL Server, Oracle, Postgres, RedShift, BigQuery, DataBricks, Snowflake)
+
+- `Andromeda`: Work with data objects too big to fit in memory
+
+- `ParallelLogger`: extensive logging to facilitate remote debugging
+
+- `Cyclops`: fit **very large** regression models (logistic, Poisson, Cox)
+
+- `DataQualityDashboard`: evaluate data quality
+
+## HADES cohort packages
+
+::: {.callout-important}
+We define a cohort as a set of persons who satisfy one or more inclusion criteria for a duration of time. 
+- Exposure cohorts (e.g. people exposed to warfarin)
+- Outcome cohorts (e.g. people experiencing GI bleeding)
+- Cohorts of special interest (e.g. pregnant persons)
+:::
+
+- `Capr`: define cohorts using complex logic
+
+- `PhenotypeLibrary`: for storing OHDSI-approved cohort definitions
+
+- `CirceR`: for turning cohort definitions into SQL or human-readable text
+
+- `CohortGenerator`: for instantiating cohorts in a database
+
+- `CohortDiagnostics` and `PheValuator`: for evaluating cohorts
+
+## HADES analytic packages
+
+- `Characterization`: characterizations of a target and a comparator cohort
+
+- `CohortIncidence`: calculate incidence rates and proportions
+
+- `PatientLevelPrediction`: develop and evaluate prediction models
+
+- `CohortMethod` and `SelfControlledCaseSeries`: estimate causal effects
+
+- `EmpiricalCalibration`: calibrate causal effect estimates based on negative controls
+
+- `EvidenceSynthesis`: combine causal effect estimates across databases without sharing patient-level data.
+
+::: {.callout-important}
+## Research group focus
+Causal effects at scale and (Bayesian) synthesis
+:::
+
+## HADES output
+
+:::: {layout="[60,40]"}
+::: {#first-column}
+- R objects possibly containing patient-level data
+
+- CSV files / database tables for sharing
+
+- Shiny apps
+
+:::
+::: {#second-column}
+
+![](figures/hades_output.png)
+
+:::
+::::
+
+## Publications using HADES
+
+- 44 peer-reviewed clinical research papers
+
+- 40 methods research papers
+
+[https://ohdsi.github.io/Hades/publications.html](https://ohdsi.github.io/Hades/publications.html)
+
+![](figures/hades_clinical.png)
+
+## Real strength of HADES
+
+Federated analyses across a distributed research network
+
+## Distributed research network
+
+:::: {layout="[50,50]"}
+::: {#first-column}
+- Multiple sites with data
+  * Hospital EHRs
+  * Administrative Claims
+  
+- Patient-level data cannot be shared
+:::
+::: {#second-column}
+![](figures/drn1a.png){fig-align="right"}
+:::
+::::
+
+## Distributed research network
+
+:::: {layout="[50,50]"}
+::: {#first-column}
+- Any site can lead a study
+:::
+::: {#second-column}
+![](figures/drn2.png){fig-align="right"}
+:::
+::::
+
+## Distributed research network
+
+:::: {layout="[50,50]"}
+::: {#first-column}
+- Any site can lead a study
+
+- Analysis code is developed locally
+:::
+::: {#second-column}
+![](figures/drn3.png){fig-align="right"}
+:::
+::::
+
+## Distributed research network
+
+:::: {layout="[50,50]"}
+::: {#first-column}
+- Any site can lead a study
+
+- Analysis code is developed locally
+
+- Code is distributed to study participants
+:::
+::: {#second-column}
+![](figures/drn3.png){fig-align="right"}
+:::
+::::
+
+## Distributed research network
+
+:::: {layout="[50,50]"}
+::: {#first-column}
+- Any site can lead a study
+
+- Analysis code is developed locally
+
+- Code is distributed to study participants
+
+- Results are generated (aggredated statistics)
+:::
+::: {#second-column}
+![](figures/drn4.png){fig-align="right"}
+:::
+::::
+
+## Distributed research network
+
+:::: {layout="[50,50]"}
+::: {#first-column}
+- Any site can lead a study
+
+- Analysis code is developed locally
+
+- Code is distributed to study participants
+
+- Results are generated (aggredated statistics)
+
+- Results are sent back to study lead
+:::
+::: {#second-column}
+![](figures/drn4.png){fig-align="right"}
+:::
+::::
+
+## Current network implementation
+
+![](figures/drn_impl1.png)
+
+## Current network implementation
+
+![](figures/drn_impl2.png)
+
+## Current network implementation
+
+![](figures/drn_impl3.png)
+
+## HADES organization
+
+- Developer guidelines
+
+- Code style guide
+
+- Each package has 1 or 2 maintainers.
+
+- Monthly meetings (3rd Thursday of the month, at 9am Pacific time)
+
+- Discussions on forums, Teams channel, issue trackers
+
+- Bi-weekly open-source community calls (Wednesdays, at 8am Pacific time)
+
+## Continuous integration
+
+At each push to GitHub:
+
+- Run R Check on Windows, MacOS, and Linux
+
+- Unit tests can use a set of database servers (SQL Server, PostgreSQL, Oracle, RedShift, Spark, \ldots)
+
+- Compute code coverage
+
+- If push to main branch and higher version in DESCRIPTION, create release
+
+## HADES release process {.scrollable}
+
+::: {.border}
+![](figures/hades_process.png)
+:::
+
+Pros:
+
+- Head of master is always latest released version:	
+  * `remotes::install_github("ohdsi/Eunomia")`
+  
+- Git tag guaranteed to correspond to version in DESCRIPTION:
+  * `remotes::install_github("ohdsi/Eunomia", ref="v1.0.0")`
+  
+- A release is guaranteed to pass all tests
+
+- Prevents accidental installation of (buggy) develop version
+
+Cons:
+
+- Cannot use main for development
+
+## CRAN
+
+- Some HADES packages are in CRAN for easier install
+
+- Getting things in CRAN is hard, because
+  * Package size <7mb
+  * Cannot use database testing servers, but also not allowed not to have running examples / unit tests.
+  * CRAN requires code runs on really old platforms (e.g. Java 1.5, Solaris)
+
+## HADES-wide release {.scrollable}
+
+- HADES-wide release twice a year
+
+- Currently available as `renv` lock file, hopefully as `docker` container starting next release
+
+::: {.border}
+![](figures/hades_release.png)
+:::
+
+::: {.callout-important}
+`docker` often raises security concerns *inside* large organizations
+:::
+
+## `Strategus`
+
+- Most people who would like to use HADES analytics do not know R
+
+- `Strategus` aims to have analysis specs as input (JSON), and results as output (CSV files), with (Shiny) viewers for the output (after uploading to a database)
+
+- Modular design: a study spec can list multiple modules, such as cohort generation + cohort method
+
+- Move away from sharing code across the network to sharing study specs only (for security and ease of distribution)
+
+::: {.callout-important}
+## We will play with Strategus later on
+:::
+
+## Review
+
+- HADES is a suite of R packages for analyzing observational healthcare data
+
+- Thanks to the OMOP CDM, HADES runs on a wide variety of data sources across the world
+
+- Open source, to promote open science (all analytics code can be shared as part of publication)
+
+- Supports federated networks, where data stay locally, and results are shared
+
+## What is the `Strategus` framework?
+
+:::: {layout="[50,50]"}
+::: {#first-column}
+
+![](figures/strategus1.png)
+
+![](figures/hades_banner.png)
+:::
+::: {#second-column}
+
+- Characterization
+  * cohort diagnostics
+  * cohort features
+  * incidence rates
+  * time-to-event
+  * dechallenge / rechalleng
+  
+- Patient-level prediction
+
+- Causal effect estimation
+  * Comparative cohort method
+  * Self-controlled case-series
+  
+:::
+::::
+
+## What is the `Strategus` framework?
+
+![](figures/strategus2.png)
+
+::: {.callout-important}
+## Latinized form of στρατηγός: army leader
+:::
+
+<!--::: {.callout-important}
+## Latinized form of $\sigma \tau \rho \alpha \tau \eta \gamma$ {\'o} $\varsigma$: army leader
+:::-->
+
+
+## What is the `Strategus` framework?
+
+Strategus modules can be combined to accommodate various study designs
+
+![](figures/strategus3.png)
+
+## `Strategus` design
+
+![](figures/strategus4.png)
+
+## `Capr`: Cohort definition application programming in R
+
+A language for expressing OHDSI cohort definitions in R code
+
+::: {.callout-important}
+A cohort is a set of persons who satisfy one or more inclusion criteria for a duration of time
+
+- One person may belong to multiple cohorts
+- One person may belong to the same cohort for multiple different time periods
+- One person may not belong to the same cohort multiple times during the same period of time
+- A cohort may have zero or more members
+:::
+
+## Where `Capr` sits
+
+![](figures/capr1.png)
+
+## First exposure to lisinopril
+
+![](figures/capr_anatomy.png)
+
+Need to define:
+
+- exposure to **lisinopril** (ingredient 1308216, [ATHENA](https://athena.ohdsi.org/search-terms/terms/1308216))
+
+- diagnosis of **hypertension** (SOMED condition 320128, [ATHENA](https://athena.ohdsi.org/search-terms/terms/320128))
+
+## Building concept sets
+
+We want to include all drugs containing lisinopril (all **descendents** of lisinopril)
+
+```{r c1}
+#| echo: true
+library(Capr)
+lisinopril <- cs(descendants(1308216), name = "lisinopril")
+lisinopril
+
+hypertension <- cs(descendants(320128), name = "hypertension")
+```
+
+## Full cohort definition {.scrollable}
+
+```{r c2}
+#| echo: true
+lisinoprilCohort <- cohort(
+  entry = entry(
+    drugExposure(lisinopril), # use `drug_exposure` table
+    firstOccurrence()
+  ),
+  attrition = attrition(
+    "365 days of prior observation" = withAll(
+      continuousObservation(prior = 365) # use `observation_period` table
+    ),
+    "Prior hypertension" = withAll(
+      atLeast(1, conditionOccurrence(hypertension), # use `condition_occurence` table
+              duringInterval(eventStarts(-365, 0))
+      )
+    )
+  ),
+  exit = exit(
+    endStrategy = drugExit(lisinopril,
+                           persistenceWindow = 30,
+                           surveillanceWindow = 0)
+  )
+)
+```
+
+::: {.border}
+![](figures/capr_exit.png)
+:::
+
+## Using `Capr` `CohortGenerator` and `CirceR` {.scrollable}
+
+Here we will design a cohort of patients suffering from a gastroinstinal (GI) bleed and build the cohort table in `Eumonia`.
+
+```{r c3}
+#| echo: true
+library(Capr)
+library(CohortGenerator)
+library(CirceR)
+```
+
+and connect to the database
+
+```{r c4}
+#| echo: true
+#| eval: true
+library(DatabaseConnector)
+# absolutePath <- file.path(getwd(), "data")
+# Sys.setenv(EUNOMIA_DATA_FOLDER=absolutePath)
+# absoluteFileName <- file.path(getwd(), "data", "GiBleed_5.3.sqlite")
+# connectionDetails <-
+# Eunomia::getEunomiaConnectionDetails(
+# databaseFile = absoluteFileName
+# )
+
+giBleed <- cs(descendants(192671), name = "GI bleed")
+as.json(giBleed)
+
+# Can retrieve info from CDM if wanted
+absoluteFileName <- file.path(getwd(), "data", "synthetic.duckdb")
+connection <- connect(dbms = "duckdb", server = absoluteFileName)
+giBleed <- getConceptSetDetails(giBleed, connection, "main")
+disconnect(connection)
+
+as.json(giBleed)
+```
+
+## Create a simple `Capr` cohort
+
+Patients enter cohort when a concept in concept set occurs in `condition_occurrence` table
+
+```{r c5}
+#| echo: true
+giBleed <- cs(descendants(192671), name = "GI bleed")
+giBleedCohort <- cohort(
+  entry = entry(conditionOccurrence(giBleed))
+)
+```
+
+By default, patients exit cohort at the end of their observation period
+
+## Create more complex cohorts {.scrollable}
+
+We want two cohorts with inclusion rules and exit criteria
+
+- No prior exposure to NSAIDS
+
+- Exit at end of exposure, allowing 30-days btw RXs
+
+```{r}
+#| echo: true
+# Concept sets:
+celecoxibConceptId <- 1118084
+diclofenacConceptId <- 1124300
+nsaids <- cs(
+  descendants(c(celecoxibConceptId, diclofenacConceptId)), 
+  name = "NSAIDS"
+)
+celecoxib <- cs(
+  descendants(celecoxibConceptId),
+  name = "Celecoxib"
+)
+diclofenac  <- cs(
+  descendants(diclofenacConceptId),
+  name = "Diclofenac"
+)
+
+# Inclusion criterion:
+attrition = attrition(
+  "No prior NSAID exposure" = withAll(
+    exactly(0, drugExposure(nsaids), duringInterval(eventStarts(-Inf, 1)))
+  )
+)
+
+# Cohorts:
+celecoxibCohort <- cohort(
+  entry = entry(
+    drugExposure(celecoxib, firstOccurrence()),
+    observationWindow = continuousObservation(priorDays = 365)
+  ),
+  attrition = attrition,
+  exit = exit(endStrategy = drugExit(celecoxib,
+                                     persistenceWindow = 30,
+                                     surveillanceWindow = 0))
+)
+diclofenacCohort <- cohort(
+  entry = entry(
+    drugExposure(diclofenac, firstOccurrence()),
+    observationWindow = continuousObservation(priorDays = 365)
+  ),
+  attrition = attrition,
+  exit = exit(endStrategy = drugExit(diclofenac,
+                                     persistenceWindow = 30,
+                                     surveillanceWindow = 0))
+)
+```
+
+## Print-friendly {.scrollable}
+
+We can generate human-readable output of any cohort definition using the `CirceR` package
+
+```{r}
+#| echo: true
+rmarkdown <- CirceR::cohortPrintFriendly(toCirce(celecoxibCohort))
+writeLines(rmarkdown)
+```
+
+::: {.callout-important}
+NB: missing concept set definitions.  Better version is coming. 
+
+- See: [LEGEND-T2DM function](https://raw.githubusercontent.com/ohdsi-studies/LegendT2dm/master/R/PrettyOutput.R)
+:::
+
+We can also use `CirceR` to generate SQL, but `CohortGenerator` does much more.
+
+## Generate the cohorts {.scrollable}
+
+`CohortGenerator` builds, manages and instantiates **cohort sets** (groups of cohort definitions)
+
+```{r}
+#| echo: true
+cohortsToCreate <- makeCohortSet(giBleedCohort, 
+                                 celecoxibCohort, 
+                                 diclofenacCohort)
+
+cohortsToCreate
+```
+
+## Generate the cohorts {.scrollable}
+
+```{r}
+#| echo: true
+# Create the cohort tables to hold the cohort generation results
+cohortTableNames <- CohortGenerator::getCohortTableNames(
+  cohortTable = "my_cohort_table")
+cohortTableNames
+
+# Better to pass connection details than connection itself
+connectionDetails <- DatabaseConnector::createConnectionDetails(
+  dbms = "duckdb", 
+  server = file.path(getwd(), "data", "synthetic.duckdb")
+)
+connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+
+CohortGenerator::createCohortTables(
+  connectionDetails = connectionDetails,
+  cohortDatabaseSchema = "main",
+  cohortTableNames = cohortTableNames)
+
+# Generate the cohorts
+cohortsGenerated <- CohortGenerator::generateCohortSet(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = "main",
+  cohortDatabaseSchema = "main",
+  cohortTableNames = cohortTableNames,
+  cohortDefinitionSet = cohortsToCreate)
+
+# Get raw counts
+CohortGenerator::getCohortCounts(
+  connectionDetails = connectionDetails,
+  cohortDatabaseSchema = "main",
+  cohortTable = cohortTableNames$cohortTable
+)
+```
