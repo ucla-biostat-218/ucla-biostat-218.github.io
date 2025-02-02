@@ -1,5 +1,5 @@
 ---
-title: "Hades - open-source software for observational research
+title: "HADES - open-source software for observational research
 "
 subtitle: Biostat 218
 author: "Marc A Suchard @ UCLA"
@@ -42,9 +42,13 @@ In these lectures we will learn:
 
 - TODO
 
-![](figures/hades.png)
+- TODO
 
-<!-- ![](figures/hades_small.png) -->
+- TODO
+
+::: {.border}
+![](figures/hades.png){width=50% fig-align="center"}
+:::
 
 ## What is HADES?
 
@@ -357,7 +361,7 @@ Cons:
 - Move away from sharing code across the network to sharing study specs only (for security and ease of distribution)
 
 ::: {.callout-important}
-## We will play with Strategus later on
+## We will play with `Strategus` later on
 :::
 
 ## Review
@@ -370,57 +374,7 @@ Cons:
 
 - Supports federated networks, where data stay locally, and results are shared
 
-## What is the `Strategus` framework?
-
-:::: {layout="[50,50]"}
-::: {#first-column}
-
-![](figures/strategus1.png)
-
-![](figures/hades_banner.png)
-:::
-::: {#second-column}
-
-- Characterization
-  * cohort diagnostics
-  * cohort features
-  * incidence rates
-  * time-to-event
-  * dechallenge / rechalleng
-  
-- Patient-level prediction
-
-- Causal effect estimation
-  * Comparative cohort method
-  * Self-controlled case-series
-  
-:::
-::::
-
-## What is the `Strategus` framework?
-
-![](figures/strategus2.png)
-
-::: {.callout-important}
-## Latinized form of στρατηγός: army leader
-:::
-
-<!--::: {.callout-important}
-## Latinized form of $\sigma \tau \rho \alpha \tau \eta \gamma$ {\'o} $\varsigma$: army leader
-:::-->
-
-
-## What is the `Strategus` framework?
-
-Strategus modules can be combined to accommodate various study designs
-
-![](figures/strategus3.png)
-
-## `Strategus` design
-
-![](figures/strategus4.png)
-
-## `Capr`: Cohort definition application programming in R
+## `Capr`: cohort definition application programming in R
 
 A language for expressing OHDSI cohort definitions in R code
 
@@ -665,3 +619,16 @@ CohortGenerator::getCohortCounts(
   cohortTable = cohortTableNames$cohortTable
 )
 ```
+
+## Review
+
+- [ATLAS](https://atlas-demo.ohdsi.org) is a web-based GUI for designing cohorts
+  * interacts directly with a CDM; has record counts
+  
+- `Capr` is programmable in R
+  * more reproducible; convenient for generating multiple related cohorts
+
+
+::: {.callout-important}
+## Now we will start to **use** these cohorts
+:::
