@@ -628,7 +628,6 @@ CohortGenerator::getCohortCounts(
 - `Capr` is programmable in R
   * more reproducible; convenient for generating multiple related cohorts
 
-
 ::: {.callout-important}
 ## Now we will start to **use** these cohorts
 :::

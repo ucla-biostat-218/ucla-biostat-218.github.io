@@ -65,6 +65,66 @@ Standardized OHDSI approaches provide describe statistics of **all** conditions,
 
 - Example from a [comparative effectiveness study](https://www.thelancet.com/journals/landig/article/PIIS2589-7500(20)30289-2/fulltext)
 
+## Using `FeatureExtraction`
+
+Constructs covariates (often called _features_ or _characteristics_) in 3 ways
+
+- Choose a default set of covariates (often sufficiently large to be highly correlated with any arbitrary feature)
+
+- Choose from sets of pre-specified covariates
+
+- Create a set of custom covariates
+
+at (1) the person-level (for **machine learning**) or (2) aggregated / averaged (to describe the **population**)
+
+## Default covariates {.scrollable}
+
+```{r}
+library(FeatureExtraction)
+covariateSettings <- createDefaultCovariateSettings(
+  excludedCovariateConceptIds = 1124300, # exclude diclofenac
+  addDescendantsToExclude = TRUE         # and all descendants
+)
+
+covariateSettings
+```
+
+## Pre-specified covariates {.scrollable}
+
+```{r}
+covariateSettings <- createCovariateSettings(
+  useDemographicsGender = TRUE,
+  useDemographicsAgeGroup = TRUE,
+  useConditionEraLongTerm = TRUE,  # `condition_occurrence` table
+  useConditionEraShortTerm = TRUE,
+  useDrugEraLongTerm = TRUE,       # `drug_exposure` table
+  useDrugEraShortTerm = TRUE,
+  longTermStartDays = -180,
+  shortTermStartDays = -14,
+  endDays = -1)      # exclude index-date
+```
+
+Many pre-specified sets have _default_ time-windows (related to index)
+
+- **Long term**: 365 days prior up to and including cohort start date
+- **Medium term**: 180 days prior up to and including cohort start date
+- **Short term**: 30 days prior up and to including cohort start date
+
+## Aggregrated covariates
+
+::: {.callout-important}
+Use `aggregated = TRUE` to return cohort-level summary statistics
+
+- Saves time and space (depending in analysis)
+
+- Can convert unaggregated data object into aggregated (if both are needed)
+:::
+
+```{r}
+#| eval: false
+covariateData2 <- aggregateCovariates(covariateData)
+```
+
 ## Incidence rates {.scrollable}
 
 Characterization along with incidence rates (how often do people get the disease / outcome) are often of sufficient research interest along to warrant publication
@@ -113,7 +173,7 @@ $$
 
 - We need to define 2 cohorts: **AMI** and **hypertension**
 
-- Then we will use `Capr` and `CohortIncidence` packages to handle the hard-work
+- Then we will use `Capr`, `FeatureExtraction` and `CohortIncidence` packages to handle the hard-work
 
 ::: {.border}
 ![](figures/hades.png){width=50% fig-align="center"}
@@ -218,6 +278,76 @@ CohortGenerator::getCohortCounts(
   connectionDetails = connectionDetails,
   cohortDatabaseSchema = "main",
   cohortTable = cohortTableNames$cohortTable
+)
+```
+
+## Characterization computation {.scrollable}
+
+Use `FeatureExtraction` ([link](https://ohdsi.github.io/FeatureExtraction/)) to characterize the population of patients experiencing an AMI
+
+```{r}
+#| output: false
+covariateSettings <- createDefaultCovariateSettings()
+
+covariateData <- getDbCovariateData(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = "main",
+  cohortDatabaseSchema = "main",
+  cohortTable = cohortTableNames$cohortTable,
+  cohortIds = c(2),    # AMI
+  rowIdField = "subject_id",
+  covariateSettings = covariateSettings
+)
+```
+
+```{r}
+summary(covariateData)
+```
+
+## Structure of `covariateData` {.scrollable}
+
+Person-level covariates can occupy up to 2GB of RAM, so this **design matrix** is held 
+
+- In _sparse_ (row, column, value)-type format
+
+- On disk via a temporary `Andromeda` object (SQLite or DuckDB back-end)
+
+```{r}
+head(covariateData$covariates) # main object
+```
+
+Permanently save to / load from disk
+
+```{r}
+#| eval: false
+saveCovariateData(covariateData, "covariates")
+covariateData <- loadCovariateData("covariates")
+```
+
+Aggregate via
+
+```{r}
+covariateData2 <- aggregateCovariates(covariateData)
+summary(covariateData2)
+
+head(covariateData2$covariatesContinuous)
+```
+
+## A simple Table 1 {.scrollable}
+
+A default summary table is available in `FeatureExtraction`.
+
+::: {.callout-important}
+## Table specification is (relatively easy) to customize
+
+- Make disease-specific
+- Shorten to readibility
+- `getDefaultTable1Specifications()`
+:::
+
+```{r}
+result <- createTable1(
+  covariateData1 = covariateData2
 )
 ```
 

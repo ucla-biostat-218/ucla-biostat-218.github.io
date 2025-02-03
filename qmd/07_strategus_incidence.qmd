@@ -42,9 +42,68 @@ In these lectures we will learn:
 
 - TODO
 
-![](figures/hades.png)
+- TODO
 
-## `CohortIncidence`
+- TODO
+
+::: {.border}
+![](figures/hades.png){width=50% fig-align="center"}
+:::
+
+## What is the `Strategus` framework?
+
+:::: {layout="[50,50]"}
+::: {#first-column}
+
+![](figures/strategus1.png)
+
+::: {.border}
+![](figures/hades.png){width=50% fig-align="center"}
+:::
+
+:::
+::: {#second-column}
+
+- Characterization
+  * cohort diagnostics
+  * cohort features
+  * incidence rates
+  * time-to-event
+  * dechallenge / rechalleng
+  
+- Patient-level prediction
+
+- Causal effect estimation
+  * Comparative cohort method
+  * Self-controlled case-series
+  
+:::
+::::
+
+## What is the `Strategus` framework?
+
+![](figures/strategus2.png)
+
+::: {.callout-important}
+## Latinized form of στρατηγός: army leader
+:::
+
+<!--::: {.callout-important}
+## Latinized form of $\sigma \tau \rho \alpha \tau \eta \gamma$ {\'o} $\varsigma$: army leader
+:::-->
+
+
+## What is the `Strategus` framework?
+
+Strategus modules can be combined to accommodate various study designs
+
+![](figures/strategus3.png)
+
+## `Strategus` design
+
+![](figures/strategus4.png)
+
+## Study design
 
 - We want to compute the incidence of heart attacks (acute myocardial infarctions) among (newly diagnosed) hypertensive patients
 
@@ -122,30 +181,62 @@ cohortDefinitionSet
 
 ## Cohort generation specification {.scrollable}
 
-Use `CohortGeneratorModule` to create a **shareable** JSON specification
+Use `Strategus` to create a **shareable** JSON specification
 
 
 ```{r}
-source("https://raw.githubusercontent.com/OHDSI/CohortGeneratorModule/v0.4.0/SettingsFunctions.R")
-# Currently there's a mismatch in types. See https://github.com/OHDSI/CohortGenerator/issues/146
-cohortDefinitionSet$cohortId <- as.numeric(cohortDefinitionSet$cohortId)
+library(Strategus)
 
-cohortDefinitionShared <- createCohortSharedResourceSpecifications(cohortDefinitionSet)
+# `Strategus` uses R6 classes (for better or worse) for modules
+cgModuleSettingsCreator <- CohortGeneratorModule$new()
 
-cohortGeneratorModuleSpecifications <- createCohortGeneratorModuleSpecifications()
+cohortDefinitionShared <- cgModuleSettingsCreator$createCohortSharedResourceSpecifications(cohortDefinitionSet)
+
+cohortGeneratorModuleSpecifications <- cgModuleSettingsCreator$createModuleSpecifications(
+  generateStats = TRUE
+)
 ```
 
 ::: {.callout-important}
 Note that the cohort specifications are not part of the `CohortGeneratorModule` specification.  Cohort definitions are considered to be a **shared** resource, often used by multiple modules
 :::
 
+## Characterization analysis specification {.scrollable}
+
+Build `CharacterizationModule` specification
+
+```{r}
+timeAtRisks <- data.frame(
+  label = c("On treatment"),
+  riskWindowStart  = c(1),
+  startAnchor = c("cohort start"),
+  riskWindowEnd  = c(0),
+  endAnchor = c("cohort end")
+)
+
+cModuleSettingsCreator <- CharacterizationModule$new()
+
+characterizationModuleSpecifications <- cModuleSettingsCreator$createModuleSpecifications(
+  targetIds = c(1),  # hypertensive patient
+  outcomeIds = c(2), # ami
+  minPriorObservation = 365,
+  outcomeWashoutDays = c(365),
+  dechallengeStopInterval = 30,
+  dechallengeEvaluationWindow = 30,
+  riskWindowStart = timeAtRisks$riskWindowStart, 
+  startAnchor = timeAtRisks$startAnchor, 
+  riskWindowEnd = timeAtRisks$riskWindowEnd, 
+  endAnchor = timeAtRisks$endAnchor,
+  covariateSettings = FeatureExtraction::createDefaultCovariateSettings(),
+  minCharacterizationMean = .01
+)
+```
+
 ## Incidence analysis specification {.scrollable}
 
 Build a `CohortIncidenceModule` specification
 
 ```{r}
-source("https://raw.githubusercontent.com/OHDSI/CohortIncidenceModule/v0.4.1/SettingsFunctions.R")
-
 # Target cohort is hypertension:
 targetList <- list(CohortIncidence::createCohortRef(
   id = cohortDefinitionSet$cohortId[1],
@@ -183,7 +274,9 @@ irDesign <- CohortIncidence::createIncidenceDesign(
     ageBreaks = seq(0, 110, by = 10)
   )
 )
-cohortIncidenceModuleSpecifications <- createCohortIncidenceModuleSpecifications(
+
+ciModuleSettingsCreator <- CohortIncidenceModule$new()
+cohortIncidenceModuleSpecifications <- ciModuleSettingsCreator$createModuleSpecifications(
   irDesign = irDesign$toList()
 )
 ```
@@ -196,6 +289,7 @@ Combine the specifications (Legos) together
 analysisSpecifications <- Strategus::createEmptyAnalysisSpecificiations() %>%
   Strategus::addSharedResources(cohortDefinitionShared) %>%
   Strategus::addModuleSpecifications(cohortGeneratorModuleSpecifications) %>%
+  Strategus::addModuleSpecifications(characterizationModuleSpecifications) %>%
   Strategus::addModuleSpecifications(cohortIncidenceModuleSpecifications) 
 
 ParallelLogger::saveSettingsToJson(
@@ -356,7 +450,7 @@ ShinyAppBuilder::createShinyApp(
 
 ::: {.callout-important}
 ## Remainder of course
-We will discuss each of other analysis types; they are much more interesting
+We will discuss each of the other analysis types; they are much more interesting
 :::
 
 ## Open science results
