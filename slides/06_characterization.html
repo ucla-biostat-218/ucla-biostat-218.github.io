@@ -178,15 +178,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="cohort-characterization" class="level2 scrollable" data-number="2">
 <h2 class="scrollable anchored" data-number="2" data-anchor-id="cohort-characterization"><span class="header-section-number">2</span> Cohort characterization</h2>
-<p><img src="figures/characterization_cartoon.png" class="img-fluid"></p>
+<p><img src="figures/characteriztion_cartoon.png" class="img-fluid"></p>
 <p><span class="math inline">\(\ldots\)</span> describes the baseline (and post-index) characteristics of people in a cohort</p>
 <ul>
 <li>Who gets the disease / outcome ?</li>
 </ul>
 <p>Standardized OHDSI approaches provide describe statistics of <strong>all</strong> conditions, drug and device exposures, procedures and other clinical observations (generally at index-date, O(10,000))</p>
 </section>
-<section id="example" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="example"><span class="header-section-number">3</span> Example</h2>
+<section id="example" class="level2 scrollable" data-number="3">
+<h2 class="scrollable anchored" data-number="3" data-anchor-id="example"><span class="header-section-number">3</span> Example</h2>
 <div class="quarto-layout-panel">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
@@ -568,8 +568,8 @@ Important
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  cohortId cohortEntries cohortSubjects
-1        2         10091          10091
-2        1        605861         605861</code></pre>
+1        1        605861         605861
+2        2         10091          10091</code></pre>
 </div>
 </div>
 </section>
@@ -610,15 +610,15 @@ Number of non-zero covariate values: 3182430</code></pre>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(covariateData<span class="sc">$</span>covariates) <span class="co"># main object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Source:   SQL [6 x 3]
-# Database: sqlite 3.46.0 [/var/folders/yq/m5zhcp2d6cx4lsxs8_d5yv800000gn/T//Rtmpnuniis/file143de25f99b43.sqlite]
+# Database: sqlite 3.46.0 [/var/folders/yq/m5zhcp2d6cx4lsxs8_d5yv800000gn/T//Rtmpt5ySmz/file145bc120efc05.sqlite]
     rowId covariateId covariateValue
     &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;
-1 1065817  4027255212              1
-2 5440195  4027255212              1
-3 4395904  4152156212              1
-4 4396299  4027255212              1
-5 4399828  4329847212              1
-6 4570269  4027255212              1</code></pre>
+1 1064844  4094683212              1
+2 1065998  4094683212              1
+3 1066164  4329847212              1
+4 1066225  4152156212              1
+5 1190385   192438212              1
+6 5437112  4094683212              1</code></pre>
 </div>
 </div>
 <p>Permanently save to / load from disk</p>
@@ -630,7 +630,7 @@ Number of non-zero covariate values: 3182430</code></pre>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>covariateData2 <span class="ot">&lt;-</span> <span class="fu">aggregateCovariates</span>(covariateData)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Aggregating covariates took 7.59 secs</code></pre>
+<pre><code>Aggregating covariates took 7.68 secs</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(covariateData2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -642,7 +642,7 @@ Number of non-zero covariate values: 3287</code></pre>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(covariateData2<span class="sc">$</span>covariatesContinuous)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Source:   SQL [3 x 11]
-# Database: sqlite 3.46.0 [/var/folders/yq/m5zhcp2d6cx4lsxs8_d5yv800000gn/T//Rtmpnuniis/file143de72d40f51.sqlite]
+# Database: sqlite 3.46.0 [/var/folders/yq/m5zhcp2d6cx4lsxs8_d5yv800000gn/T//Rtmpt5ySmz/file145bc1c759b81.sqlite]
   covariateId countValue minValue maxValue averageValue standardDeviation
         &lt;dbl&gt;      &lt;int&gt;    &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;             &lt;dbl&gt;
 1        1901      10091        1       15         3.06             2.09 
