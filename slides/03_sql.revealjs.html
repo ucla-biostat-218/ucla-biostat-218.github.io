@@ -433,7 +433,7 @@ Marc A Suchard @ UCLA
 <li><p>Introduced in the 1970s</p></li>
 <li><p>Based on <strong>relational algebra</strong> (algebraic structures for modeling tuples of data), popularized by Edgar Codd (1970, Turing Award, IBM)</p></li>
 <li><p>Developed by Donald Clamberlin and Raymond Boyce (IBM) and initially called SEQUEL (trademark issue)</p></li>
-<li><p>First commercially avaiable in 1979 from IBM</p></li>
+<li><p>First commercially available in 1979 from IBM</p></li>
 <li><p>Also in 1979, Relational Software, Inc released Oracle V2 (targeted for US Navy, CIA)</p></li>
 <li><p>ANSI / ISO “standards” <span class="math inline">\(\ldots\)</span> but not!</p></li>
 <li><p><strong>Most widely used database language</strong></p></li>
@@ -1091,7 +1091,7 @@ INNER JOIN @cdm.observation_period
 </div>
 <div class="callout-content">
 <ul>
-<li>Join <code>CONDITION_OCCURRENCE</code> to <code>CONCEPT_ANCESTOR</code> to find all occurrences of angioedemia or any of its descendents (more later)</li>
+<li>Join <code>CONDITION_OCCURRENCE</code> to <code>CONCEPT_ANCESTOR</code> to find all occurrences of AMI or any of its descendents (more later)</li>
 <li>Use <code>DISTINCT</code> to select at most one record per day</li>
 <li>Join <code>VISIT_OCCURENCE</code> to ensure diagnosis was in-patient or ER</li>
 </ul>
@@ -1143,10 +1143,10 @@ INNER JOIN @cdm.observation_period
 <span id="cb41-39"><a href="#cb41-39" aria-hidden="true" tabindex="-1"></a><span class="st">      age,</span></span>
 <span id="cb41-40"><a href="#cb41-40" aria-hidden="true" tabindex="-1"></a><span class="st">      COUNT(*) AS events</span></span>
 <span id="cb41-41"><a href="#cb41-41" aria-hidden="true" tabindex="-1"></a><span class="st">  FROM tar</span></span>
-<span id="cb41-42"><a href="#cb41-42" aria-hidden="true" tabindex="-1"></a><span class="st">  INNER JOIN @cohort_db_schema.@cohort_table angioedema</span></span>
-<span id="cb41-43"><a href="#cb41-43" aria-hidden="true" tabindex="-1"></a><span class="st">    ON tar.subject_id = angioedema.subject_id</span></span>
-<span id="cb41-44"><a href="#cb41-44" aria-hidden="true" tabindex="-1"></a><span class="st">      AND tar.cohort_start_date &lt;= angioedema.cohort_start_date</span></span>
-<span id="cb41-45"><a href="#cb41-45" aria-hidden="true" tabindex="-1"></a><span class="st">      AND tar.cohort_end_date &gt;= angioedema.cohort_start_date</span></span>
+<span id="cb41-42"><a href="#cb41-42" aria-hidden="true" tabindex="-1"></a><span class="st">  INNER JOIN @cohort_db_schema.@cohort_table ami</span></span>
+<span id="cb41-43"><a href="#cb41-43" aria-hidden="true" tabindex="-1"></a><span class="st">    ON tar.subject_id = ami.subject_id</span></span>
+<span id="cb41-44"><a href="#cb41-44" aria-hidden="true" tabindex="-1"></a><span class="st">      AND tar.cohort_start_date &lt;= ami.cohort_start_date</span></span>
+<span id="cb41-45"><a href="#cb41-45" aria-hidden="true" tabindex="-1"></a><span class="st">      AND tar.cohort_end_date &gt;= ami.cohort_start_date</span></span>
 <span id="cb41-46"><a href="#cb41-46" aria-hidden="true" tabindex="-1"></a><span class="st">  WHERE cohort_definition_id = 2 -- Outcome</span></span>
 <span id="cb41-47"><a href="#cb41-47" aria-hidden="true" tabindex="-1"></a><span class="st">  GROUP BY gender,</span></span>
 <span id="cb41-48"><a href="#cb41-48" aria-hidden="true" tabindex="-1"></a><span class="st">    age</span></span>

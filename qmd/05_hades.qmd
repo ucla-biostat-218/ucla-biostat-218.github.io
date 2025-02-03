@@ -173,7 +173,7 @@ Causal effects at scale and (Bayesian) synthesis
 
 ![](figures/hades_clinical.png)
 
-## Real strength of HADES
+## A real strength of HADES
 
 Federated analyses across a distributed research network
 
@@ -364,7 +364,7 @@ Cons:
 ## We will play with `Strategus` later on
 :::
 
-## Review
+## Review (high-level)
 
 - HADES is a suite of R packages for analyzing observational healthcare data
 
@@ -373,6 +373,24 @@ Cons:
 - Open source, to promote open science (all analytics code can be shared as part of publication)
 
 - Supports federated networks, where data stay locally, and results are shared
+
+## Review (low-level, unique features)
+
+- Re-use of cohort definitions
+
+- Standardization of analytics in open-source software
+  * Many opportunities for testing, review, fixing bugs, etc.
+  * Making it hard to do the wrong thing (opinionated)
+  
+- Advanced methods to reduce bias
+  * Splines for time in self-controlled case series
+  * Large-scale propensity scores in cohort method
+  
+- Objective study diagnostics to improve reliability of evidence
+  * Including negative controls
+
+- Designed to run across a network of databases
+  * Without sharing patient-level data
 
 ## `Capr`: cohort definition application programming in R
 

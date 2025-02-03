@@ -1,5 +1,5 @@
 ---
-title: "Basic characterization (incidence rates)"
+title: "Characterization"
 subtitle: Biostat 218
 author: "Marc A Suchard @ UCLA"
 date: "February 2, 2025"
@@ -48,11 +48,15 @@ In these lectures we will learn:
 
 ## Cohort characterization {.scrollable}
 
-$\ldots$ describes the baseline and post-index characteristics of people in a cohort
+![](figures/characterization_cartoon.png)
+
+$\ldots$ describes the baseline (and post-index) characteristics of people in a cohort
 
 - Who gets the disease / outcome ?
 
 Standardized OHDSI approaches provide describe statistics of **all** conditions, drug and device exposures, procedures and other clinical observations (generally at index-date, O(10,000))
+
+## Example
 
 :::: {layout="[50,50]"}
 ::: {#first-column}
@@ -63,7 +67,7 @@ Standardized OHDSI approaches provide describe statistics of **all** conditions,
 :::
 ::::
 
-- Example from a [comparative effectiveness study](https://www.thelancet.com/journals/landig/article/PIIS2589-7500(20)30289-2/fulltext)
+- Taken from a [comparative effectiveness study](https://www.thelancet.com/journals/landig/article/PIIS2589-7500(20)30289-2/fulltext)
 
 ## Using `FeatureExtraction`
 
@@ -127,7 +131,9 @@ covariateData2 <- aggregateCovariates(covariateData)
 
 ## Incidence rates {.scrollable}
 
-Characterization along with incidence rates (how often do people get the disease / outcome) are often of sufficient research interest along to warrant publication
+![](figures/incidence_cartoon.png)
+
+Characterization along with incidence rates (how often do people get the disease / outcome) are often of sufficient research interest alone to warrant publication
 
 :::: {layout="[50,50]"}
 ::: {#first-column}
@@ -140,7 +146,7 @@ Characterization along with incidence rates (how often do people get the disease
 
 ## Incidence {.scrollable}
 
-Incidence rates (and proportions) assess the occurrence a new outcome in a population during a **time-at-risk** (TAR)
+Incidence rates (and proportions) assess the occurrence of a new outcome (entry into outcome (O) cohort) in a population (in a target (T) cohort) during a **time-at-risk** (TAR)
 
 ![](figures/incidenceTimeline.png)
 

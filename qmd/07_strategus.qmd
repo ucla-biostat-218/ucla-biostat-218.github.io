@@ -99,7 +99,11 @@ Strategus modules can be combined to accommodate various study designs
 
 ![](figures/strategus3.png)
 
-## `Strategus` design
+## `Strategus` external design
+
+![](figures/strategus_overview.png)
+
+## `Strategus` internal design
 
 ![](figures/strategus4.png)
 
@@ -453,7 +457,7 @@ ShinyAppBuilder::createShinyApp(
 We will discuss each of the other analysis types; they are much more interesting
 :::
 
-## Open science results
+## Open science results {.scrollable}
 
 OHDSI study artifacts are all **publicly** available.  See, e.g.
 
@@ -464,3 +468,16 @@ OHDSI study artifacts are all **publicly** available.  See, e.g.
 ::: {.callout-important}
 ## Consider using these for your class projects
 :::
+
+Running [example](https://results.ohdsi.org/app/25_EstimationTutorial) for upcoming OHDSI tutorials
+
+- Indication:
+  * Type 2 diabetes mellitus
+  
+- Exposures:
+  * GLP1 receptor agonists (GPL1RA)
+  * DPP4 inhibitors (DPP4I)
+  
+- Outcomes:
+  * Acute myocardial infarction (AMI)
+  * Diarrhea

@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Marc A Suchard @ UCLA">
+<meta name="dcterms.date" content="2025-02-02">
+
+<title>HADES - open-source software for observational research</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+</head>
+
+<body class="floating">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#what-is-hades" id="toc-what-is-hades" class="nav-link" data-scroll-target="#what-is-hades"><span class="header-section-number">2</span> What is HADES?</a></li>
+  <li><a href="#hades-design-priniciples" id="toc-hades-design-priniciples" class="nav-link" data-scroll-target="#hades-design-priniciples"><span class="header-section-number">3</span> HADES design priniciples</a></li>
+  <li><a href="#hades-paper" id="toc-hades-paper" class="nav-link" data-scroll-target="#hades-paper"><span class="header-section-number">4</span> HADES paper</a></li>
+  <li><a href="#hades-supporting-packages" id="toc-hades-supporting-packages" class="nav-link" data-scroll-target="#hades-supporting-packages"><span class="header-section-number">5</span> HADES supporting packages</a></li>
+  <li><a href="#hades-cohort-packages" id="toc-hades-cohort-packages" class="nav-link" data-scroll-target="#hades-cohort-packages"><span class="header-section-number">6</span> HADES cohort packages</a></li>
+  <li><a href="#hades-analytic-packages" id="toc-hades-analytic-packages" class="nav-link" data-scroll-target="#hades-analytic-packages"><span class="header-section-number">7</span> HADES analytic packages</a></li>
+  <li><a href="#hades-output" id="toc-hades-output" class="nav-link" data-scroll-target="#hades-output"><span class="header-section-number">8</span> HADES output</a></li>
+  <li><a href="#publications-using-hades" id="toc-publications-using-hades" class="nav-link" data-scroll-target="#publications-using-hades"><span class="header-section-number">9</span> Publications using HADES</a></li>
+  <li><a href="#a-real-strength-of-hades" id="toc-a-real-strength-of-hades" class="nav-link" data-scroll-target="#a-real-strength-of-hades"><span class="header-section-number">10</span> A real strength of HADES</a></li>
+  <li><a href="#distributed-research-network" id="toc-distributed-research-network" class="nav-link" data-scroll-target="#distributed-research-network"><span class="header-section-number">11</span> Distributed research network</a></li>
+  <li><a href="#distributed-research-network-1" id="toc-distributed-research-network-1" class="nav-link" data-scroll-target="#distributed-research-network-1"><span class="header-section-number">12</span> Distributed research network</a></li>
+  <li><a href="#distributed-research-network-2" id="toc-distributed-research-network-2" class="nav-link" data-scroll-target="#distributed-research-network-2"><span class="header-section-number">13</span> Distributed research network</a></li>
+  <li><a href="#distributed-research-network-3" id="toc-distributed-research-network-3" class="nav-link" data-scroll-target="#distributed-research-network-3"><span class="header-section-number">14</span> Distributed research network</a></li>
+  <li><a href="#distributed-research-network-4" id="toc-distributed-research-network-4" class="nav-link" data-scroll-target="#distributed-research-network-4"><span class="header-section-number">15</span> Distributed research network</a></li>
+  <li><a href="#distributed-research-network-5" id="toc-distributed-research-network-5" class="nav-link" data-scroll-target="#distributed-research-network-5"><span class="header-section-number">16</span> Distributed research network</a></li>
+  <li><a href="#current-network-implementation" id="toc-current-network-implementation" class="nav-link" data-scroll-target="#current-network-implementation"><span class="header-section-number">17</span> Current network implementation</a></li>
+  <li><a href="#current-network-implementation-1" id="toc-current-network-implementation-1" class="nav-link" data-scroll-target="#current-network-implementation-1"><span class="header-section-number">18</span> Current network implementation</a></li>
+  <li><a href="#current-network-implementation-2" id="toc-current-network-implementation-2" class="nav-link" data-scroll-target="#current-network-implementation-2"><span class="header-section-number">19</span> Current network implementation</a></li>
+  <li><a href="#hades-organization" id="toc-hades-organization" class="nav-link" data-scroll-target="#hades-organization"><span class="header-section-number">20</span> HADES organization</a></li>
+  <li><a href="#continuous-integration" id="toc-continuous-integration" class="nav-link" data-scroll-target="#continuous-integration"><span class="header-section-number">21</span> Continuous integration</a></li>
+  <li><a href="#hades-release-process" id="toc-hades-release-process" class="nav-link" data-scroll-target="#hades-release-process"><span class="header-section-number">22</span> HADES release process</a></li>
+  <li><a href="#cran" id="toc-cran" class="nav-link" data-scroll-target="#cran"><span class="header-section-number">23</span> CRAN</a></li>
+  <li><a href="#hades-wide-release" id="toc-hades-wide-release" class="nav-link" data-scroll-target="#hades-wide-release"><span class="header-section-number">24</span> HADES-wide release</a></li>
+  <li><a href="#strategus" id="toc-strategus" class="nav-link" data-scroll-target="#strategus"><span class="header-section-number">25</span> <code>Strategus</code></a></li>
+  <li><a href="#review-high-level" id="toc-review-high-level" class="nav-link" data-scroll-target="#review-high-level"><span class="header-section-number">26</span> Review (high-level)</a></li>
+  <li><a href="#review-low-level-unique-features" id="toc-review-low-level-unique-features" class="nav-link" data-scroll-target="#review-low-level-unique-features"><span class="header-section-number">27</span> Review (low-level, unique features)</a></li>
+  <li><a href="#capr-cohort-definition-application-programming-in-r" id="toc-capr-cohort-definition-application-programming-in-r" class="nav-link" data-scroll-target="#capr-cohort-definition-application-programming-in-r"><span class="header-section-number">28</span> <code>Capr</code>: cohort definition application programming in R</a></li>
+  <li><a href="#where-capr-sits" id="toc-where-capr-sits" class="nav-link" data-scroll-target="#where-capr-sits"><span class="header-section-number">29</span> Where <code>Capr</code> sits</a></li>
+  <li><a href="#first-exposure-to-lisinopril" id="toc-first-exposure-to-lisinopril" class="nav-link" data-scroll-target="#first-exposure-to-lisinopril"><span class="header-section-number">30</span> First exposure to lisinopril</a></li>
+  <li><a href="#building-concept-sets" id="toc-building-concept-sets" class="nav-link" data-scroll-target="#building-concept-sets"><span class="header-section-number">31</span> Building concept sets</a></li>
+  <li><a href="#full-cohort-definition" id="toc-full-cohort-definition" class="nav-link" data-scroll-target="#full-cohort-definition"><span class="header-section-number">32</span> Full cohort definition</a></li>
+  <li><a href="#using-capr-cohortgenerator-and-circer" id="toc-using-capr-cohortgenerator-and-circer" class="nav-link" data-scroll-target="#using-capr-cohortgenerator-and-circer"><span class="header-section-number">33</span> Using <code>Capr</code> <code>CohortGenerator</code> and <code>CirceR</code></a></li>
+  <li><a href="#create-a-simple-capr-cohort" id="toc-create-a-simple-capr-cohort" class="nav-link" data-scroll-target="#create-a-simple-capr-cohort"><span class="header-section-number">34</span> Create a simple <code>Capr</code> cohort</a></li>
+  <li><a href="#create-more-complex-cohorts" id="toc-create-more-complex-cohorts" class="nav-link" data-scroll-target="#create-more-complex-cohorts"><span class="header-section-number">35</span> Create more complex cohorts</a></li>
+  <li><a href="#print-friendly" id="toc-print-friendly" class="nav-link" data-scroll-target="#print-friendly"><span class="header-section-number">36</span> Print-friendly</a></li>
+  <li><a href="#generate-the-cohorts" id="toc-generate-the-cohorts" class="nav-link" data-scroll-target="#generate-the-cohorts"><span class="header-section-number">37</span> Generate the cohorts</a></li>
+  <li><a href="#generate-the-cohorts-1" id="toc-generate-the-cohorts-1" class="nav-link" data-scroll-target="#generate-the-cohorts-1"><span class="header-section-number">38</span> Generate the cohorts</a></li>
+  <li><a href="#review" id="toc-review" class="nav-link" data-scroll-target="#review"><span class="header-section-number">39</span> Review</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="05_hades.revealjs.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">HADES - open-source software for observational research</h1>
+<p class="subtitle lead">Biostat 218</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Marc A Suchard @ UCLA </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 2, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
+<p>In these lectures we will learn:</p>
+<ul>
+<li><p>TODO</p></li>
+<li><p>TODO</p></li>
+<li><p>TODO</p></li>
+</ul>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/hades.png" class="img-fluid figure-img" style="width:50.0%"></p>
+</figure>
+</div>
+</div>
+</section>
+<section id="what-is-hades" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="what-is-hades"><span class="header-section-number">2</span> What is HADES?</h2>
+<p>Health analytics data to evidence suite (HADES)</p>
+<ul>
+<li><p>Collection of 35 <code>R</code> packages used in almost every OHDSI study</p></li>
+<li><p>Run directly against data in the OMOP CDM</p>
+<ul>
+<li>Health care insurance claims</li>
+<li>Electronic health records</li>
+</ul></li>
+<li><p>Performan observational analyses</p>
+<ul>
+<li>Characterization</li>
+<li>Causal effect estimation</li>
+<li>Patient-level prediction</li>
+</ul></li>
+</ul>
+<p><a href="https://ohdsi.github.io/Hades/">Main HADES website</a></p>
+</section>
+<section id="hades-design-priniciples" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="hades-design-priniciples"><span class="header-section-number">3</span> HADES design priniciples</h2>
+<ul>
+<li><p>Promote <strong>open science</strong> through open source</p></li>
+<li><p>Execute directly against the <strong>OMOP CDM</strong></p></li>
+<li><p>Implement <strong>best practices</strong> as informed by methods research</p></li>
+<li><p>Provide <strong>high quality software</strong> (documented, maintained, tested, validated)</p></li>
+<li><p>Facilitate <strong>large-scale analytics</strong>, answering many questions at once</p></li>
+<li><p>Support <strong>big data</strong>, covering hundreds of millions of lives</p></li>
+<li><p>Enable <strong>federated</strong> analyses</p></li>
+<li><p>Run across a <strong>wide variety of technical infrastructures</strong></p></li>
+</ul>
+</section>
+<section id="hades-paper" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="hades-paper"><span class="header-section-number">4</span> HADES paper</h2>
+<ul>
+<li><p>HADES paper goes deeper into HADES design prinicples</p></li>
+<li><p>Please <strong>cite it</strong> when you use HADES</p></li>
+</ul>
+<p><img src="figures/hades_paper.png" class="img-fluid"></p>
+<p>Schuemie M, Reps J, Black A, et al.&nbsp;2024 Health-Analytics Data to Evidence Suite (HADES): Open-Source Software for Observational Research. Stud Health Technol Inform. 2024 Jan 25:310:966-970. doi: <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10868467/">0.3233/SHTI231108</a></p>
+</section>
+<section id="hades-supporting-packages" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="hades-supporting-packages"><span class="header-section-number">5</span> HADES supporting packages</h2>
+<ul>
+<li><p><code>DatabaseConnector</code> + <code>SqlRender</code>: write code once, run on all supported platforms (SQL Server, Oracle, Postgres, RedShift, BigQuery, DataBricks, Snowflake)</p></li>
+<li><p><code>Andromeda</code>: Work with data objects too big to fit in memory</p></li>
+<li><p><code>ParallelLogger</code>: extensive logging to facilitate remote debugging</p></li>
+<li><p><code>Cyclops</code>: fit <strong>very large</strong> regression models (logistic, Poisson, Cox)</p></li>
+<li><p><code>DataQualityDashboard</code>: evaluate data quality</p></li>
+</ul>
+</section>
+<section id="hades-cohort-packages" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="hades-cohort-packages"><span class="header-section-number">6</span> HADES cohort packages</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We define a cohort as a set of persons who satisfy one or more inclusion criteria for a duration of time. - Exposure cohorts (e.g.&nbsp;people exposed to warfarin) - Outcome cohorts (e.g.&nbsp;people experiencing GI bleeding) - Cohorts of special interest (e.g.&nbsp;pregnant persons)</p>
+</div>
+</div>
+<ul>
+<li><p><code>Capr</code>: define cohorts using complex logic</p></li>
+<li><p><code>PhenotypeLibrary</code>: for storing OHDSI-approved cohort definitions</p></li>
+<li><p><code>CirceR</code>: for turning cohort definitions into SQL or human-readable text</p></li>
+<li><p><code>CohortGenerator</code>: for instantiating cohorts in a database</p></li>
+<li><p><code>CohortDiagnostics</code> and <code>PheValuator</code>: for evaluating cohorts</p></li>
+</ul>
+</section>
+<section id="hades-analytic-packages" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="hades-analytic-packages"><span class="header-section-number">7</span> HADES analytic packages</h2>
+<ul>
+<li><p><code>Characterization</code>: characterizations of a target and a comparator cohort</p></li>
+<li><p><code>CohortIncidence</code>: calculate incidence rates and proportions</p></li>
+<li><p><code>PatientLevelPrediction</code>: develop and evaluate prediction models</p></li>
+<li><p><code>CohortMethod</code> and <code>SelfControlledCaseSeries</code>: estimate causal effects</p></li>
+<li><p><code>EmpiricalCalibration</code>: calibrate causal effect estimates based on negative controls</p></li>
+<li><p><code>EvidenceSynthesis</code>: combine causal effect estimates across databases without sharing patient-level data.</p></li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Research group focus
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Causal effects at scale and (Bayesian) synthesis</p>
+</div>
+</div>
+</section>
+<section id="hades-output" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="hades-output"><span class="header-section-number">8</span> HADES output</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: center;">
+<ul>
+<li><p>R objects possibly containing patient-level data</p></li>
+<li><p>CSV files / database tables for sharing</p></li>
+<li><p>Shiny apps</p></li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<p><img src="figures/hades_output.png" class="img-fluid"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="publications-using-hades" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="publications-using-hades"><span class="header-section-number">9</span> Publications using HADES</h2>
+<ul>
+<li><p>44 peer-reviewed clinical research papers</p></li>
+<li><p>40 methods research papers</p></li>
+</ul>
+<p><a href="https://ohdsi.github.io/Hades/publications.html">https://ohdsi.github.io/Hades/publications.html</a></p>
+<p><img src="figures/hades_clinical.png" class="img-fluid"></p>
+</section>
+<section id="a-real-strength-of-hades" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="a-real-strength-of-hades"><span class="header-section-number">10</span> A real strength of HADES</h2>
+<p>Federated analyses across a distributed research network</p>
+</section>
+<section id="distributed-research-network" class="level2" data-number="11">
+<h2 data-number="11" class="anchored" data-anchor-id="distributed-research-network"><span class="header-section-number">11</span> Distributed research network</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li>Multiple sites with data
+<ul>
+<li>Hospital EHRs</li>
+<li>Administrative Claims</li>
+</ul></li>
+<li>Patient-level data cannot be shared</li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-right">
+<figure class="figure">
+<p><img src="figures/drn1a.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="distributed-research-network-1" class="level2" data-number="12">
+<h2 data-number="12" class="anchored" data-anchor-id="distributed-research-network-1"><span class="header-section-number">12</span> Distributed research network</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li>Any site can lead a study</li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-right">
+<figure class="figure">
+<p><img src="figures/drn2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="distributed-research-network-2" class="level2" data-number="13">
+<h2 data-number="13" class="anchored" data-anchor-id="distributed-research-network-2"><span class="header-section-number">13</span> Distributed research network</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li><p>Any site can lead a study</p></li>
+<li><p>Analysis code is developed locally</p></li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-right">
+<figure class="figure">
+<p><img src="figures/drn3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="distributed-research-network-3" class="level2" data-number="14">
+<h2 data-number="14" class="anchored" data-anchor-id="distributed-research-network-3"><span class="header-section-number">14</span> Distributed research network</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li><p>Any site can lead a study</p></li>
+<li><p>Analysis code is developed locally</p></li>
+<li><p>Code is distributed to study participants</p></li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-right">
+<figure class="figure">
+<p><img src="figures/drn3.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="distributed-research-network-4" class="level2" data-number="15">
+<h2 data-number="15" class="anchored" data-anchor-id="distributed-research-network-4"><span class="header-section-number">15</span> Distributed research network</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li><p>Any site can lead a study</p></li>
+<li><p>Analysis code is developed locally</p></li>
+<li><p>Code is distributed to study participants</p></li>
+<li><p>Results are generated (aggredated statistics)</p></li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-right">
+<figure class="figure">
+<p><img src="figures/drn4.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="distributed-research-network-5" class="level2" data-number="16">
+<h2 data-number="16" class="anchored" data-anchor-id="distributed-research-network-5"><span class="header-section-number">16</span> Distributed research network</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li><p>Any site can lead a study</p></li>
+<li><p>Analysis code is developed locally</p></li>
+<li><p>Code is distributed to study participants</p></li>
+<li><p>Results are generated (aggredated statistics)</p></li>
+<li><p>Results are sent back to study lead</p></li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-right">
+<figure class="figure">
+<p><img src="figures/drn4.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="current-network-implementation" class="level2" data-number="17">
+<h2 data-number="17" class="anchored" data-anchor-id="current-network-implementation"><span class="header-section-number">17</span> Current network implementation</h2>
+<p><img src="figures/drn_impl1.png" class="img-fluid"></p>
+</section>
+<section id="current-network-implementation-1" class="level2" data-number="18">
+<h2 data-number="18" class="anchored" data-anchor-id="current-network-implementation-1"><span class="header-section-number">18</span> Current network implementation</h2>
+<p><img src="figures/drn_impl2.png" class="img-fluid"></p>
+</section>
+<section id="current-network-implementation-2" class="level2" data-number="19">
+<h2 data-number="19" class="anchored" data-anchor-id="current-network-implementation-2"><span class="header-section-number">19</span> Current network implementation</h2>
+<p><img src="figures/drn_impl3.png" class="img-fluid"></p>
+</section>
+<section id="hades-organization" class="level2" data-number="20">
+<h2 data-number="20" class="anchored" data-anchor-id="hades-organization"><span class="header-section-number">20</span> HADES organization</h2>
+<ul>
+<li><p>Developer guidelines</p></li>
+<li><p>Code style guide</p></li>
+<li><p>Each package has 1 or 2 maintainers.</p></li>
+<li><p>Monthly meetings (3rd Thursday of the month, at 9am Pacific time)</p></li>
+<li><p>Discussions on forums, Teams channel, issue trackers</p></li>
+<li><p>Bi-weekly open-source community calls (Wednesdays, at 8am Pacific time)</p></li>
+</ul>
+</section>
+<section id="continuous-integration" class="level2" data-number="21">
+<h2 data-number="21" class="anchored" data-anchor-id="continuous-integration"><span class="header-section-number">21</span> Continuous integration</h2>
+<p>At each push to GitHub:</p>
+<ul>
+<li><p>Run R Check on Windows, MacOS, and Linux</p></li>
+<li><p>Unit tests can use a set of database servers (SQL Server, PostgreSQL, Oracle, RedShift, Spark, )</p></li>
+<li><p>Compute code coverage</p></li>
+<li><p>If push to main branch and higher version in DESCRIPTION, create release</p></li>
+</ul>
+</section>
+<section id="hades-release-process" class="level2 scrollable" data-number="22">
+<h2 class="scrollable anchored" data-number="22" data-anchor-id="hades-release-process"><span class="header-section-number">22</span> HADES release process</h2>
+<div class="border">
+<p><img src="figures/hades_process.png" class="img-fluid"></p>
+</div>
+<p>Pros:</p>
+<ul>
+<li><p>Head of master is always latest released version:</p>
+<ul>
+<li><code>remotes::install_github("ohdsi/Eunomia")</code></li>
+</ul></li>
+<li><p>Git tag guaranteed to correspond to version in DESCRIPTION:</p>
+<ul>
+<li><code>remotes::install_github("ohdsi/Eunomia", ref="v1.0.0")</code></li>
+</ul></li>
+<li><p>A release is guaranteed to pass all tests</p></li>
+<li><p>Prevents accidental installation of (buggy) develop version</p></li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>Cannot use main for development</li>
+</ul>
+</section>
+<section id="cran" class="level2" data-number="23">
+<h2 data-number="23" class="anchored" data-anchor-id="cran"><span class="header-section-number">23</span> CRAN</h2>
+<ul>
+<li><p>Some HADES packages are in CRAN for easier install</p></li>
+<li><p>Getting things in CRAN is hard, because</p>
+<ul>
+<li>Package size &lt;7mb</li>
+<li>Cannot use database testing servers, but also not allowed not to have running examples / unit tests.</li>
+<li>CRAN requires code runs on really old platforms (e.g.&nbsp;Java 1.5, Solaris)</li>
+</ul></li>
+</ul>
+</section>
+<section id="hades-wide-release" class="level2 scrollable" data-number="24">
+<h2 class="scrollable anchored" data-number="24" data-anchor-id="hades-wide-release"><span class="header-section-number">24</span> HADES-wide release</h2>
+<ul>
+<li><p>HADES-wide release twice a year</p></li>
+<li><p>Currently available as <code>renv</code> lock file, hopefully as <code>docker</code> container starting next release</p></li>
+</ul>
+<div class="border">
+<p><img src="figures/hades_release.png" class="img-fluid"></p>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>docker</code> often raises security concerns <em>inside</em> large organizations</p>
+</div>
+</div>
+</section>
+<section id="strategus" class="level2" data-number="25">
+<h2 data-number="25" class="anchored" data-anchor-id="strategus"><span class="header-section-number">25</span> <code>Strategus</code></h2>
+<ul>
+<li><p>Most people who would like to use HADES analytics do not know R</p></li>
+<li><p><code>Strategus</code> aims to have analysis specs as input (JSON), and results as output (CSV files), with (Shiny) viewers for the output (after uploading to a database)</p></li>
+<li><p>Modular design: a study spec can list multiple modules, such as cohort generation + cohort method</p></li>
+<li><p>Move away from sharing code across the network to sharing study specs only (for security and ease of distribution)</p></li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+We will play with <code>Strategus</code> later on
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</section>
+<section id="review-high-level" class="level2" data-number="26">
+<h2 data-number="26" class="anchored" data-anchor-id="review-high-level"><span class="header-section-number">26</span> Review (high-level)</h2>
+<ul>
+<li><p>HADES is a suite of R packages for analyzing observational healthcare data</p></li>
+<li><p>Thanks to the OMOP CDM, HADES runs on a wide variety of data sources across the world</p></li>
+<li><p>Open source, to promote open science (all analytics code can be shared as part of publication)</p></li>
+<li><p>Supports federated networks, where data stay locally, and results are shared</p></li>
+</ul>
+</section>
+<section id="review-low-level-unique-features" class="level2" data-number="27">
+<h2 data-number="27" class="anchored" data-anchor-id="review-low-level-unique-features"><span class="header-section-number">27</span> Review (low-level, unique features)</h2>
+<ul>
+<li><p>Re-use of cohort definitions</p></li>
+<li><p>Standardization of analytics in open-source software</p>
+<ul>
+<li>Many opportunities for testing, review, fixing bugs, etc.</li>
+<li>Making it hard to do the wrong thing (opinionated)</li>
+</ul></li>
+<li><p>Advanced methods to reduce bias</p>
+<ul>
+<li>Splines for time in self-controlled case series</li>
+<li>Large-scale propensity scores in cohort method</li>
+</ul></li>
+<li><p>Objective study diagnostics to improve reliability of evidence</p>
+<ul>
+<li>Including negative controls</li>
+</ul></li>
+<li><p>Designed to run across a network of databases</p>
+<ul>
+<li>Without sharing patient-level data</li>
+</ul></li>
+</ul>
+</section>
+<section id="capr-cohort-definition-application-programming-in-r" class="level2" data-number="28">
+<h2 data-number="28" class="anchored" data-anchor-id="capr-cohort-definition-application-programming-in-r"><span class="header-section-number">28</span> <code>Capr</code>: cohort definition application programming in R</h2>
+<p>A language for expressing OHDSI cohort definitions in R code</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A cohort is a set of persons who satisfy one or more inclusion criteria for a duration of time</p>
+<ul>
+<li>One person may belong to multiple cohorts</li>
+<li>One person may belong to the same cohort for multiple different time periods</li>
+<li>One person may not belong to the same cohort multiple times during the same period of time</li>
+<li>A cohort may have zero or more members</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="where-capr-sits" class="level2" data-number="29">
+<h2 data-number="29" class="anchored" data-anchor-id="where-capr-sits"><span class="header-section-number">29</span> Where <code>Capr</code> sits</h2>
+<p><img src="figures/capr1.png" class="img-fluid"></p>
+</section>
+<section id="first-exposure-to-lisinopril" class="level2" data-number="30">
+<h2 data-number="30" class="anchored" data-anchor-id="first-exposure-to-lisinopril"><span class="header-section-number">30</span> First exposure to lisinopril</h2>
+<p><img src="figures/capr_anatomy.png" class="img-fluid"></p>
+<p>Need to define:</p>
+<ul>
+<li><p>exposure to <strong>lisinopril</strong> (ingredient 1308216, <a href="https://athena.ohdsi.org/search-terms/terms/1308216">ATHENA</a>)</p></li>
+<li><p>diagnosis of <strong>hypertension</strong> (SOMED condition 320128, <a href="https://athena.ohdsi.org/search-terms/terms/320128">ATHENA</a>)</p></li>
+</ul>
+</section>
+<section id="building-concept-sets" class="level2" data-number="31">
+<h2 data-number="31" class="anchored" data-anchor-id="building-concept-sets"><span class="header-section-number">31</span> Building concept sets</h2>
+<p>We want to include all drugs containing lisinopril (all <strong>descendents</strong> of lisinopril)</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Capr)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>lisinopril <span class="ot">&lt;-</span> <span class="fu">cs</span>(<span class="fu">descendants</span>(<span class="dv">1308216</span>), <span class="at">name =</span> <span class="st">"lisinopril"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>lisinopril</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>── &lt;Capr Concept Set&gt; lisinopril ───────────────────────────────────────────────
+# A tibble: 1 × 9
+  conceptId conceptCode conceptName domainId vocabularyId standardConcept
+      &lt;int&gt; &lt;chr&gt;       &lt;chr&gt;       &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;          
+1   1308216 ""          ""          ""       ""           ""             
+# ℹ 3 more variables: includeDescendants &lt;lgl&gt;, isExcluded &lt;lgl&gt;,
+#   includeMapped &lt;lgl&gt;</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>hypertension <span class="ot">&lt;-</span> <span class="fu">cs</span>(<span class="fu">descendants</span>(<span class="dv">320128</span>), <span class="at">name =</span> <span class="st">"hypertension"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="full-cohort-definition" class="level2 scrollable" data-number="32">
+<h2 class="scrollable anchored" data-number="32" data-anchor-id="full-cohort-definition"><span class="header-section-number">32</span> Full cohort definition</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>lisinoprilCohort <span class="ot">&lt;-</span> <span class="fu">cohort</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">entry =</span> <span class="fu">entry</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drugExposure</span>(lisinopril), <span class="co"># use `drug_exposure` table</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">firstOccurrence</span>()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">attrition =</span> <span class="fu">attrition</span>(</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"365 days of prior observation"</span> <span class="ot">=</span> <span class="fu">withAll</span>(</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">continuousObservation</span>(<span class="at">prior =</span> <span class="dv">365</span>) <span class="co"># use `observation_period` table</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Prior hypertension"</span> <span class="ot">=</span> <span class="fu">withAll</span>(</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">atLeast</span>(<span class="dv">1</span>, <span class="fu">conditionOccurrence</span>(hypertension), <span class="co"># use `condition_occurence` table</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>              <span class="fu">duringInterval</span>(<span class="fu">eventStarts</span>(<span class="sc">-</span><span class="dv">365</span>, <span class="dv">0</span>))</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">exit =</span> <span class="fu">exit</span>(</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">endStrategy =</span> <span class="fu">drugExit</span>(lisinopril,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                           <span class="at">persistenceWindow =</span> <span class="dv">30</span>,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>                           <span class="at">surveillanceWindow =</span> <span class="dv">0</span>)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="border">
+<p><img src="figures/capr_exit.png" class="img-fluid"></p>
+</div>
+</section>
+<section id="using-capr-cohortgenerator-and-circer" class="level2 scrollable" data-number="33">
+<h2 class="scrollable anchored" data-number="33" data-anchor-id="using-capr-cohortgenerator-and-circer"><span class="header-section-number">33</span> Using <code>Capr</code> <code>CohortGenerator</code> and <code>CirceR</code></h2>
+<p>Here we will design a cohort of patients suffering from a gastroinstinal (GI) bleed and build the cohort table in <code>Eumonia</code>.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Capr)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(CohortGenerator)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(CirceR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>and connect to the database</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DatabaseConnector)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># absolutePath &lt;- file.path(getwd(), "data")</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Sys.setenv(EUNOMIA_DATA_FOLDER=absolutePath)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># absoluteFileName &lt;- file.path(getwd(), "data", "GiBleed_5.3.sqlite")</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># connectionDetails &lt;-</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Eunomia::getEunomiaConnectionDetails(</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># databaseFile = absoluteFileName</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># )</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>giBleed <span class="ot">&lt;-</span> <span class="fu">cs</span>(<span class="fu">descendants</span>(<span class="dv">192671</span>), <span class="at">name =</span> <span class="st">"GI bleed"</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">as.json</span>(giBleed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "items": [
+    {
+      "concept": {
+        "CONCEPT_ID": 192671,
+        "CONCEPT_NAME": "",
+        "STANDARD_CONCEPT": "",
+        "STANDARD_CONCEPT_CAPTION": "",
+        "INVALID_REASON": "",
+        "INVALID_REASON_CAPTION": "",
+        "CONCEPT_CODE": "",
+        "DOMAIN_ID": "",
+        "VOCABULARY_ID": "",
+        "CONCEPT_CLASS_ID": ""
+      },
+      "isExcluded": false,
+      "includeDescendants": true,
+      "includeMapped": false
+    }
+  ]
+} </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Can retrieve info from CDM if wanted</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>absoluteFileName <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">getwd</span>(), <span class="st">"data"</span>, <span class="st">"synthetic.duckdb"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>connection <span class="ot">&lt;-</span> <span class="fu">connect</span>(<span class="at">dbms =</span> <span class="st">"duckdb"</span>, <span class="at">server =</span> absoluteFileName)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>giBleed <span class="ot">&lt;-</span> <span class="fu">getConceptSetDetails</span>(giBleed, connection, <span class="st">"main"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Input SQL has already been translated, so not translating again
+This warning is displayed once every 8 hours.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">disconnect</span>(connection)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">as.json</span>(giBleed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{
+  "items": [
+    {
+      "concept": {
+        "CONCEPT_ID": 192671,
+        "CONCEPT_NAME": "Gastrointestinal hemorrhage",
+        "STANDARD_CONCEPT": "S",
+        "STANDARD_CONCEPT_CAPTION": "Standard",
+        "INVALID_REASON": "V",
+        "INVALID_REASON_CAPTION": "Valid",
+        "CONCEPT_CODE": "74474003",
+        "DOMAIN_ID": "Condition",
+        "VOCABULARY_ID": "SNOMED",
+        "CONCEPT_CLASS_ID": "Clinical Finding"
+      },
+      "isExcluded": false,
+      "includeDescendants": true,
+      "includeMapped": false
+    }
+  ]
+} </code></pre>
+</div>
+</div>
+</section>
+<section id="create-a-simple-capr-cohort" class="level2" data-number="34">
+<h2 data-number="34" class="anchored" data-anchor-id="create-a-simple-capr-cohort"><span class="header-section-number">34</span> Create a simple <code>Capr</code> cohort</h2>
+<p>Patients enter cohort when a concept in concept set occurs in <code>condition_occurrence</code> table</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>giBleed <span class="ot">&lt;-</span> <span class="fu">cs</span>(<span class="fu">descendants</span>(<span class="dv">192671</span>), <span class="at">name =</span> <span class="st">"GI bleed"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>giBleedCohort <span class="ot">&lt;-</span> <span class="fu">cohort</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">entry =</span> <span class="fu">entry</span>(<span class="fu">conditionOccurrence</span>(giBleed))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>By default, patients exit cohort at the end of their observation period</p>
+</section>
+<section id="create-more-complex-cohorts" class="level2 scrollable" data-number="35">
+<h2 class="scrollable anchored" data-number="35" data-anchor-id="create-more-complex-cohorts"><span class="header-section-number">35</span> Create more complex cohorts</h2>
+<p>We want two cohorts with inclusion rules and exit criteria</p>
+<ul>
+<li><p>No prior exposure to NSAIDS</p></li>
+<li><p>Exit at end of exposure, allowing 30-days btw RXs</p></li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Concept sets:</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>celecoxibConceptId <span class="ot">&lt;-</span> <span class="dv">1118084</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>diclofenacConceptId <span class="ot">&lt;-</span> <span class="dv">1124300</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>nsaids <span class="ot">&lt;-</span> <span class="fu">cs</span>(</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">descendants</span>(<span class="fu">c</span>(celecoxibConceptId, diclofenacConceptId)), </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"NSAIDS"</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>celecoxib <span class="ot">&lt;-</span> <span class="fu">cs</span>(</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">descendants</span>(celecoxibConceptId),</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"Celecoxib"</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>diclofenac  <span class="ot">&lt;-</span> <span class="fu">cs</span>(</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">descendants</span>(diclofenacConceptId),</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"Diclofenac"</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Inclusion criterion:</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>attrition <span class="ot">=</span> <span class="fu">attrition</span>(</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="st">"No prior NSAID exposure"</span> <span class="ot">=</span> <span class="fu">withAll</span>(</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">exactly</span>(<span class="dv">0</span>, <span class="fu">drugExposure</span>(nsaids), <span class="fu">duringInterval</span>(<span class="fu">eventStarts</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="dv">1</span>)))</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Cohorts:</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>celecoxibCohort <span class="ot">&lt;-</span> <span class="fu">cohort</span>(</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">entry =</span> <span class="fu">entry</span>(</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drugExposure</span>(celecoxib, <span class="fu">firstOccurrence</span>()),</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">observationWindow =</span> <span class="fu">continuousObservation</span>(<span class="at">priorDays =</span> <span class="dv">365</span>)</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">attrition =</span> attrition,</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">exit =</span> <span class="fu">exit</span>(<span class="at">endStrategy =</span> <span class="fu">drugExit</span>(celecoxib,</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">persistenceWindow =</span> <span class="dv">30</span>,</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">surveillanceWindow =</span> <span class="dv">0</span>))</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>diclofenacCohort <span class="ot">&lt;-</span> <span class="fu">cohort</span>(</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">entry =</span> <span class="fu">entry</span>(</span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">drugExposure</span>(diclofenac, <span class="fu">firstOccurrence</span>()),</span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">observationWindow =</span> <span class="fu">continuousObservation</span>(<span class="at">priorDays =</span> <span class="dv">365</span>)</span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>  <span class="at">attrition =</span> attrition,</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">exit =</span> <span class="fu">exit</span>(<span class="at">endStrategy =</span> <span class="fu">drugExit</span>(diclofenac,</span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">persistenceWindow =</span> <span class="dv">30</span>,</span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">surveillanceWindow =</span> <span class="dv">0</span>))</span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="print-friendly" class="level2 scrollable" data-number="36">
+<h2 class="scrollable anchored" data-number="36" data-anchor-id="print-friendly"><span class="header-section-number">36</span> Print-friendly</h2>
+<p>We can generate human-readable output of any cohort definition using the <code>CirceR</code> package</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>rmarkdown <span class="ot">&lt;-</span> CirceR<span class="sc">::</span><span class="fu">cohortPrintFriendly</span>(<span class="fu">toCirce</span>(celecoxibCohort))</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(rmarkdown)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>### Cohort Entry Events
+
+People with continuous observation of 365 days before event may enter the cohort when observing any of the following:
+
+1. drug exposure of 'Celecoxib' for the first time in the person's history.
+
+Limit cohort entry events to the earliest event per person.
+
+### Inclusion Criteria
+
+#### 1. No prior NSAID exposure
+
+Entry events having no drug exposures of 'NSAIDS', starting between all days before and 1 days after cohort entry start date.
+
+### Cohort Exit
+
+The cohort end date will be based on a continuous exposure to 'Celecoxib':
+allowing 30 days between exposures, adding 0 days after exposure ends, and using days supply and exposure end date for exposure duration.
+
+### Cohort Eras
+
+Remaining events will be combined into cohort eras if they are within 0 days of each other.
+</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>NB: missing concept set definitions. Better version is coming.</p>
+<ul>
+<li>See: <a href="https://raw.githubusercontent.com/ohdsi-studies/LegendT2dm/master/R/PrettyOutput.R">LEGEND-T2DM function</a></li>
+</ul>
+</div>
+</div>
+<p>We can also use <code>CirceR</code> to generate SQL, but <code>CohortGenerator</code> does much more.</p>
+</section>
+<section id="generate-the-cohorts" class="level2 scrollable" data-number="37">
+<h2 class="scrollable anchored" data-number="37" data-anchor-id="generate-the-cohorts"><span class="header-section-number">37</span> Generate the cohorts</h2>
+<p><code>CohortGenerator</code> builds, manages and instantiates <strong>cohort sets</strong> (groups of cohort definitions)</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>cohortsToCreate <span class="ot">&lt;-</span> <span class="fu">makeCohortSet</span>(giBleedCohort, </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>                                 celecoxibCohort, </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                                 diclofenacCohort)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>cohortsToCreate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  cohortId cohortName       sql                                            json 
+     &lt;int&gt; &lt;chr&gt;            &lt;chr&gt;                                          &lt;chr&gt;
+1        1 giBleedCohort    "CREATE TABLE #Codesets (\r\n  codeset_id int… "{\"…
+2        2 celecoxibCohort  "CREATE TABLE #Codesets (\r\n  codeset_id int… "{\"…
+3        3 diclofenacCohort "CREATE TABLE #Codesets (\r\n  codeset_id int… "{\"…</code></pre>
+</div>
+</div>
+</section>
+<section id="generate-the-cohorts-1" class="level2 scrollable" data-number="38">
+<h2 class="scrollable anchored" data-number="38" data-anchor-id="generate-the-cohorts-1"><span class="header-section-number">38</span> Generate the cohorts</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the cohort tables to hold the cohort generation results</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>cohortTableNames <span class="ot">&lt;-</span> CohortGenerator<span class="sc">::</span><span class="fu">getCohortTableNames</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortTable =</span> <span class="st">"my_cohort_table"</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>cohortTableNames</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$cohortTable
+[1] "my_cohort_table"
+
+$cohortSampleTable
+[1] "my_cohort_table"
+
+$cohortInclusionTable
+[1] "my_cohort_table_inclusion"
+
+$cohortInclusionResultTable
+[1] "my_cohort_table_inclusion_result"
+
+$cohortInclusionStatsTable
+[1] "my_cohort_table_inclusion_stats"
+
+$cohortSummaryStatsTable
+[1] "my_cohort_table_summary_stats"
+
+$cohortCensorStatsTable
+[1] "my_cohort_table_censor_stats"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Better to pass connection details than connection itself</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>connectionDetails <span class="ot">&lt;-</span> DatabaseConnector<span class="sc">::</span><span class="fu">createConnectionDetails</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">dbms =</span> <span class="st">"duckdb"</span>, </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">server =</span> <span class="fu">file.path</span>(<span class="fu">getwd</span>(), <span class="st">"data"</span>, <span class="st">"synthetic.duckdb"</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>connectionDetails <span class="ot">&lt;-</span> Eunomia<span class="sc">::</span><span class="fu">getEunomiaConnectionDetails</span>()</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>CohortGenerator<span class="sc">::</span><span class="fu">createCohortTables</span>(</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">connectionDetails =</span> connectionDetails,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortDatabaseSchema =</span> <span class="st">"main"</span>,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortTableNames =</span> cohortTableNames)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate the cohorts</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>cohortsGenerated <span class="ot">&lt;-</span> CohortGenerator<span class="sc">::</span><span class="fu">generateCohortSet</span>(</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">connectionDetails =</span> connectionDetails,</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">cdmDatabaseSchema =</span> <span class="st">"main"</span>,</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortDatabaseSchema =</span> <span class="st">"main"</span>,</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortTableNames =</span> cohortTableNames,</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortDefinitionSet =</span> cohortsToCreate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Initiating cluster consisting only of main thread</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |===                                                                   |   4%
+  |                                                                            
+  |=====                                                                 |   7%
+  |                                                                            
+  |========                                                              |  11%
+  |                                                                            
+  |==========                                                            |  15%
+  |                                                                            
+  |=============                                                         |  19%
+  |                                                                            
+  |================                                                      |  22%
+  |                                                                            
+  |==================                                                    |  26%
+  |                                                                            
+  |=====================                                                 |  30%
+  |                                                                            
+  |=======================                                               |  33%
+  |                                                                            
+  |==========================                                            |  37%
+  |                                                                            
+  |=============================                                         |  41%
+  |                                                                            
+  |===============================                                       |  44%
+  |                                                                            
+  |==================================                                    |  48%
+  |                                                                            
+  |====================================                                  |  52%
+  |                                                                            
+  |=======================================                               |  56%
+  |                                                                            
+  |=========================================                             |  59%
+  |                                                                            
+  |============================================                          |  63%
+  |                                                                            
+  |===============================================                       |  67%
+  |                                                                            
+  |=================================================                     |  70%
+  |                                                                            
+  |====================================================                  |  74%
+  |                                                                            
+  |======================================================                |  78%
+  |                                                                            
+  |=========================================================             |  81%
+  |                                                                            
+  |============================================================          |  85%
+  |                                                                            
+  |==============================================================        |  89%
+  |                                                                            
+  |=================================================================     |  93%
+  |                                                                            
+  |===================================================================   |  96%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |=                                                                     |   2%
+  |                                                                            
+  |==                                                                    |   3%
+  |                                                                            
+  |====                                                                  |   5%
+  |                                                                            
+  |=====                                                                 |   7%
+  |                                                                            
+  |======                                                                |   8%
+  |                                                                            
+  |=======                                                               |  10%
+  |                                                                            
+  |========                                                              |  12%
+  |                                                                            
+  |=========                                                             |  13%
+  |                                                                            
+  |==========                                                            |  15%
+  |                                                                            
+  |============                                                          |  17%
+  |                                                                            
+  |=============                                                         |  18%
+  |                                                                            
+  |==============                                                        |  20%
+  |                                                                            
+  |===============                                                       |  22%
+  |                                                                            
+  |================                                                      |  23%
+  |                                                                            
+  |==================                                                    |  25%
+  |                                                                            
+  |===================                                                   |  27%
+  |                                                                            
+  |====================                                                  |  28%
+  |                                                                            
+  |=====================                                                 |  30%
+  |                                                                            
+  |======================                                                |  32%
+  |                                                                            
+  |=======================                                               |  33%
+  |                                                                            
+  |========================                                              |  35%
+  |                                                                            
+  |==========================                                            |  37%
+  |                                                                            
+  |===========================                                           |  38%
+  |                                                                            
+  |============================                                          |  40%
+  |                                                                            
+  |=============================                                         |  42%
+  |                                                                            
+  |==============================                                        |  43%
+  |                                                                            
+  |================================                                      |  45%
+  |                                                                            
+  |=================================                                     |  47%
+  |                                                                            
+  |==================================                                    |  48%
+  |                                                                            
+  |===================================                                   |  50%
+  |                                                                            
+  |====================================                                  |  52%
+  |                                                                            
+  |=====================================                                 |  53%
+  |                                                                            
+  |======================================                                |  55%
+  |                                                                            
+  |========================================                              |  57%
+  |                                                                            
+  |=========================================                             |  58%
+  |                                                                            
+  |==========================================                            |  60%
+  |                                                                            
+  |===========================================                           |  62%
+  |                                                                            
+  |============================================                          |  63%
+  |                                                                            
+  |==============================================                        |  65%
+  |                                                                            
+  |===============================================                       |  67%
+  |                                                                            
+  |================================================                      |  68%
+  |                                                                            
+  |=================================================                     |  70%
+  |                                                                            
+  |==================================================                    |  72%
+  |                                                                            
+  |===================================================                   |  73%
+  |                                                                            
+  |====================================================                  |  75%
+  |                                                                            
+  |======================================================                |  77%
+  |                                                                            
+  |=======================================================               |  78%
+  |                                                                            
+  |========================================================              |  80%
+  |                                                                            
+  |=========================================================             |  82%
+  |                                                                            
+  |==========================================================            |  83%
+  |                                                                            
+  |============================================================          |  85%
+  |                                                                            
+  |=============================================================         |  87%
+  |                                                                            
+  |==============================================================        |  88%
+  |                                                                            
+  |===============================================================       |  90%
+  |                                                                            
+  |================================================================      |  92%
+  |                                                                            
+  |=================================================================     |  93%
+  |                                                                            
+  |==================================================================    |  95%
+  |                                                                            
+  |====================================================================  |  97%
+  |                                                                            
+  |===================================================================== |  98%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |=                                                                     |   2%
+  |                                                                            
+  |==                                                                    |   3%
+  |                                                                            
+  |====                                                                  |   5%
+  |                                                                            
+  |=====                                                                 |   7%
+  |                                                                            
+  |======                                                                |   8%
+  |                                                                            
+  |=======                                                               |  10%
+  |                                                                            
+  |========                                                              |  12%
+  |                                                                            
+  |=========                                                             |  13%
+  |                                                                            
+  |==========                                                            |  15%
+  |                                                                            
+  |============                                                          |  17%
+  |                                                                            
+  |=============                                                         |  18%
+  |                                                                            
+  |==============                                                        |  20%
+  |                                                                            
+  |===============                                                       |  22%
+  |                                                                            
+  |================                                                      |  23%
+  |                                                                            
+  |==================                                                    |  25%
+  |                                                                            
+  |===================                                                   |  27%
+  |                                                                            
+  |====================                                                  |  28%
+  |                                                                            
+  |=====================                                                 |  30%
+  |                                                                            
+  |======================                                                |  32%
+  |                                                                            
+  |=======================                                               |  33%
+  |                                                                            
+  |========================                                              |  35%
+  |                                                                            
+  |==========================                                            |  37%
+  |                                                                            
+  |===========================                                           |  38%
+  |                                                                            
+  |============================                                          |  40%
+  |                                                                            
+  |=============================                                         |  42%
+  |                                                                            
+  |==============================                                        |  43%
+  |                                                                            
+  |================================                                      |  45%
+  |                                                                            
+  |=================================                                     |  47%
+  |                                                                            
+  |==================================                                    |  48%
+  |                                                                            
+  |===================================                                   |  50%
+  |                                                                            
+  |====================================                                  |  52%
+  |                                                                            
+  |=====================================                                 |  53%
+  |                                                                            
+  |======================================                                |  55%
+  |                                                                            
+  |========================================                              |  57%
+  |                                                                            
+  |=========================================                             |  58%
+  |                                                                            
+  |==========================================                            |  60%
+  |                                                                            
+  |===========================================                           |  62%
+  |                                                                            
+  |============================================                          |  63%
+  |                                                                            
+  |==============================================                        |  65%
+  |                                                                            
+  |===============================================                       |  67%
+  |                                                                            
+  |================================================                      |  68%
+  |                                                                            
+  |=================================================                     |  70%
+  |                                                                            
+  |==================================================                    |  72%
+  |                                                                            
+  |===================================================                   |  73%
+  |                                                                            
+  |====================================================                  |  75%
+  |                                                                            
+  |======================================================                |  77%
+  |                                                                            
+  |=======================================================               |  78%
+  |                                                                            
+  |========================================================              |  80%
+  |                                                                            
+  |=========================================================             |  82%
+  |                                                                            
+  |==========================================================            |  83%
+  |                                                                            
+  |============================================================          |  85%
+  |                                                                            
+  |=============================================================         |  87%
+  |                                                                            
+  |==============================================================        |  88%
+  |                                                                            
+  |===============================================================       |  90%
+  |                                                                            
+  |================================================================      |  92%
+  |                                                                            
+  |=================================================================     |  93%
+  |                                                                            
+  |==================================================================    |  95%
+  |                                                                            
+  |====================================================================  |  97%
+  |                                                                            
+  |===================================================================== |  98%
+  |                                                                            
+  |======================================================================| 100%</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generating cohort set took 0.29 secs</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get raw counts</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>CohortGenerator<span class="sc">::</span><span class="fu">getCohortCounts</span>(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">connectionDetails =</span> connectionDetails,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortDatabaseSchema =</span> <span class="st">"main"</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortTable =</span> cohortTableNames<span class="sc">$</span>cohortTable</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  cohortId cohortEntries cohortSubjects
+1        1           479            479</code></pre>
+</div>
+</div>
+</section>
+<section id="review" class="level2" data-number="39">
+<h2 data-number="39" class="anchored" data-anchor-id="review"><span class="header-section-number">39</span> Review</h2>
+<ul>
+<li><a href="https://atlas-demo.ohdsi.org">ATLAS</a> is a web-based GUI for designing cohorts
+<ul>
+<li>interacts directly with a CDM; has record counts</li>
+</ul></li>
+<li><code>Capr</code> is programmable in R
+<ul>
+<li>more reproducible; convenient for generating multiple related cohorts</li>
+</ul></li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Now we will start to <strong>use</strong> these cohorts
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Marc A Suchard @ UCLA">
+<meta name="dcterms.date" content="2025-02-02">
+
+<title>Characterization</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="floating">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#cohort-characterization" id="toc-cohort-characterization" class="nav-link" data-scroll-target="#cohort-characterization"><span class="header-section-number">2</span> Cohort characterization</a></li>
+  <li><a href="#example" id="toc-example" class="nav-link" data-scroll-target="#example"><span class="header-section-number">3</span> Example</a></li>
+  <li><a href="#using-featureextraction" id="toc-using-featureextraction" class="nav-link" data-scroll-target="#using-featureextraction"><span class="header-section-number">4</span> Using <code>FeatureExtraction</code></a></li>
+  <li><a href="#default-covariates" id="toc-default-covariates" class="nav-link" data-scroll-target="#default-covariates"><span class="header-section-number">5</span> Default covariates</a></li>
+  <li><a href="#pre-specified-covariates" id="toc-pre-specified-covariates" class="nav-link" data-scroll-target="#pre-specified-covariates"><span class="header-section-number">6</span> Pre-specified covariates</a></li>
+  <li><a href="#aggregrated-covariates" id="toc-aggregrated-covariates" class="nav-link" data-scroll-target="#aggregrated-covariates"><span class="header-section-number">7</span> Aggregrated covariates</a></li>
+  <li><a href="#incidence-rates" id="toc-incidence-rates" class="nav-link" data-scroll-target="#incidence-rates"><span class="header-section-number">8</span> Incidence rates</a></li>
+  <li><a href="#incidence" id="toc-incidence" class="nav-link" data-scroll-target="#incidence"><span class="header-section-number">9</span> Incidence</a></li>
+  <li><a href="#using-cohortincidence" id="toc-using-cohortincidence" class="nav-link" data-scroll-target="#using-cohortincidence"><span class="header-section-number">10</span> Using <code>CohortIncidence</code></a></li>
+  <li><a href="#cohorts" id="toc-cohorts" class="nav-link" data-scroll-target="#cohorts"><span class="header-section-number">11</span> Cohorts</a></li>
+  <li><a href="#cohort-generation" id="toc-cohort-generation" class="nav-link" data-scroll-target="#cohort-generation"><span class="header-section-number">12</span> Cohort generation</a></li>
+  <li><a href="#characterization-computation" id="toc-characterization-computation" class="nav-link" data-scroll-target="#characterization-computation"><span class="header-section-number">13</span> Characterization computation</a></li>
+  <li><a href="#structure-of-covariatedata" id="toc-structure-of-covariatedata" class="nav-link" data-scroll-target="#structure-of-covariatedata"><span class="header-section-number">14</span> Structure of <code>covariateData</code></a></li>
+  <li><a href="#a-simple-table-1" id="toc-a-simple-table-1" class="nav-link" data-scroll-target="#a-simple-table-1"><span class="header-section-number">15</span> A simple Table 1</a></li>
+  <li><a href="#incidence-computation" id="toc-incidence-computation" class="nav-link" data-scroll-target="#incidence-computation"><span class="header-section-number">16</span> Incidence computation</a></li>
+  <li><a href="#preliminary-results" id="toc-preliminary-results" class="nav-link" data-scroll-target="#preliminary-results"><span class="header-section-number">17</span> Preliminary results</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="06_characterization.revealjs.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Characterization</h1>
+<p class="subtitle lead">Biostat 218</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Marc A Suchard @ UCLA </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 2, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
+<p>In these lectures we will learn:</p>
+<ul>
+<li><p>TODO</p></li>
+<li><p>TODO</p></li>
+<li><p>TODO</p></li>
+</ul>
+</section>
+<section id="cohort-characterization" class="level2 scrollable" data-number="2">
+<h2 class="scrollable anchored" data-number="2" data-anchor-id="cohort-characterization"><span class="header-section-number">2</span> Cohort characterization</h2>
+<p><img src="figures/characterization_cartoon.png" class="img-fluid"></p>
+<p><span class="math inline">\(\ldots\)</span> describes the baseline (and post-index) characteristics of people in a cohort</p>
+<ul>
+<li>Who gets the disease / outcome ?</li>
+</ul>
+<p>Standardized OHDSI approaches provide describe statistics of <strong>all</strong> conditions, drug and device exposures, procedures and other clinical observations (generally at index-date, O(10,000))</p>
+</section>
+<section id="example" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="example"><span class="header-section-number">3</span> Example</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="figures/characteristics1.png" class="img-fluid"></p>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="figures/characteristics2.png" class="img-fluid"></p>
+</div>
+</div>
+</div>
+<ul>
+<li>Taken from a <a href="https://www.thelancet.com/journals/landig/article/PIIS2589-7500(20)30289-2/fulltext">comparative effectiveness study</a></li>
+</ul>
+</section>
+<section id="using-featureextraction" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="using-featureextraction"><span class="header-section-number">4</span> Using <code>FeatureExtraction</code></h2>
+<p>Constructs covariates (often called <em>features</em> or <em>characteristics</em>) in 3 ways</p>
+<ul>
+<li><p>Choose a default set of covariates (often sufficiently large to be highly correlated with any arbitrary feature)</p></li>
+<li><p>Choose from sets of pre-specified covariates</p></li>
+<li><p>Create a set of custom covariates</p></li>
+</ul>
+<p>at (1) the person-level (for <strong>machine learning</strong>) or (2) aggregated / averaged (to describe the <strong>population</strong>)</p>
+</section>
+<section id="default-covariates" class="level2 scrollable" data-number="5">
+<h2 class="scrollable anchored" data-number="5" data-anchor-id="default-covariates"><span class="header-section-number">5</span> Default covariates</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FeatureExtraction)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>covariateSettings <span class="ot">&lt;-</span> <span class="fu">createDefaultCovariateSettings</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">excludedCovariateConceptIds =</span> <span class="dv">1124300</span>, <span class="co"># exclude diclofenac</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">addDescendantsToExclude =</span> <span class="cn">TRUE</span>         <span class="co"># and all descendants</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>covariateSettings</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$temporal
+[1] FALSE
+
+$temporalSequence
+[1] FALSE
+
+$DemographicsGender
+[1] TRUE
+
+$DemographicsAgeGroup
+[1] TRUE
+
+$DemographicsRace
+[1] TRUE
+
+$DemographicsEthnicity
+[1] TRUE
+
+$DemographicsIndexYear
+[1] TRUE
+
+$DemographicsIndexMonth
+[1] TRUE
+
+$ConditionGroupEraLongTerm
+[1] TRUE
+
+$ConditionGroupEraShortTerm
+[1] TRUE
+
+$DrugGroupEraLongTerm
+[1] TRUE
+
+$DrugGroupEraShortTerm
+[1] TRUE
+
+$DrugGroupEraOverlapping
+[1] TRUE
+
+$ProcedureOccurrenceLongTerm
+[1] TRUE
+
+$ProcedureOccurrenceShortTerm
+[1] TRUE
+
+$DeviceExposureLongTerm
+[1] TRUE
+
+$DeviceExposureShortTerm
+[1] TRUE
+
+$MeasurementLongTerm
+[1] TRUE
+
+$MeasurementShortTerm
+[1] TRUE
+
+$MeasurementRangeGroupLongTerm
+[1] TRUE
+
+$MeasurementRangeGroupShortTerm
+[1] TRUE
+
+$MeasurementValueAsConceptLongTerm
+[1] TRUE
+
+$MeasurementValueAsConceptShortTerm
+[1] TRUE
+
+$ObservationLongTerm
+[1] TRUE
+
+$ObservationShortTerm
+[1] TRUE
+
+$ObservationValueAsConceptLongTerm
+[1] TRUE
+
+$ObservationValueAsConceptShortTerm
+[1] TRUE
+
+$CharlsonIndex
+[1] TRUE
+
+$Dcsi
+[1] TRUE
+
+$Chads2
+[1] TRUE
+
+$Chads2Vasc
+[1] TRUE
+
+$includedCovariateConceptIds
+logical(0)
+
+$includedCovariateIds
+logical(0)
+
+$addDescendantsToInclude
+[1] FALSE
+
+$excludedCovariateConceptIds
+[1] 1124300
+
+$addDescendantsToExclude
+[1] TRUE
+
+$shortTermStartDays
+[1] -30
+
+$mediumTermStartDays
+[1] -180
+
+$endDays
+[1] 0
+
+$longTermStartDays
+[1] -365
+
+attr(,"fun")
+[1] "getDbDefaultCovariateData"
+attr(,"class")
+[1] "covariateSettings"</code></pre>
+</div>
+</div>
+</section>
+<section id="pre-specified-covariates" class="level2 scrollable" data-number="6">
+<h2 class="scrollable anchored" data-number="6" data-anchor-id="pre-specified-covariates"><span class="header-section-number">6</span> Pre-specified covariates</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>covariateSettings <span class="ot">&lt;-</span> <span class="fu">createCovariateSettings</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">useDemographicsGender =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">useDemographicsAgeGroup =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">useConditionEraLongTerm =</span> <span class="cn">TRUE</span>,  <span class="co"># `condition_occurrence` table</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">useConditionEraShortTerm =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">useDrugEraLongTerm =</span> <span class="cn">TRUE</span>,       <span class="co"># `drug_exposure` table</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">useDrugEraShortTerm =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">longTermStartDays =</span> <span class="sc">-</span><span class="dv">180</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">shortTermStartDays =</span> <span class="sc">-</span><span class="dv">14</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">endDays =</span> <span class="sc">-</span><span class="dv">1</span>)      <span class="co"># exclude index-date</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Many pre-specified sets have <em>default</em> time-windows (related to index)</p>
+<ul>
+<li><strong>Long term</strong>: 365 days prior up to and including cohort start date</li>
+<li><strong>Medium term</strong>: 180 days prior up to and including cohort start date</li>
+<li><strong>Short term</strong>: 30 days prior up and to including cohort start date</li>
+</ul>
+</section>
+<section id="aggregrated-covariates" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="aggregrated-covariates"><span class="header-section-number">7</span> Aggregrated covariates</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Use <code>aggregated = TRUE</code> to return cohort-level summary statistics</p>
+<ul>
+<li><p>Saves time and space (depending in analysis)</p></li>
+<li><p>Can convert unaggregated data object into aggregated (if both are needed)</p></li>
+</ul>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>covariateData2 <span class="ot">&lt;-</span> <span class="fu">aggregateCovariates</span>(covariateData)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="incidence-rates" class="level2 scrollable" data-number="8">
+<h2 class="scrollable anchored" data-number="8" data-anchor-id="incidence-rates"><span class="header-section-number">8</span> Incidence rates</h2>
+<p><img src="figures/incidence_cartoon.png" class="img-fluid"></p>
+<p>Characterization along with incidence rates (how often do people get the disease / outcome) are often of sufficient research interest alone to warrant publication</p>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="figures/bmj_rates.png" class="img-fluid"></p>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li>Incidence rate of drug initiation: centerpiece of a drug-utilization study (DUS)</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="incidence" class="level2 scrollable" data-number="9">
+<h2 class="scrollable anchored" data-number="9" data-anchor-id="incidence"><span class="header-section-number">9</span> Incidence</h2>
+<p>Incidence rates (and proportions) assess the occurrence of a new outcome (entry into outcome (O) cohort) in a population (in a target (T) cohort) during a <strong>time-at-risk</strong> (TAR)</p>
+<p><img src="figures/incidenceTimeline.png" class="img-fluid"></p>
+<p>Two metrics:</p>
+<p><span class="math display">\[
+\text{Incidence proportion} = \frac{
+\text{# persons in cohort with new outcome during TAR}
+}{
+\text{# persons in cohort with TAR}
+}
+\]</span></p>
+<ul>
+<li>Proportion of the population of interest that developed the outcome in a defined timeframe</li>
+</ul>
+<p><span class="math display">\[
+\text{Incidence rate} = \frac{
+\text{# persons in cohort with new outcome during TAR}
+}{
+\text{person time at risk contributed by persons in cohort}
+}
+\]</span></p>
+<ul>
+<li>Number of outcomes during the cumulative TAR for the population. (individual contribution to TAR stops at outcome occurrence)</li>
+</ul>
+</section>
+<section id="using-cohortincidence" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="using-cohortincidence"><span class="header-section-number">10</span> Using <code>CohortIncidence</code></h2>
+<ul>
+<li><p>We want to compute the incidence of heart attacks (acute myocardial infarctions) among (newly diagnosed) hypertensive patients</p></li>
+<li><p>We need to define 2 cohorts: <strong>AMI</strong> and <strong>hypertension</strong></p></li>
+<li><p>Then we will use <code>Capr</code>, <code>FeatureExtraction</code> and <code>CohortIncidence</code> packages to handle the hard-work</p></li>
+</ul>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/hades.png" class="img-fluid figure-img" style="width:50.0%"></p>
+</figure>
+</div>
+</div>
+</section>
+<section id="cohorts" class="level2 scrollable" data-number="11">
+<h2 class="scrollable anchored" data-number="11" data-anchor-id="cohorts"><span class="header-section-number">11</span> Cohorts</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Capr)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Hypertension</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>essentialHypertension <span class="ot">&lt;-</span> <span class="fu">cs</span>(</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">descendants</span>(<span class="dv">320128</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"Essential hypertension"</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>sbp <span class="ot">&lt;-</span> <span class="fu">cs</span>(<span class="dv">3004249</span>, <span class="at">name =</span> <span class="st">"SBP"</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>dbp <span class="ot">&lt;-</span> <span class="fu">cs</span>(<span class="dv">3012888</span>, <span class="at">name =</span> <span class="st">"DBP"</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>hypertensionCohort <span class="ot">&lt;-</span> <span class="fu">cohort</span>(</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">entry =</span> <span class="fu">entry</span>(                 <span class="co"># Entrance based on any of these</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">conditionOccurrence</span>(essentialHypertension),</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">measurement</span>(sbp, <span class="fu">valueAsNumber</span>(<span class="fu">gte</span>(<span class="dv">130</span>)), <span class="fu">unit</span>(<span class="dv">8876</span>)),</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">measurement</span>(dbp, <span class="fu">valueAsNumber</span>(<span class="fu">gte</span>(<span class="dv">80</span>)), <span class="fu">unit</span>(<span class="dv">8876</span>))</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">exit =</span> <span class="fu">exit</span>(</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">endStrategy =</span> <span class="fu">observationExit</span>()</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Acute myocardial infarction</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>myocardialInfarction <span class="ot">&lt;-</span> <span class="fu">cs</span>(</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">descendants</span>(<span class="dv">4329847</span>),</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">exclude</span>(<span class="fu">descendants</span>(<span class="dv">314666</span>)), <span class="co"># Old myocardial infarction</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"Myocardial infarction"</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>inpatientOrEr <span class="ot">&lt;-</span> <span class="fu">cs</span>(</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">descendants</span>(<span class="dv">9201</span>),</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">descendants</span>(<span class="dv">262</span>),</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"Inpatient or ER"</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>amiCohort <span class="ot">&lt;-</span> <span class="fu">cohort</span>(</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">entry =</span> <span class="fu">entry</span>(</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">conditionOccurrence</span>(myocardialInfarction),</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">additionalCriteria =</span> <span class="fu">withAll</span>(</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>      <span class="fu">atLeast</span>(<span class="dv">1</span>,</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>              <span class="fu">visit</span>(inpatientOrEr),</span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>              <span class="at">aperture =</span> <span class="fu">duringInterval</span>(<span class="fu">eventStarts</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="dv">0</span>), <span class="fu">eventEnds</span>(<span class="dv">0</span>, <span class="cn">Inf</span>)))</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">primaryCriteriaLimit =</span> <span class="st">"All"</span>,</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">qualifiedLimit =</span> <span class="st">"All"</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>  <span class="at">attrition =</span> <span class="fu">attrition</span>(</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>    <span class="st">"No prior AMI"</span> <span class="ot">=</span> <span class="fu">withAll</span>(</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>      <span class="fu">exactly</span>(<span class="dv">0</span>,</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>              <span class="fu">conditionOccurrence</span>(myocardialInfarction),</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>              <span class="fu">duringInterval</span>(<span class="fu">eventStarts</span>(<span class="sc">-</span><span class="dv">365</span>, <span class="sc">-</span><span class="dv">1</span>)))</span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>  <span class="at">exit =</span> <span class="fu">exit</span>(</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">endStrategy =</span> <span class="fu">fixedExit</span>(<span class="at">index =</span> <span class="st">"startDate"</span>, <span class="at">offsetDays =</span> <span class="dv">1</span>)</span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>cohortDefinitionSet <span class="ot">&lt;-</span> <span class="fu">makeCohortSet</span>(hypertensionCohort, amiCohort)</span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>cohortDefinitionSet</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  cohortId cohortName         sql                                          json 
+     &lt;int&gt; &lt;chr&gt;              &lt;chr&gt;                                        &lt;chr&gt;
+1        1 hypertensionCohort "CREATE TABLE #Codesets (\r\n  codeset_id i… "{\"…
+2        2 amiCohort          "CREATE TABLE #Codesets (\r\n  codeset_id i… "{\"…</code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>By default, cohort IDs are 1, 2, 3 …</li>
+<li>Often useful to renumber (to avoid conflicts in <code>cohort</code> table)</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="cohort-generation" class="level2 scrollable" data-number="12">
+<h2 class="scrollable anchored" data-number="12" data-anchor-id="cohort-generation"><span class="header-section-number">12</span> Cohort generation</h2>
+<p>Use <code>CohortGenerator</code> (<a href="https://ohdsi.github.io/CohortGenerator/">link</a>) to build the <code>cohort</code> tables and instantiate our cohorts</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>connectionDetails <span class="ot">&lt;-</span> DatabaseConnector<span class="sc">::</span><span class="fu">createConnectionDetails</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">dbms =</span> <span class="st">"duckdb"</span>, </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">server =</span> <span class="fu">file.path</span>(<span class="fu">getwd</span>(), <span class="st">"data"</span>, <span class="st">"synthetic.duckdb"</span>))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>cohortTableNames <span class="ot">&lt;-</span> CohortGenerator<span class="sc">::</span><span class="fu">getCohortTableNames</span>(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortTable =</span> <span class="st">"my_cohorts"</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>CohortGenerator<span class="sc">::</span><span class="fu">createCohortTables</span>(</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">connectionDetails =</span> connectionDetails,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortDatabaseSchema =</span> <span class="st">"main"</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortTableNames =</span> cohortTableNames)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>cohortsGenerated <span class="ot">&lt;-</span> CohortGenerator<span class="sc">::</span><span class="fu">generateCohortSet</span>(</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">connectionDetails =</span> connectionDetails,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">cdmDatabaseSchema =</span> <span class="st">"main"</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortDatabaseSchema =</span> <span class="st">"main"</span>,</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortTableNames =</span> cohortTableNames,</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortDefinitionSet =</span> cohortDefinitionSet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>CohortGenerator<span class="sc">::</span><span class="fu">getCohortCounts</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">connectionDetails =</span> connectionDetails,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortDatabaseSchema =</span> <span class="st">"main"</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortTable =</span> cohortTableNames<span class="sc">$</span>cohortTable</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  cohortId cohortEntries cohortSubjects
+1        2         10091          10091
+2        1        605861         605861</code></pre>
+</div>
+</div>
+</section>
+<section id="characterization-computation" class="level2 scrollable" data-number="13">
+<h2 class="scrollable anchored" data-number="13" data-anchor-id="characterization-computation"><span class="header-section-number">13</span> Characterization computation</h2>
+<p>Use <code>FeatureExtraction</code> (<a href="https://ohdsi.github.io/FeatureExtraction/">link</a>) to characterize the population of patients experiencing an AMI</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>covariateSettings <span class="ot">&lt;-</span> <span class="fu">createDefaultCovariateSettings</span>()</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>covariateData <span class="ot">&lt;-</span> <span class="fu">getDbCovariateData</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">connectionDetails =</span> connectionDetails,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">cdmDatabaseSchema =</span> <span class="st">"main"</span>,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortDatabaseSchema =</span> <span class="st">"main"</span>,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortTable =</span> cohortTableNames<span class="sc">$</span>cohortTable,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortIds =</span> <span class="fu">c</span>(<span class="dv">2</span>),    <span class="co"># AMI</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">rowIdField =</span> <span class="st">"subject_id"</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">covariateSettings =</span> covariateSettings</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(covariateData)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CovariateData object summary
+
+Number of covariates: 3287
+Number of non-zero covariate values: 3182430</code></pre>
+</div>
+</div>
+</section>
+<section id="structure-of-covariatedata" class="level2 scrollable" data-number="14">
+<h2 class="scrollable anchored" data-number="14" data-anchor-id="structure-of-covariatedata"><span class="header-section-number">14</span> Structure of <code>covariateData</code></h2>
+<p>Person-level covariates can occupy up to 2GB of RAM, so this <strong>design matrix</strong> is held</p>
+<ul>
+<li><p>In <em>sparse</em> (row, column, value)-type format</p></li>
+<li><p>On disk via a temporary <code>Andromeda</code> object (SQLite or DuckDB back-end)</p></li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(covariateData<span class="sc">$</span>covariates) <span class="co"># main object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Source:   SQL [6 x 3]
+# Database: sqlite 3.46.0 [/var/folders/yq/m5zhcp2d6cx4lsxs8_d5yv800000gn/T//RtmpiloBAp/file13d43f76a5f7.sqlite]
+    rowId covariateId covariateValue
+    &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;
+1 2714966   443601212              1
+2 2958286  4152156212              1
+3 1156062  4132088212              1
+4 1156732  4329847212              1
+5 1156732  4152156212              1
+6 1157068  4329847212              1</code></pre>
+</div>
+</div>
+<p>Permanently save to / load from disk</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveCovariateData</span>(covariateData, <span class="st">"covariates"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>covariateData <span class="ot">&lt;-</span> <span class="fu">loadCovariateData</span>(<span class="st">"covariates"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Aggregate via</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>covariateData2 <span class="ot">&lt;-</span> <span class="fu">aggregateCovariates</span>(covariateData)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Aggregating covariates took 7.66 secs</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(covariateData2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CovariateData object summary
+
+Number of covariates: 3287
+Number of non-zero covariate values: 3287</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(covariateData2<span class="sc">$</span>covariatesContinuous)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Source:   SQL [3 x 11]
+# Database: sqlite 3.46.0 [/var/folders/yq/m5zhcp2d6cx4lsxs8_d5yv800000gn/T//RtmpiloBAp/file13d437e00bd0d.sqlite]
+  covariateId countValue minValue maxValue averageValue standardDeviation
+        &lt;dbl&gt;      &lt;int&gt;    &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;             &lt;dbl&gt;
+1        1901      10091        1       15         3.06             2.09 
+2        1903      10091        0        5         1.07             0.771
+3        1904      10091        0        7         3.07             1.29 
+# ℹ 5 more variables: medianValue &lt;dbl&gt;, p10Value &lt;dbl&gt;, p25Value &lt;dbl&gt;,
+#   p75Value &lt;dbl&gt;, p90Value &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="a-simple-table-1" class="level2 scrollable" data-number="15">
+<h2 class="scrollable anchored" data-number="15" data-anchor-id="a-simple-table-1"><span class="header-section-number">15</span> A simple Table 1</h2>
+<p>A default summary table is available in <code>FeatureExtraction</code>.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Table specification is (relatively easy) to customize
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Make disease-specific</li>
+<li>Shorten to readibility</li>
+<li><code>getDefaultTable1Specifications()</code></li>
+</ul>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">createTable1</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">covariateData1 =</span> covariateData2</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="incidence-computation" class="level2 scrollable" data-number="16">
+<h2 class="scrollable anchored" data-number="16" data-anchor-id="incidence-computation"><span class="header-section-number">16</span> Incidence computation</h2>
+<p>Use <code>CohortIncidence</code> (<a href="https://ohdsi.github.io/CohortIncidence/">link</a>) to do the heavy-lifting</p>
+<ul>
+<li>Plenty of sublety (e.g.&nbsp;cenoring TAR at event or observation end)</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Target cohort is hypertension:</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>targetList <span class="ot">&lt;-</span> <span class="fu">list</span>(CohortIncidence<span class="sc">::</span><span class="fu">createCohortRef</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> cohortDefinitionSet<span class="sc">$</span>cohortId[<span class="dv">1</span>],</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> cohortDefinitionSet<span class="sc">$</span>cohortName[<span class="dv">1</span>]))</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Outcome cohort is AMI:</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>outcomeList <span class="ot">&lt;-</span> <span class="fu">list</span>(CohortIncidence<span class="sc">::</span><span class="fu">createOutcomeDef</span>(</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="dv">1</span>,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> cohortDefinitionSet<span class="sc">$</span>cohortName[<span class="dv">2</span>], </span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortId =</span> cohortDefinitionSet<span class="sc">$</span>cohortId[<span class="dv">2</span>], </span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">cleanWindow =</span> <span class="dv">365</span>))</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify the time-at-risk to coincide with the cohort start and end:</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>tars <span class="ot">&lt;-</span> <span class="fu">list</span>(CohortIncidence<span class="sc">::</span><span class="fu">createTimeAtRiskDef</span>(</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="dv">1</span>, </span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">startWith =</span> <span class="st">"start"</span>, </span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">endWith =</span> <span class="st">"end"</span>, </span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">startOffset =</span> <span class="dv">0</span>,</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">endOffset =</span> <span class="dv">0</span>))</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="co"># All together:</span></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>analysisList <span class="ot">&lt;-</span> <span class="fu">list</span>(CohortIncidence<span class="sc">::</span><span class="fu">createIncidenceAnalysis</span>(</span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">targets =</span> cohortDefinitionSet<span class="sc">$</span>cohortId[<span class="dv">1</span>],</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcomes =</span> <span class="dv">1</span>,</span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">tars =</span> <span class="dv">1</span>))</span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>irDesign <span class="ot">&lt;-</span> CohortIncidence<span class="sc">::</span><span class="fu">createIncidenceDesign</span>(</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">targetDefs =</span> targetList,</span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcomeDefs =</span> outcomeList,</span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">tars =</span> tars,</span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">analysisList =</span> analysisList,</span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">strataSettings =</span> CohortIncidence<span class="sc">::</span><span class="fu">createStrataSettings</span>(</span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">byYear =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">byGender =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">byAge =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">ageBreaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">110</span>, <span class="at">by =</span> <span class="dv">10</span>)</span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>buildOptions <span class="ot">&lt;-</span> CohortIncidence<span class="sc">::</span><span class="fu">buildOptions</span>(</span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortTable =</span> cohortTableNames<span class="sc">$</span>cohortTable,</span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">cdmDatabaseSchema =</span> <span class="st">"main"</span>,</span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>  <span class="at">sourceName =</span> <span class="st">"synthetic"</span>,</span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a>  <span class="at">refId =</span> <span class="dv">1</span>)</span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a>executeResults <span class="ot">&lt;-</span> CohortIncidence<span class="sc">::</span><span class="fu">executeAnalysis</span>(</span>
+<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a>  <span class="at">connectionDetails =</span> connectionDetails,</span>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">incidenceDesign =</span> irDesign,</span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">buildOptions =</span> buildOptions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="preliminary-results" class="level2 scrollable" data-number="17">
+<h2 class="scrollable anchored" data-number="17" data-anchor-id="preliminary-results"><span class="header-section-number">17</span> Preliminary results</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> executeResults<span class="sc">$</span>incidence_summary</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(results) <span class="ot">&lt;-</span> <span class="fu">tolower</span>(<span class="fu">names</span>(results))</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(start_year),</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>                              <span class="sc">!</span><span class="fu">is.na</span>(gender_name),</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>                              <span class="sc">!</span><span class="fu">is.na</span>(age_group_id))</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results, <span class="fu">aes</span>(<span class="at">x =</span> age_group_id, </span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>                    <span class="at">y =</span> incidence_rate_p100py,</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>                    <span class="at">group =</span> gender_name, <span class="at">color =</span> gender_name)) <span class="sc">+</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Age group"</span>) <span class="sc">+</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Incidence (per 100 patient year)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="06_characterization_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
