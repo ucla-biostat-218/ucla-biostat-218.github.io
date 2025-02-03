@@ -50,7 +50,7 @@ In these lectures we will learn:
 ![](figures/hades.png){width=50% fig-align="center"}
 :::
 
-## What is the `Strategus` framework?
+## What is the `Strategus` framework? {.scrollable}
 
 :::: {layout="[50,50]"}
 ::: {#first-column}
@@ -113,7 +113,7 @@ Strategus modules can be combined to accommodate various study designs
 
 - We need to define 2 cohorts: **AMI** and **hypertension**
 
-- Then we will use `Capr` and `CohortIncidence` packages to handle the hard-work
+- Then we will use `Capr`, `Characterization` and `CohortIncidence` packages to handle the hard-work
 
 ## Cohorts {.scrollable}
 
