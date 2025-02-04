@@ -3,3 +3,7 @@
 $code-block-font-size: 0.7em;
 
 /*-- scss:rules --*/
+
+.reveal code {
+  max-height: 100% !important;
+}
