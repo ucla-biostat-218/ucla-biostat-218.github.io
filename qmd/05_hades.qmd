@@ -40,11 +40,13 @@ knitr:
 
 In these lectures we will learn:
 
-- TODO
+- About the open-source OHDSI `R` tool-stack
 
-- TODO
+- The community that supports the tool-stack
 
-- TODO
+- Distributed research needs
+
+- Programmatically defining cohorts
 
 ::: {.border}
 ![](figures/hades.png){width=50% fig-align="center"}
