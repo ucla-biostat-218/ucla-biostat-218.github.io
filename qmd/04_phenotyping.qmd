@@ -279,11 +279,11 @@ Possible example: [201826](https://athena.ohdsi.org/search-terms/terms/201826) i
   - Essential for accurately tracking disease onset of treatment initiation
   
 - **Sensitivity**:
-  - Ability of correctly identify true cases of the phenotype
+  - Ability to correctly identify true cases of the phenotype
   - Important for minimizing false negatives
   
 - **Specificity**:
-  - Ability of correcdtly exclude non-cases
+  - Ability to correctly exclude non-cases
   - Important for identifying the target population
   
 - **Event/phenotype end date:**
@@ -342,7 +342,7 @@ Good phenotyping is blend of art (practice) and science (evaluation)
 Best to reuse standardized objects
 :::
 
-- [OHDSI phenotype library](https://data.ohdsi.org/PhenotypeLibrary/)
+- [OHDSI phenotype library](https://dash.ohdsi.org/phenotype)
 
 - [Full diagnostics](https://data.ohdsi.org/PhenotypeLibrary/)
 
