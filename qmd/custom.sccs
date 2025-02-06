@@ -7,3 +7,7 @@ $code-block-font-size: 0.7em;
 .reveal code {
   max-height: 100% !important;
 }
+
+.katex { 
+  font-size: 1em !important; 
+} 

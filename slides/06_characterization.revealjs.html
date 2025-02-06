@@ -410,19 +410,26 @@ Marc A Suchard @ UCLA
 <h2>Introduction</h2>
 <p>In these lectures we will learn:</p>
 <ul>
-<li><p>TODO</p></li>
-<li><p>TODO</p></li>
-<li><p>TODO</p></li>
+<li><p>How to perform disease natural history (characterization)</p></li>
+<li><p>About standardized characterization features</p></li>
+<li><p>Standardized incidence rate estimation</p></li>
+<li><p>Which OHDSI tools implement these processes</p></li>
 </ul>
 </section>
 <section id="cohort-characterization" class="slide level2 scrollable">
 <h2>Cohort characterization</h2>
-
-<img data-src="figures/characteriztion_cartoon.png" class="r-stretch"><p><span class="math inline">\(\ldots\)</span> describes the baseline (and post-index) characteristics of people in a cohort</p>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figures/characteriztion_cartoon.png" style="width:70.0%"></p>
+</figure>
+</div>
+</div>
+<p><span class="math inline">\(\ldots\)</span> describes the baseline (and post-index) characteristics of people in a cohort</p>
 <ul>
 <li>Who gets the disease / outcome ?</li>
 </ul>
-<p>Standardized OHDSI approaches provide describe statistics of <strong>all</strong> conditions, drug and device exposures, procedures and other clinical observations (generally at index-date, O(10,000))</p>
+<p>Standardized OHDSI approaches provide describe statistics of <strong>all</strong> conditions, drug and device exposures, procedures and other clinical observations [generally before index-date and <span class="math inline">\(\cal O\)</span>(10,000)]</p>
 </section>
 <section id="example" class="slide level2 scrollable">
 <h2>Example</h2>
@@ -849,15 +856,15 @@ Number of non-zero covariate values: 3182430</code></pre>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(covariateData<span class="sc">$</span>covariates) <span class="co"># main object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Source:   SQL [6 x 3]
-# Database: sqlite 3.46.0 [/var/folders/yq/m5zhcp2d6cx4lsxs8_d5yv800000gn/T//RtmpYeBWaj/file1458c5d82297c.sqlite]
+# Database: sqlite 3.46.0 [/var/folders/yq/m5zhcp2d6cx4lsxs8_d5yv800000gn/T//RtmpwHeFw7/file1f134b02a974.sqlite]
     rowId covariateId covariateValue
     &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;
-1 1756986   321588212              1
-2 1952804  4354249212              1
-3 1952976  4103192212              1
-4 1357543  4134595212              1
-5 1520182  4354249212              1
-6 1520410  4103192212              1</code></pre>
+1 3333766  4103192212              1
+2 3506449  4103192212              1
+3 1977185  4103192212              1
+4 2153719  4185932212              1
+5 1370335  4103192212              1
+6 1526346  4134595212              1</code></pre>
 </div>
 </div>
 <p>Permanently save to / load from disk</p>
@@ -869,7 +876,7 @@ Number of non-zero covariate values: 3182430</code></pre>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>covariateData2 <span class="ot">&lt;-</span> <span class="fu">aggregateCovariates</span>(covariateData)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Aggregating covariates took 7.59 secs</code></pre>
+<pre><code>Aggregating covariates took 7.44 secs</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(covariateData2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -881,7 +888,7 @@ Number of non-zero covariate values: 3287</code></pre>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(covariateData2<span class="sc">$</span>covariatesContinuous)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Source:   SQL [3 x 11]
-# Database: sqlite 3.46.0 [/var/folders/yq/m5zhcp2d6cx4lsxs8_d5yv800000gn/T//RtmpYeBWaj/file1458c5e014b12.sqlite]
+# Database: sqlite 3.46.0 [/var/folders/yq/m5zhcp2d6cx4lsxs8_d5yv800000gn/T//RtmpwHeFw7/file1f1344493790.sqlite]
   covariateId countValue minValue maxValue averageValue standardDeviation
         &lt;dbl&gt;      &lt;int&gt;    &lt;dbl&gt;    &lt;dbl&gt;        &lt;dbl&gt;             &lt;dbl&gt;
 1        1901      10091        1       15         3.06             2.09 
@@ -915,7 +922,110 @@ Number of non-zero covariate values: 3287</code></pre>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">createTable1</span>(</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">covariateData1 =</span> covariateData2</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                            Characteristic % (n = 10,091)
+1                                Age group               
+2                                 40 -  44            5.5
+3                                 45 -  49            8.0
+4                                 50 -  54           10.5
+5                                 55 -  59           13.2
+6                                 60 -  64           15.3
+7                                 65 -  69           15.5
+8                                 70 -  74           16.5
+9                                 75 -  79           14.2
+10                                80 -  84            1.2
+11                          Gender: female           33.2
+12                                    Race               
+13                            race = Asian            5.9
+14        race = Black or African American           10.0
+15                            race = White           81.1
+16                               Ethnicity               
+17          ethnicity = Hispanic or Latino           10.3
+18      ethnicity = Not Hispanic or Latino           89.7
+19                Medical history: General               
+20               Acute respiratory disease            7.0
+21        Chronic obstructive lung disease            0.1
+22                                Dementia            0.6
+23                       Diabetes mellitus            1.0
+24             Gastrointestinal hemorrhage            0.0
+25                          Hyperlipidemia            1.9
+26                   Hypertensive disorder            1.1
+27                          Osteoarthritis            0.4
+28                               Pneumonia            0.1
+29                        Renal impairment           11.7
+30                    Rheumatoid arthritis            0.0
+31        Urinary tract infectious disease            0.1
+32 Medical history: Cardiovascular disease               
+33                     Atrial fibrillation            0.1
+34                 Cerebrovascular disease            0.0
+35                           Heart disease          100.0
+36                           Heart failure            0.1
+37                  Ischemic heart disease          100.0
+38                      Pulmonary embolism            0.1
+39                       Venous thrombosis            0.1
+40              Medical history: Neoplasms               
+                                    Characteristic % (n = 10,091)
+1                     Malignant neoplastic disease            1.3
+2                        Malignant tumor of breast            0.1
+3                         Malignant tumor of colon            0.9
+4                          Malignant tumor of lung            0.2
+5                                   Medication use               
+6    Agents acting on the renin-angiotensin system           72.5
+7                  Antibacterials for systemic use            3.3
+8                                  Antidepressants            0.1
+9                                   Antiepileptics            0.0
+10     Antiinflammatory and antirheumatic products           81.9
+11                           Antineoplastic agents            1.5
+12                           Antithrombotic agents           84.5
+13                            Beta blocking agents           54.1
+14                        Calcium channel blockers           34.1
+15                                       Diuretics           43.3
+16           Drugs for obstructive airway diseases            5.8
+17                          Drugs used in diabetes           32.2
+18                              Immunosuppressants            9.2
+19                          Lipid modifying agents           65.1
+20                                         Opioids           37.9
+21                                   Psycholeptics            0.7
+22                                                               
+23                                  Characteristic          Value
+24                      Charlson comorbidity index               
+25                                            Mean            3.1
+26                                  Std. deviation            2.1
+27                                         Minimum            1.0
+28                                 25th percentile            1.0
+29                                          Median            2.0
+30                                 75th percentile            5.0
+31                                         Maximum           15.0
+32                                      CHADS2Vasc               
+33                                            Mean            3.1
+34                                  Std. deviation            1.3
+35                                         Minimum            0.0
+36                                 25th percentile            2.0
+37                                          Median            3.0
+38                                 75th percentile            4.0
+39                                         Maximum            7.0
+40                                                               </code></pre>
+</div>
+</div>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Great packages in <code>R</code> to beautify tables</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><code>gt</code> : integrates well with <code>dplyr</code></li>
+<li><code>kableExtra</code> : powerful for latex</li>
+<li><code>DT</code> : nicely interactive (html)</li>
+</ul>
+</div>
+</div>
 </div>
 </section>
 <section id="incidence-computation" class="slide level2 scrollable">
@@ -925,86 +1035,100 @@ Number of non-zero covariate values: 3287</code></pre>
 <li>Plenty of sublety (e.g.&nbsp;cenoring TAR at event or observation end)</li>
 </ul>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Target cohort is hypertension:</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>targetList <span class="ot">&lt;-</span> <span class="fu">list</span>(CohortIncidence<span class="sc">::</span><span class="fu">createCohortRef</span>(</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> cohortDefinitionSet<span class="sc">$</span>cohortId[<span class="dv">1</span>],</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> cohortDefinitionSet<span class="sc">$</span>cohortName[<span class="dv">1</span>]))</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Outcome cohort is AMI:</span></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>outcomeList <span class="ot">&lt;-</span> <span class="fu">list</span>(CohortIncidence<span class="sc">::</span><span class="fu">createOutcomeDef</span>(</span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="dv">1</span>,</span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> cohortDefinitionSet<span class="sc">$</span>cohortName[<span class="dv">2</span>], </span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortId =</span> cohortDefinitionSet<span class="sc">$</span>cohortId[<span class="dv">2</span>], </span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">cleanWindow =</span> <span class="dv">365</span>))</span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify the time-at-risk to coincide with the cohort start and end:</span></span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>tars <span class="ot">&lt;-</span> <span class="fu">list</span>(CohortIncidence<span class="sc">::</span><span class="fu">createTimeAtRiskDef</span>(</span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="dv">1</span>, </span>
-<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">startWith =</span> <span class="st">"start"</span>, </span>
-<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">endWith =</span> <span class="st">"end"</span>, </span>
-<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">startOffset =</span> <span class="dv">0</span>,</span>
-<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">endOffset =</span> <span class="dv">0</span>))</span>
-<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a><span class="co"># All together:</span></span>
-<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>analysisList <span class="ot">&lt;-</span> <span class="fu">list</span>(CohortIncidence<span class="sc">::</span><span class="fu">createIncidenceAnalysis</span>(</span>
-<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">targets =</span> cohortDefinitionSet<span class="sc">$</span>cohortId[<span class="dv">1</span>],</span>
-<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcomes =</span> <span class="dv">1</span>,</span>
-<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">tars =</span> <span class="dv">1</span>))</span>
-<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a>irDesign <span class="ot">&lt;-</span> CohortIncidence<span class="sc">::</span><span class="fu">createIncidenceDesign</span>(</span>
-<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">targetDefs =</span> targetList,</span>
-<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcomeDefs =</span> outcomeList,</span>
-<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">tars =</span> tars,</span>
-<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">analysisList =</span> analysisList,</span>
-<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">strataSettings =</span> CohortIncidence<span class="sc">::</span><span class="fu">createStrataSettings</span>(</span>
-<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">byYear =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">byGender =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">byAge =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">ageBreaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">110</span>, <span class="at">by =</span> <span class="dv">10</span>)</span>
-<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a>buildOptions <span class="ot">&lt;-</span> CohortIncidence<span class="sc">::</span><span class="fu">buildOptions</span>(</span>
-<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortTable =</span> cohortTableNames<span class="sc">$</span>cohortTable,</span>
-<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">cdmDatabaseSchema =</span> <span class="st">"main"</span>,</span>
-<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a>  <span class="at">sourceName =</span> <span class="st">"synthetic"</span>,</span>
-<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a>  <span class="at">refId =</span> <span class="dv">1</span>)</span>
-<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a>executeResults <span class="ot">&lt;-</span> CohortIncidence<span class="sc">::</span><span class="fu">executeAnalysis</span>(</span>
-<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a>  <span class="at">connectionDetails =</span> connectionDetails,</span>
-<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">incidenceDesign =</span> irDesign,</span>
-<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">buildOptions =</span> buildOptions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Target cohort is hypertension:</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>targetList <span class="ot">&lt;-</span> <span class="fu">list</span>(CohortIncidence<span class="sc">::</span><span class="fu">createCohortRef</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> cohortDefinitionSet<span class="sc">$</span>cohortId[<span class="dv">1</span>],</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> cohortDefinitionSet<span class="sc">$</span>cohortName[<span class="dv">1</span>]))</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Outcome cohort is AMI:</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>outcomeList <span class="ot">&lt;-</span> <span class="fu">list</span>(CohortIncidence<span class="sc">::</span><span class="fu">createOutcomeDef</span>(</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="dv">1</span>,</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> cohortDefinitionSet<span class="sc">$</span>cohortName[<span class="dv">2</span>], </span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortId =</span> cohortDefinitionSet<span class="sc">$</span>cohortId[<span class="dv">2</span>], </span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">cleanWindow =</span> <span class="dv">365</span>))</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify the time-at-risk to coincide with the cohort start and end:</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>tars <span class="ot">&lt;-</span> <span class="fu">list</span>(CohortIncidence<span class="sc">::</span><span class="fu">createTimeAtRiskDef</span>(</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="dv">1</span>, </span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">startWith =</span> <span class="st">"start"</span>, </span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">endWith =</span> <span class="st">"end"</span>, </span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">startOffset =</span> <span class="dv">0</span>,</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">endOffset =</span> <span class="dv">0</span>))</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a><span class="co"># All together:</span></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>analysisList <span class="ot">&lt;-</span> <span class="fu">list</span>(CohortIncidence<span class="sc">::</span><span class="fu">createIncidenceAnalysis</span>(</span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">targets =</span> cohortDefinitionSet<span class="sc">$</span>cohortId[<span class="dv">1</span>],</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcomes =</span> <span class="dv">1</span>,</span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">tars =</span> <span class="dv">1</span>))</span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>irDesign <span class="ot">&lt;-</span> CohortIncidence<span class="sc">::</span><span class="fu">createIncidenceDesign</span>(</span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">targetDefs =</span> targetList,</span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcomeDefs =</span> outcomeList,</span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">tars =</span> tars,</span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">analysisList =</span> analysisList,</span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">strataSettings =</span> CohortIncidence<span class="sc">::</span><span class="fu">createStrataSettings</span>(</span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">byYear =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">byGender =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">byAge =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">ageBreaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">110</span>, <span class="at">by =</span> <span class="dv">10</span>)</span>
+<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb24-38"><a href="#cb24-38" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-39"><a href="#cb24-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-40"><a href="#cb24-40" aria-hidden="true" tabindex="-1"></a>buildOptions <span class="ot">&lt;-</span> CohortIncidence<span class="sc">::</span><span class="fu">buildOptions</span>(</span>
+<span id="cb24-41"><a href="#cb24-41" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohortTable =</span> cohortTableNames<span class="sc">$</span>cohortTable,</span>
+<span id="cb24-42"><a href="#cb24-42" aria-hidden="true" tabindex="-1"></a>  <span class="at">cdmDatabaseSchema =</span> <span class="st">"main"</span>,</span>
+<span id="cb24-43"><a href="#cb24-43" aria-hidden="true" tabindex="-1"></a>  <span class="at">sourceName =</span> <span class="st">"synthetic"</span>,</span>
+<span id="cb24-44"><a href="#cb24-44" aria-hidden="true" tabindex="-1"></a>  <span class="at">refId =</span> <span class="dv">1</span>)</span>
+<span id="cb24-45"><a href="#cb24-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-46"><a href="#cb24-46" aria-hidden="true" tabindex="-1"></a>executeResults <span class="ot">&lt;-</span> CohortIncidence<span class="sc">::</span><span class="fu">executeAnalysis</span>(</span>
+<span id="cb24-47"><a href="#cb24-47" aria-hidden="true" tabindex="-1"></a>  <span class="at">connectionDetails =</span> connectionDetails,</span>
+<span id="cb24-48"><a href="#cb24-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">incidenceDesign =</span> irDesign,</span>
+<span id="cb24-49"><a href="#cb24-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">buildOptions =</span> buildOptions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="preliminary-results" class="slide level2 scrollable">
 <h2>Preliminary results</h2>
-<div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> executeResults<span class="sc">$</span>incidence_summary</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(results) <span class="ot">&lt;-</span> <span class="fu">tolower</span>(<span class="fu">names</span>(results))</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(start_year),</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>                              <span class="sc">!</span><span class="fu">is.na</span>(gender_name),</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>                              <span class="sc">!</span><span class="fu">is.na</span>(age_group_id))</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results, <span class="fu">aes</span>(<span class="at">x =</span> age_group_id, </span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>                    <span class="at">y =</span> incidence_rate_p100py,</span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>                    <span class="at">group =</span> gender_name, <span class="at">color =</span> gender_name)) <span class="sc">+</span></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Age group"</span>) <span class="sc">+</span></span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Incidence (per 100 patient year)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
+<div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> executeResults<span class="sc">$</span>incidence_summary</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(results) <span class="ot">&lt;-</span> <span class="fu">tolower</span>(<span class="fu">names</span>(results))</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> results <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(start_year),</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>                              <span class="sc">!</span><span class="fu">is.na</span>(gender_name),</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>                              <span class="sc">!</span><span class="fu">is.na</span>(age_group_id))</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results, <span class="fu">aes</span>(<span class="at">x =</span> age_group_id, </span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>                    <span class="at">y =</span> incidence_rate_p100py,</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>                    <span class="at">group =</span> gender_name, <span class="at">color =</span> gender_name)) <span class="sc">+</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Age group"</span>) <span class="sc">+</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Incidence (per 100 patient year)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="06_characterization_files/figure-revealjs/unnamed-chunk-14-1.png" width="576"></p>
+<p><img data-src="06_characterization_files/figure-revealjs/unnamed-chunk-14-1.png" style="width:9in"></p>
 </figure>
 </div>
 </div>
 </div>
+</div>
+</div>
+</section>
+<section id="quick-review" class="slide level2">
+<h2>Quick review</h2>
+<ul>
+<li><code>FeatureExtraction</code> provides standardized natural disease histories
+<ul>
+<li>also delivers <strong>design matrices</strong> for prediction and causal inference</li>
+</ul></li>
+<li><code>CohortIncidence</code> provides standardized incidence rate / proportion calculations</li>
+</ul>
 
-<p><img src="figures/logo.png" class="slide-logo"></p>
-<div class="footer footer-default">
+
+<img src="figures/logo.png" class="slide-logo r-stretch"><div class="footer footer-default">
 <p>Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)</p>
 </div>
 </section>

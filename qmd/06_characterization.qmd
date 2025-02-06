@@ -40,21 +40,25 @@ knitr:
 
 In these lectures we will learn:
 
-- TODO
+- How to perform disease natural history (characterization)
 
-- TODO
+- About standardized characterization features
 
-- TODO
+- Standardized incidence rate estimation
+
+- Which OHDSI tools implement these processes
 
 ## Cohort characterization {.scrollable}
 
-![](figures/characteriztion_cartoon.png)
+::: {.border}
+![](figures/characteriztion_cartoon.png){width=70% fig-align="center"}
+:::
 
 $\ldots$ describes the baseline (and post-index) characteristics of people in a cohort
 
 - Who gets the disease / outcome ?
 
-Standardized OHDSI approaches provide describe statistics of **all** conditions, drug and device exposures, procedures and other clinical observations (generally at index-date, O(10,000))
+Standardized OHDSI approaches provide describe statistics of **all** conditions, drug and device exposures, procedures and other clinical observations [generally before index-date and $\cal O$(10,000)]
 
 ## Example {.scrollable}
 
@@ -355,7 +359,17 @@ A default summary table is available in `FeatureExtraction`.
 result <- createTable1(
   covariateData1 = covariateData2
 )
+
+result
 ```
+
+::: {.callout-important}
+## Great packages in `R` to beautify tables
+
+- `gt` : integrates well with `dplyr`
+- `kableExtra` : powerful for latex
+- `DT` : nicely interactive (html)
+:::
 
 ## Incidence computation {.scrollable}
 
@@ -420,6 +434,11 @@ executeResults <- CohortIncidence::executeAnalysis(
 ## Preliminary results {.scrollable}
 
 ```{r}
+#| layout: [[200]]
+#| fig-width: 5
+#| fig-height: 3
+#| out-height: 15in
+#| out-width: 9in
 library(dplyr)
 library(ggplot2)
 
@@ -436,3 +455,10 @@ ggplot(results, aes(x = age_group_id,
   xlab("Age group") +
   ylab("Incidence (per 100 patient year)")
 ```
+
+## Quick review
+
+- `FeatureExtraction` provides standardized natural disease histories
+  * also delivers **design matrices** for prediction and causal inference
+  
+- `CohortIncidence` provides standardized incidence rate / proportion calculations

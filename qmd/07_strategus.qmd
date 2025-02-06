@@ -40,11 +40,15 @@ knitr:
 
 In these lectures we will learn:
 
-- TODO
+- What is the `Strategus` framework?
 
-- TODO
+- How to design fully **distributable** studies
 
-- TODO
+- About the `Strategus` "module" system
+
+- Managing and re-using results
+
+<p>
 
 ::: {.border}
 ![](figures/hades.png){width=50% fig-align="center"}
@@ -69,7 +73,7 @@ In these lectures we will learn:
   * cohort features
   * incidence rates
   * time-to-event
-  * dechallenge / rechalleng
+  * de-challenge / re-challenge
   
 - Patient-level prediction
 

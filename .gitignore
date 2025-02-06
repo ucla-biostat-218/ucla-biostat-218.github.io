@@ -6,3 +6,9 @@
 data
 qmd/figures
 slides/index.html
+slides/search.json
+.DS_Store
+strategusWork
+strategusOutput
+errorReportSql.txt
+studySpecifications.json
