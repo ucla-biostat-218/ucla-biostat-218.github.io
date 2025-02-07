@@ -109,7 +109,7 @@ Schuemie M, Reps J, Black A, et al. 2024 Health-Analytics Data to Evidence Suite
 
 - `DataQualityDashboard`: evaluate data quality
 
-## HADES cohort packages
+## HADES cohort packages {.scrollable}
 
 ::: {.callout-important}
 We define a cohort as a set of persons who satisfy one or more inclusion criteria for a duration of time. 
@@ -397,12 +397,13 @@ Cons:
   
 ## Minor error in course `renv.lock`
 
-To fix:
+Let's fix it!
 
 ```{r}
 #| eval: false
-install.packages("testthat")
-remotes::install_github("OHDSI/Capr")
+#| echo: true
+renv::install("testthat")
+renv::install("OHDSI/Capr")
 ```
 
 ## `Capr`: cohort definition application programming in R
