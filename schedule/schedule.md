@@ -27,7 +27,7 @@ Mar 4, 18
 |  3 | Jan 21 | Online    | OMOP CDM 2  |
 |  4 | Jan 28 | Online    | SQL \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/03_sql.qmd), [html](../slides/03_sql.revealjs.html)\] | | 
 |  5 | Feb 4  | Online    | Defining Cohorts  \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/04_phenotyping.qmd), [html](../slides/04_phenotyping.revealjs.html)\] | | Problem set 1 (due 2/7) \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/01_problem_set.qmd), [html](../slides/01_problem_set.html)\]
-|    | Feb 8  | In-person | HADES / Characterization  \[slides 1: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/05_hades.qmd), [html](../slides/05_hades.revealjs.html)\]  \[slides 2: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/06_charactization.qmd), [html](../slides/06_characterization.revealjs.html)\] |
+|    | Feb 8  | In-person | HADES / Characterization  \[slides 1: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/05_hades.qmd), [html](../slides/05_hades.revealjs.html)\]  \[slides 2: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/06_characterization.qmd), [html](../slides/06_characterization.revealjs.html)\] |
 |    | Feb 9  | In-person | Incidence / Strategus |
 |  6 |        | No class  | 
 |  7 | Feb 18 | Online    | Patient-Level Prediction |
