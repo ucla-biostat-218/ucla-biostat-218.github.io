@@ -170,7 +170,7 @@ getCohortCounts(connectionDetails = connectionDetails,
 - What happened to the exposure cohorts? (missing indication)
 :::
 
-## Data pull
+## Data pull {.scrollable}
 
 ```{r}
 #| eval: false
