@@ -1,6 +1,7 @@
 /*-- scss:defaults --*/
 
 $code-block-font-size: 0.7em;
+$presentation-heading-line-height: 1.0;
 
 /*-- scss:rules --*/
 

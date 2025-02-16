@@ -1,0 +1,10 @@
+.reveal h2 {
+  // font-weight: 350;
+  font-weight: lighter;
+  font-size: 1.4em;
+  background-image: url(figures/footer.png);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: 0px 62px;
+  padding-bottom: 10px;
+}

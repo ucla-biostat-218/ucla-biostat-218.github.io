@@ -1,0 +1,567 @@
+---
+title: "Comparative cohort methods"
+subtitle: Biostat 218
+author: "Marc A Suchard @ UCLA"
+date: "February 18, 2025"
+format:
+  revealjs :
+    width: 1280
+    height: 720
+    output-ext: revealjs.html
+    footer: Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)
+    logo: figures/logo.png
+    chalkboard: true
+    highlight-style: a11y
+    theme: [default, custom.sccs]
+    code-line-numbers: false
+  html:
+    output-ext: html
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+    highlight-style: a11y
+    code-line-numbers: false
+bibliography: "../ohdsi.bib"
+csl: "apa.csl"
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    fig.width: 6
+    fig.height: 4
+    message: FALSE
+    cache: false
+    echo: true
+---
+
+## Introduction
+
+In these lectures we will learn about:
+
+- Counterfactual reasoning
+
+- Standardized comparative cohort designs
+
+- Large-scale implementations
+
+::: {style="margin-top: 3em;"}
+![](figures/hades.png){width=50% fig-align="center"}
+:::
+
+## Pop culture meets counterfactual reasoning
+
+::: {.r-stretch}
+![](figures/matrix_causality.png){fig-align="center"}
+:::
+
+::: {.callout-tip}
+## What movie is this?
+and what choice was Neo offered?
+:::
+
+## Counterfactual reasoning for one person {.scrollable}
+
+::: {.border}
+![](figures/counterfactual_cartoon.png){width=80% fig-align="center"}
+:::
+
+::: {.callout-tip}
+## Wasn't *Back to Future* great?
+:::
+
+## Counterfactual reasoning for a population {.scrollable}
+
+::: {.border}
+![](figures/counterfactual_cartoon_pop.png){width=80% fig-align="center"}
+:::
+
+## Sadly I do not own a Delorean {.scrollable}
+
+- What is our *next* best approximation?
+
+- Randomized trial
+
+- Instead of studying the same population under both decision options, let’s define a larger population and **randomly assign** one treatment to each person, then compare outcomes between the two cohorts $\ldots$
+
+## Randomized trial {.scrollable}
+
+::: {.border}
+![](figures/counterfactual_random.png){width=80% fig-align="center"}
+:::
+
+::: {.callout-important}
+## Randomized treatment assignment
+to approximate counterfactural outcomes
+:::
+
+## Randomized trial outcomes {.scrollable}
+
+::: {.border}
+![](figures/random_outcomes.png){width=30% fig-align="center"}
+:::
+
+- Randomization implies (an **assumption**) that persons assigned to the target (T) cohort are **exchangeable at baseline** with persons assigned the comparator (C) cohort
+
+::: {.callout-important}
+Assumption is often weakly violated in finite trials
+:::
+
+## Sadly we cannot randomize in observational data
+
+- What is our *next, next* best approximation?
+
+::: {.callout-note}
+## Observational study
+
+- Comparative cohort designs: between persons who made different choices
+  
+Or
+
+- Self-controlled designs: within persons during time periods with different exposure status
+:::
+
+## Observational comparative cohort design to approximate counterfactual outcomes {.scrollable}
+
+::: {.border}
+![](figures/counterfactual_obs.png){width=50% fig-align="center"}
+:::
+
+::: {.callout-note}
+## Notice the two different teams?
+- target (T) vs comparator (C)
+- which video game is this?
+:::
+
+## Observational comparative cohort design outcomes {.scrollable}
+
+::: {.border}
+![](figures/obs_outcomes.png){width=30% fig-align="center"}
+:::
+
+- Exchangeability assumption *may* be violated if there are (differential) reasons for treatment choice $\ldots$ and there often are
+  
+::: {.callout-tip}
+## Examples of trouble
+- Selection bias
+- Confounding (also related to outcome)
+:::
+  
+## What is a confounder?
+
+::: {.border}
+![](figures/confounding3.png){width=70% fig-align="center"}
+:::
+
+- A factor that *simultaneously* drives **treatment assignment** and **outcome**
+
+## Design an observational study like a randomized trial {.scrollable}
+
+::: {.border}
+![](figures/target_trial_masthead.png){width=50% fig-align="center"}
+
+:::
+
+::: {.callout-important}
+## Much older idea
+William Cochran / Gertrude Cox, 1950, *Experimental Design*
+:::
+
+Protocol components to emulate:
+
+- Eligibility criteria
+- Treatment strategies
+- Assignment procedure
+- Follow-up period
+- Outcome
+- Casual contracts of interest
+- Analysis plan
+
+## Target trial for comparing two initial therapies
+
+::: {.border}
+![](figures/target_trial_t2dm.png){width=90% fig-align="center"}
+:::
+
+## Obs. trial for comparing two initial therapies
+
+::: {.border}
+![](figures/target_trial_t2dm_ps.png){width=90% fig-align="center"}
+:::
+
+## Placebo-controlled randomized trials are hard to emulate {.scrollable}
+
+New-user cohort method compares
+
+- one target (T) treatment vs one comparator (C) treatment
+
+::: {.callout-important}
+## Very difficult  to compare against *no* treatment
+:::
+
+Hard to define a group of unexposed persons that are **comparable** to the exposed group
+
+- Just ask yourself: when was I "not exposed"?  yesterday? the day before?
+
+::: {.callout-note}
+## Solution
+Select comparator (C) for the **same** indication as T, where C is believed to have no effect on outcome (O)
+
+- good for safety
+- harder for effectiveness
+:::
+
+## Propensity score introduction {.scrollable}
+
+- Propensity score (PS) = probability $P(A = \text{T} | X = x_i)$ of belonging to the target (T) cohort vs the comparator (C) cohort given baseline covariates (before assignment) $x_i$ for person $i$
+  * [Rosenbaum and Rubins, 1983](https://academic.oup.com/biomet/article/70/1/41/240879): > 40,000 citations
+
+- Propensity scores can be used as **balancing scores**: if the two cohorts have similar propensity score distributions, then the distribution of covariates should be similar (need to perform diagnostic to check)
+
+::: {.callout-tip}
+## PS modeling
+- **Prediction** problem
+- Plenty of machine learning approaches available
+  * CART, random forests, SVMs, KNN, XGBoost, deep learning
+  * logistic regression (regularized)
+:::
+
+## Proposity score intuition {.scrollable}
+
+::: {.border}
+![](figures/schneeweiss_ps.png){width=80% fig-align="center"}
+:::
+
+[Glynn, Schneeweiss and Sturmer, 2006](https://pubmed.ncbi.nlm.nih.gov/16611199/)
+
+## A little theory {.scrollable}
+
+Propensity scoring controls for **measured** confounding.
+
+If treatment assigment is *strongly ignorable* given measured characteristics, then propensity scoring  yields unbiased estimates of causal effects.
+
+::: {.callout-tip}
+## Strongly ignorable
+- There are no unmeasured confounders
+- Measured confounders are adjusted for appropriately
+:::
+
+I believe these are **not testable** assumptions
+
+## Large-scale propensity scores {.scrollable}
+
+- Traditional: select a handful of variables to use as predictors of treatment assignment (gender, age, a couple comorbidities)
+
+- Standardized OHDSI approach: use all data prior to treatment assignment
+
+::: {.callout-important}
+## Chief citations
+- [Tian et al, 2018](https://pubmed.ncbi.nlm.nih.gov/29939268/)
+- [Zhang et al, 2022](https://pubmed.ncbi.nlm.nih.gov/36108816/)
+:::
+
+:::: {layout="[50,50]"}
+::: {#first-column}
+- All conditions
+- All drugs
+- All procedures 
+- All observations, etc
+:::
+::: {#second-column}
+
+![](figures/comparative_cohort_carton.png)
+:::
+::::
+
+::: {.callout-important}
+Fully automated, except we must manually remove target and comparator concepts from the covariates!
+
+- the very things we are trying to predict
+:::
+
+Only practical at OHDSI-scale via [Cyclops](http://ohdsi.github.io/Cyclops)
+
+- To be discussed (I hope) later in course
+
+## Confounding adjustment using propensity scores 
+
+::: {.r-stretch}
+![](figures/garbe_table.png){fig-align="center"}
+::: 
+
+[Garbe et al, 2013](http://www.ncbi.nlm.nih.gov/pubmed/22763756)
+
+## Confounding adjustment using propensity scores {.scrollable}
+
+- Regression adjustment: not generally recommended
+- Matching: OHDSI implemented
+- Stratification: OHDSI implemented
+- IPW: OHDSI implemented; [empirical evidence](https://pubmed.ncbi.nlm.nih.gov/33367288/) that this does not work well 
+
+::: {.callout-note}
+## Different adjustments lead to subtly different casual estimands
+Interesting, but beyond the scope of this course (ATT, ATE, etc)
+:::
+
+::: {.callout-note}
+## Garbe et al's hd-PS $\neq$ LSPS
+[Comparison](https://pubmed.ncbi.nlm.nih.gov/29939268) demonstrating LSPS advantages
+:::
+
+## Matching to adjust for baseline covariate imbalance
+
+::: {.r-stretch}
+![](figures/matching_outcomes.png){fig-align="center"}
+:::
+
+## Stratification to adjust for basline covariate imbalance
+
+::: {.r-stretch}
+![](figures/stratification_outcomes.png){fig-align="center"}
+:::
+
+## Practical issues {.scrollable}
+
+Exact matching (of continuous PSs) is rarely possible
+
+Use some tolerance called a "caliper"
+
+- Default: 0.2 on the logit-scale: [Austin, 2011](https://pubmed.ncbi.nlm.nih.gov/20925139/)
+
+**Preference score** ($F$) - scale: [Walker, 2013](https://www.dovepress.com/a-tool-for-assessing-the-feasibility-of-comparative-effectiveness-rese-peer-reviewed-fulltext-article-CER)
+
+- Adjusts for the "market share" of the two treatments
+
+$$
+\text{logit}(F) = \text{logit}(PS) - \text{logit}(\phi)
+$$
+where $\phi$ is the proportion of persons receiving the target treatment 
+
+::: {.callout-note}
+## Example
+If 10% of patients receive the target treatment, then patients with a $F = 0.5$ have a 10% probability of receiving the target treatment
+:::
+
+## Covariate balance {.scrollable}
+
+PS adjustment aims to make the target (T) and comparator (C) cohorts **comparable** (balanced)
+
+::: {.border}
+![](figures/balance_book.png){width=50% fig-align="center"}
+:::
+
+Rule of thumb: after-adjustment standardized difference of means $< 0.1$ [Rubin, 2001](https://link.springer.com/article/10.1023/A:1020363010465)
+
+::: {.callout-note}
+Recent work shows that chance imbalance (smaller sample sizes) often violates $0.1$ cutoff
+:::
+
+## Demonstrating LSPS modeling {.scrollable}
+
+:::: {layout="[50,50]"}
+::: {#first-column}
+
+- Comparing paracetamol to ibuprofen
+- CPRD data source
+- Propensity score matching
+  * 37 "publication covariates"
+  * Large-scale covariates (from `FeatureExtraction`)
+  * $L_1$ regularized logistic regression
+  * Practical via `Cyclops`
+  
+:::
+::: {#second-column}
+![](figures/lsps_example_paper.png)
+
+- Large-scale covariates:
+  * All Demographics, Conditions
+  * Drugs, Labs
+  * Proceedures, $\ldots$
+:::
+::::
+
+::: {.callout-tip}
+Typically between 10,000 and 100,000 features
+:::
+
+## Standardized difference of means (SDM) {.scrollable}
+
+::: {.border}
+![](figures/lsps_demo.png)
+:::
+
+- Not adjusted for in manual approach
+  * paracetamol users are less likely to have a diagnosis of pain recorded in their data
+  * paracetamol users are more likely to be on cough suppressants or opiods
+  
+::: {.callout-tip}
+## Automated approach
+balances on all covariates, including manually selected ones
+:::
+
+## Outcome model choice defines your research question {.scrollable}
+
+::: {.border}
+![](figures/outcome_models.png){width=70% fig-align="center"}
+:::
+
+::: {.callout-important}
+## Outcome regressors
+
+- Usually with a single variable (treatment-effect)
+- Sometimes with (large-scale) multivariable adjustment
+  * also possible for Cox (and Fine-Grey) models: [Mittal et al, 2014](https://pubmed.ncbi.nlm.nih.gov/24096388/)  [Yang et al, 2024](https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2213279)
+:::
+
+## Objective diagnostics {.scrollable}
+
+Residual **systematic error** remains pervasive 
+
+- Whether study results are reliable depends on whether certain assumptions have been met
+  * e.g. we assume our PS adjustment makes our treatment groups comparable
+  
+- Most of these assumptions are testable through diagnostics
+  * e.g. we can test whether our PS adjustment achieved balance by computing the standardized difference of means (SDM)
+  
+- By **objective** diagnostics we mean diagnostics that are evaluated while blinded to the results of the study
+  * e.g. pre-specify that we will not look at results where max(|SDM|) > 0.1
+  * using negative controls
+
+::: {.callout-important}
+## Unique feature of HADES
+
+- Only (arguably) possible through standardization $\rightarrow$ large-scale, repeatable
+  * Many T/C pairs
+  * Many **outcomes** (O) $\ldots$ including **negative control outcomes**
+:::
+
+## Example of a negative control {.scrollable}
+
+::: {style="margin-bottom: -1.5em;"}
+![](figures/zaadstra1.png){width=70% fig-align="center"}
+:::
+
+From a modestly impactful study
+
+![](figures/zaadstra3.png){width=50% fig-align="center"}
+
+## Example of a negative control {.scrollable}
+
+::: {.border}
+![](figures/zaadstra2.png){width=70% fig-align="center"}
+:::
+
+::: {.callout-tip}
+## Findings are less impressive 
+in comparison to the negative control estimates
+:::
+
+## Negative controls in a comparative cohort study {.scrollable}
+
+- If neither target nor comparator causes the outcome, the hazard ratio / incidence rate ratio / odds ratio should be 1
+  <!-- * a diagnostic could measure distance from ground truth, or -->
+  <!-- * we could **calibrate** estimates to retain nominal operating characteristics, e.g. Type 1 Error rate -->
+
+- Select 50-100 negative control outcomes per study
+
+- ATLAS can help, using information ([common evidence model](https://github.com/OHDSI/CommonEvidenceModel)) from
+  * Product labels
+  * Scientific literature
+  * Spontaneous reporting
+
+::: {.border}
+![](figures/common_evidence_model.png)
+:::
+
+::: {.callout-tip}
+## GenAI opportunity
+- LLMs to parse multiple data source to expand CEM
+:::
+
+## How to interpret negative control findings?
+
+- Idea: use a sample ($N > 50$) of negative controls to understand distribution of bias
+
+- **Systematic error distribution** can be used as
+  * *Diagnostic*: if too much systematic error, we stop
+  * *Calibration*: can adjust $p$-values and confidence intervals to take into account possible systematic error
+  
+::: {.callout-important}
+## Course plan
+- Have a more in-depth discussion of negative controls and calibration
+:::
+  
+## Quantifying residual systematic error {.scrollable}
+
+![](figures/systematic_error1.png){width=90% fig-align="center"}
+
+::: {.callout-tip}
+## Under null hypothesis $H_0$
+- 95% of estimates should lie above dashed line(s)
+- single-line (one-sided) / V-shape (two-sided)
+:::
+
+:::: {layout="[50,50]"}
+::: {#first-column}
+::: {.border}
+![](figures/systematic_error_paper.png){width=100%}
+:::
+:::
+::: {#second-column}
+- [EUMAEUS](https://ohdsi-studies.github.io/Eumaeus/Protocol.html) study 
+  * Evaluate performance of vaccine safety designs
+  * Multiple designs
+  * Multiple vaccines
+  * 100 negative control outcomes
+:::
+::::
+
+## EUMAEUS illustration {.scrollable}
+
+:::: {layout="[70,30]"}
+::: {#first-column}
+::: {.border}
+![](figures/eumaeus2.png){width=100%}
+:::
+:::
+::: {#second-column}
+- Historical comparator: relative incidence rate btw two different populations
+  
+- SCCS: relative incidence rate btw exposed/unexposed time within subject
+:::
+::::
+
+## EUMAEUS illustration {.scrollable}
+
+::::: {layout="[70,30]"}
+:::: {#first-column}
+::: {.border}
+![](figures/eumaeus1.png){width=100%}
+:::
+::::
+:::: {#second-column}
+- SCCS $\gg$ historical comparator
+::::
+:::::
+
+::: {.callout-important}
+## EASE
+Expected absolute systematic error summarizes this distribution
+
+- We use a *prespecified* EASE threshold (< 0.25) for go - no go decisions for our studies
+:::
+
+::: {.callout-tip}
+## Class projects based on vaccine safety designs
+- [EUMAEUS results](https://data.ohdsi.org/Eumaeus/)
+- [BETTER results](https://data.ohdsi.org/BetterExplorer/) - Bayesian extensions
+:::
+
+## Review
+
+When designing or reviewing a comparative cohort study, we ask
+
+::: {.border}
+![](figures/cohort_method_madlibs.png){width=80% fig-align="center"}
+:::

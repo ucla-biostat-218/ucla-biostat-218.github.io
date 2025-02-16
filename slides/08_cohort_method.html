@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Marc A Suchard @ UCLA">
+<meta name="dcterms.date" content="2025-02-18">
+
+<title>Comparative cohort methods</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="floating">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#pop-culture-meets-counterfactual-reasoning" id="toc-pop-culture-meets-counterfactual-reasoning" class="nav-link" data-scroll-target="#pop-culture-meets-counterfactual-reasoning"><span class="header-section-number">2</span> Pop culture meets counterfactual reasoning</a></li>
+  <li><a href="#counterfactual-reasoning-for-one-person" id="toc-counterfactual-reasoning-for-one-person" class="nav-link" data-scroll-target="#counterfactual-reasoning-for-one-person"><span class="header-section-number">3</span> Counterfactual reasoning for one person</a></li>
+  <li><a href="#counterfactual-reasoning-for-a-population" id="toc-counterfactual-reasoning-for-a-population" class="nav-link" data-scroll-target="#counterfactual-reasoning-for-a-population"><span class="header-section-number">4</span> Counterfactual reasoning for a population</a></li>
+  <li><a href="#sadly-i-do-not-own-a-delorean" id="toc-sadly-i-do-not-own-a-delorean" class="nav-link" data-scroll-target="#sadly-i-do-not-own-a-delorean"><span class="header-section-number">5</span> Sadly I do not own a Delorean</a></li>
+  <li><a href="#randomized-trial" id="toc-randomized-trial" class="nav-link" data-scroll-target="#randomized-trial"><span class="header-section-number">6</span> Randomized trial</a></li>
+  <li><a href="#randomized-trial-outcomes" id="toc-randomized-trial-outcomes" class="nav-link" data-scroll-target="#randomized-trial-outcomes"><span class="header-section-number">7</span> Randomized trial outcomes</a></li>
+  <li><a href="#sadly-we-cannot-randomize-in-observational-data" id="toc-sadly-we-cannot-randomize-in-observational-data" class="nav-link" data-scroll-target="#sadly-we-cannot-randomize-in-observational-data"><span class="header-section-number">8</span> Sadly we cannot randomize in observational data</a></li>
+  <li><a href="#observational-comparative-cohort-design-to-approximate-counterfactual-outcomes" id="toc-observational-comparative-cohort-design-to-approximate-counterfactual-outcomes" class="nav-link" data-scroll-target="#observational-comparative-cohort-design-to-approximate-counterfactual-outcomes"><span class="header-section-number">9</span> Observational comparative cohort design to approximate counterfactual outcomes</a></li>
+  <li><a href="#observational-comparative-cohort-design-outcomes" id="toc-observational-comparative-cohort-design-outcomes" class="nav-link" data-scroll-target="#observational-comparative-cohort-design-outcomes"><span class="header-section-number">10</span> Observational comparative cohort design outcomes</a></li>
+  <li><a href="#what-is-a-confounder" id="toc-what-is-a-confounder" class="nav-link" data-scroll-target="#what-is-a-confounder"><span class="header-section-number">11</span> What is a confounder?</a></li>
+  <li><a href="#design-an-observational-study-like-a-randomized-trial" id="toc-design-an-observational-study-like-a-randomized-trial" class="nav-link" data-scroll-target="#design-an-observational-study-like-a-randomized-trial"><span class="header-section-number">12</span> Design an observational study like a randomized trial</a></li>
+  <li><a href="#target-trial-for-comparing-two-initial-therapies" id="toc-target-trial-for-comparing-two-initial-therapies" class="nav-link" data-scroll-target="#target-trial-for-comparing-two-initial-therapies"><span class="header-section-number">13</span> Target trial for comparing two initial therapies</a></li>
+  <li><a href="#obs.-trial-for-comparing-two-initial-therapies" id="toc-obs.-trial-for-comparing-two-initial-therapies" class="nav-link" data-scroll-target="#obs.-trial-for-comparing-two-initial-therapies"><span class="header-section-number">14</span> Obs. trial for comparing two initial therapies</a></li>
+  <li><a href="#placebo-controlled-randomized-trials-are-hard-to-emulate" id="toc-placebo-controlled-randomized-trials-are-hard-to-emulate" class="nav-link" data-scroll-target="#placebo-controlled-randomized-trials-are-hard-to-emulate"><span class="header-section-number">15</span> Placebo-controlled randomized trials are hard to emulate</a></li>
+  <li><a href="#propensity-score-introduction" id="toc-propensity-score-introduction" class="nav-link" data-scroll-target="#propensity-score-introduction"><span class="header-section-number">16</span> Propensity score introduction</a></li>
+  <li><a href="#proposity-score-intuition" id="toc-proposity-score-intuition" class="nav-link" data-scroll-target="#proposity-score-intuition"><span class="header-section-number">17</span> Proposity score intuition</a></li>
+  <li><a href="#a-little-theory" id="toc-a-little-theory" class="nav-link" data-scroll-target="#a-little-theory"><span class="header-section-number">18</span> A little theory</a></li>
+  <li><a href="#large-scale-propensity-scores" id="toc-large-scale-propensity-scores" class="nav-link" data-scroll-target="#large-scale-propensity-scores"><span class="header-section-number">19</span> Large-scale propensity scores</a></li>
+  <li><a href="#confounding-adjustment-using-propensity-scores" id="toc-confounding-adjustment-using-propensity-scores" class="nav-link" data-scroll-target="#confounding-adjustment-using-propensity-scores"><span class="header-section-number">20</span> Confounding adjustment using propensity scores</a></li>
+  <li><a href="#confounding-adjustment-using-propensity-scores-1" id="toc-confounding-adjustment-using-propensity-scores-1" class="nav-link" data-scroll-target="#confounding-adjustment-using-propensity-scores-1"><span class="header-section-number">21</span> Confounding adjustment using propensity scores</a></li>
+  <li><a href="#matching-to-adjust-for-baseline-covariate-imbalance" id="toc-matching-to-adjust-for-baseline-covariate-imbalance" class="nav-link" data-scroll-target="#matching-to-adjust-for-baseline-covariate-imbalance"><span class="header-section-number">22</span> Matching to adjust for baseline covariate imbalance</a></li>
+  <li><a href="#stratification-to-adjust-for-basline-covariate-imbalance" id="toc-stratification-to-adjust-for-basline-covariate-imbalance" class="nav-link" data-scroll-target="#stratification-to-adjust-for-basline-covariate-imbalance"><span class="header-section-number">23</span> Stratification to adjust for basline covariate imbalance</a></li>
+  <li><a href="#practical-issues" id="toc-practical-issues" class="nav-link" data-scroll-target="#practical-issues"><span class="header-section-number">24</span> Practical issues</a></li>
+  <li><a href="#covariate-balance" id="toc-covariate-balance" class="nav-link" data-scroll-target="#covariate-balance"><span class="header-section-number">25</span> Covariate balance</a></li>
+  <li><a href="#demonstrating-lsps-modeling" id="toc-demonstrating-lsps-modeling" class="nav-link" data-scroll-target="#demonstrating-lsps-modeling"><span class="header-section-number">26</span> Demonstrating LSPS modeling</a></li>
+  <li><a href="#standardized-difference-of-means-sdm" id="toc-standardized-difference-of-means-sdm" class="nav-link" data-scroll-target="#standardized-difference-of-means-sdm"><span class="header-section-number">27</span> Standardized difference of means (SDM)</a></li>
+  <li><a href="#outcome-model-choice-defines-your-research-question" id="toc-outcome-model-choice-defines-your-research-question" class="nav-link" data-scroll-target="#outcome-model-choice-defines-your-research-question"><span class="header-section-number">28</span> Outcome model choice defines your research question</a></li>
+  <li><a href="#objective-diagnostics" id="toc-objective-diagnostics" class="nav-link" data-scroll-target="#objective-diagnostics"><span class="header-section-number">29</span> Objective diagnostics</a></li>
+  <li><a href="#example-of-a-negative-control" id="toc-example-of-a-negative-control" class="nav-link" data-scroll-target="#example-of-a-negative-control"><span class="header-section-number">30</span> Example of a negative control</a></li>
+  <li><a href="#example-of-a-negative-control-1" id="toc-example-of-a-negative-control-1" class="nav-link" data-scroll-target="#example-of-a-negative-control-1"><span class="header-section-number">31</span> Example of a negative control</a></li>
+  <li><a href="#negative-controls-in-a-comparative-cohort-study" id="toc-negative-controls-in-a-comparative-cohort-study" class="nav-link" data-scroll-target="#negative-controls-in-a-comparative-cohort-study"><span class="header-section-number">32</span> Negative controls in a comparative cohort study</a></li>
+  <li><a href="#how-to-interpret-negative-control-findings" id="toc-how-to-interpret-negative-control-findings" class="nav-link" data-scroll-target="#how-to-interpret-negative-control-findings"><span class="header-section-number">33</span> How to interpret negative control findings?</a></li>
+  <li><a href="#quantifying-residual-systematic-error" id="toc-quantifying-residual-systematic-error" class="nav-link" data-scroll-target="#quantifying-residual-systematic-error"><span class="header-section-number">34</span> Quantifying residual systematic error</a></li>
+  <li><a href="#eumaeus-illustration" id="toc-eumaeus-illustration" class="nav-link" data-scroll-target="#eumaeus-illustration"><span class="header-section-number">35</span> EUMAEUS illustration</a></li>
+  <li><a href="#eumaeus-illustration-1" id="toc-eumaeus-illustration-1" class="nav-link" data-scroll-target="#eumaeus-illustration-1"><span class="header-section-number">36</span> EUMAEUS illustration</a></li>
+  <li><a href="#review" id="toc-review" class="nav-link" data-scroll-target="#review"><span class="header-section-number">37</span> Review</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="08_cohort_method.revealjs.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Comparative cohort methods</h1>
+<p class="subtitle lead">Biostat 218</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Marc A Suchard @ UCLA </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 18, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
+<p>In these lectures we will learn about:</p>
+<ul>
+<li><p>Counterfactual reasoning</p></li>
+<li><p>Standardized comparative cohort designs</p></li>
+<li><p>Large-scale implementations</p></li>
+</ul>
+<div style="margin-top: 3em;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/hades.png" class="img-fluid figure-img" style="width:50.0%"></p>
+</figure>
+</div>
+</div>
+</section>
+<section id="pop-culture-meets-counterfactual-reasoning" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="pop-culture-meets-counterfactual-reasoning"><span class="header-section-number">2</span> Pop culture meets counterfactual reasoning</h2>
+<div class="r-stretch">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/matrix_causality.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+What movie is this?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>and what choice was Neo offered?</p>
+</div>
+</div>
+</section>
+<section id="counterfactual-reasoning-for-one-person" class="level2 scrollable" data-number="3">
+<h2 class="scrollable anchored" data-number="3" data-anchor-id="counterfactual-reasoning-for-one-person"><span class="header-section-number">3</span> Counterfactual reasoning for one person</h2>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/counterfactual_cartoon.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wasn’t <em>Back to Future</em> great?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+</section>
+<section id="counterfactual-reasoning-for-a-population" class="level2 scrollable" data-number="4">
+<h2 class="scrollable anchored" data-number="4" data-anchor-id="counterfactual-reasoning-for-a-population"><span class="header-section-number">4</span> Counterfactual reasoning for a population</h2>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/counterfactual_cartoon_pop.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</div>
+</section>
+<section id="sadly-i-do-not-own-a-delorean" class="level2 scrollable" data-number="5">
+<h2 class="scrollable anchored" data-number="5" data-anchor-id="sadly-i-do-not-own-a-delorean"><span class="header-section-number">5</span> Sadly I do not own a Delorean</h2>
+<ul>
+<li><p>What is our <em>next</em> best approximation?</p></li>
+<li><p>Randomized trial</p></li>
+<li><p>Instead of studying the same population under both decision options, let’s define a larger population and <strong>randomly assign</strong> one treatment to each person, then compare outcomes between the two cohorts <span class="math inline">\(\ldots\)</span></p></li>
+</ul>
+</section>
+<section id="randomized-trial" class="level2 scrollable" data-number="6">
+<h2 class="scrollable anchored" data-number="6" data-anchor-id="randomized-trial"><span class="header-section-number">6</span> Randomized trial</h2>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/counterfactual_random.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Randomized treatment assignment
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>to approximate counterfactural outcomes</p>
+</div>
+</div>
+</section>
+<section id="randomized-trial-outcomes" class="level2 scrollable" data-number="7">
+<h2 class="scrollable anchored" data-number="7" data-anchor-id="randomized-trial-outcomes"><span class="header-section-number">7</span> Randomized trial outcomes</h2>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/random_outcomes.png" class="img-fluid figure-img" style="width:30.0%"></p>
+</figure>
+</div>
+</div>
+<ul>
+<li>Randomization implies (an <strong>assumption</strong>) that persons assigned to the target (T) cohort are <strong>exchangeable at baseline</strong> with persons assigned the comparator (C) cohort</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Assumption is often weakly violated in finite trials</p>
+</div>
+</div>
+</section>
+<section id="sadly-we-cannot-randomize-in-observational-data" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="sadly-we-cannot-randomize-in-observational-data"><span class="header-section-number">8</span> Sadly we cannot randomize in observational data</h2>
+<ul>
+<li>What is our <em>next, next</em> best approximation?</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Observational study
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Comparative cohort designs: between persons who made different choices</li>
+</ul>
+<p>Or</p>
+<ul>
+<li>Self-controlled designs: within persons during time periods with different exposure status</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="observational-comparative-cohort-design-to-approximate-counterfactual-outcomes" class="level2 scrollable" data-number="9">
+<h2 class="scrollable anchored" data-number="9" data-anchor-id="observational-comparative-cohort-design-to-approximate-counterfactual-outcomes"><span class="header-section-number">9</span> Observational comparative cohort design to approximate counterfactual outcomes</h2>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/counterfactual_obs.png" class="img-fluid figure-img" style="width:50.0%"></p>
+</figure>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Notice the two different teams?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>target (T) vs comparator (C)</li>
+<li>which video game is this?</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="observational-comparative-cohort-design-outcomes" class="level2 scrollable" data-number="10">
+<h2 class="scrollable anchored" data-number="10" data-anchor-id="observational-comparative-cohort-design-outcomes"><span class="header-section-number">10</span> Observational comparative cohort design outcomes</h2>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/obs_outcomes.png" class="img-fluid figure-img" style="width:30.0%"></p>
+</figure>
+</div>
+</div>
+<ul>
+<li>Exchangeability assumption <em>may</em> be violated if there are (differential) reasons for treatment choice <span class="math inline">\(\ldots\)</span> and there often are</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Examples of trouble
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Selection bias</li>
+<li>Confounding (also related to outcome)</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="what-is-a-confounder" class="level2" data-number="11">
+<h2 data-number="11" class="anchored" data-anchor-id="what-is-a-confounder"><span class="header-section-number">11</span> What is a confounder?</h2>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/confounding3.png" class="img-fluid figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+</div>
+<ul>
+<li>A factor that <em>simultaneously</em> drives <strong>treatment assignment</strong> and <strong>outcome</strong></li>
+</ul>
+</section>
+<section id="design-an-observational-study-like-a-randomized-trial" class="level2 scrollable" data-number="12">
+<h2 class="scrollable anchored" data-number="12" data-anchor-id="design-an-observational-study-like-a-randomized-trial"><span class="header-section-number">12</span> Design an observational study like a randomized trial</h2>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/target_trial_masthead.png" class="img-fluid figure-img" style="width:50.0%"></p>
+</figure>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Much older idea
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>William Cochran / Gertrude Cox, 1950, <em>Experimental Design</em></p>
+</div>
+</div>
+<p>Protocol components to emulate:</p>
+<ul>
+<li>Eligibility criteria</li>
+<li>Treatment strategies</li>
+<li>Assignment procedure</li>
+<li>Follow-up period</li>
+<li>Outcome</li>
+<li>Casual contracts of interest</li>
+<li>Analysis plan</li>
+</ul>
+</section>
+<section id="target-trial-for-comparing-two-initial-therapies" class="level2" data-number="13">
+<h2 data-number="13" class="anchored" data-anchor-id="target-trial-for-comparing-two-initial-therapies"><span class="header-section-number">13</span> Target trial for comparing two initial therapies</h2>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/target_trial_t2dm.png" class="img-fluid figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</section>
+<section id="obs.-trial-for-comparing-two-initial-therapies" class="level2" data-number="14">
+<h2 data-number="14" class="anchored" data-anchor-id="obs.-trial-for-comparing-two-initial-therapies"><span class="header-section-number">14</span> Obs. trial for comparing two initial therapies</h2>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/target_trial_t2dm_ps.png" class="img-fluid figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+</div>
+</section>
+<section id="placebo-controlled-randomized-trials-are-hard-to-emulate" class="level2 scrollable" data-number="15">
+<h2 class="scrollable anchored" data-number="15" data-anchor-id="placebo-controlled-randomized-trials-are-hard-to-emulate"><span class="header-section-number">15</span> Placebo-controlled randomized trials are hard to emulate</h2>
+<p>New-user cohort method compares</p>
+<ul>
+<li>one target (T) treatment vs one comparator (C) treatment</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Very difficult to compare against <em>no</em> treatment
+</div>
+</div>
+<div class="callout-body-container callout-body">
+
+</div>
+</div>
+<p>Hard to define a group of unexposed persons that are <strong>comparable</strong> to the exposed group</p>
+<ul>
+<li>Just ask yourself: when was I “not exposed”? yesterday? the day before?</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Select comparator (C) for the <strong>same</strong> indication as T, where C is believed to have no effect on outcome (O)</p>
+<ul>
+<li>good for safety</li>
+<li>harder for effectiveness</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="propensity-score-introduction" class="level2 scrollable" data-number="16">
+<h2 class="scrollable anchored" data-number="16" data-anchor-id="propensity-score-introduction"><span class="header-section-number">16</span> Propensity score introduction</h2>
+<ul>
+<li>Propensity score (PS) = probability <span class="math inline">\(P(A = \text{T} | X = x_i)\)</span> of belonging to the target (T) cohort vs the comparator (C) cohort given baseline covariates (before assignment) <span class="math inline">\(x_i\)</span> for person <span class="math inline">\(i\)</span>
+<ul>
+<li><a href="https://academic.oup.com/biomet/article/70/1/41/240879">Rosenbaum and Rubins, 1983</a>: &gt; 40,000 citations</li>
+</ul></li>
+<li>Propensity scores can be used as <strong>balancing scores</strong>: if the two cohorts have similar propensity score distributions, then the distribution of covariates should be similar (need to perform diagnostic to check)</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+PS modeling
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Prediction</strong> problem</li>
+<li>Plenty of machine learning approaches available
+<ul>
+<li>CART, random forests, SVMs, KNN, XGBoost, deep learning</li>
+<li>logistic regression (regularized)</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="proposity-score-intuition" class="level2 scrollable" data-number="17">
+<h2 class="scrollable anchored" data-number="17" data-anchor-id="proposity-score-intuition"><span class="header-section-number">17</span> Proposity score intuition</h2>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/schneeweiss_ps.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</div>
+<p><a href="https://pubmed.ncbi.nlm.nih.gov/16611199/">Glynn, Schneeweiss and Sturmer, 2006</a></p>
+</section>
+<section id="a-little-theory" class="level2 scrollable" data-number="18">
+<h2 class="scrollable anchored" data-number="18" data-anchor-id="a-little-theory"><span class="header-section-number">18</span> A little theory</h2>
+<p>Propensity scoring controls for <strong>measured</strong> confounding.</p>
+<p>If treatment assigment is <em>strongly ignorable</em> given measured characteristics, then propensity scoring yields unbiased estimates of causal effects.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Strongly ignorable
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>There are no unmeasured confounders</li>
+<li>Measured confounders are adjusted for appropriately</li>
+</ul>
+</div>
+</div>
+<p>I believe these are <strong>not testable</strong> assumptions</p>
+</section>
+<section id="large-scale-propensity-scores" class="level2 scrollable" data-number="19">
+<h2 class="scrollable anchored" data-number="19" data-anchor-id="large-scale-propensity-scores"><span class="header-section-number">19</span> Large-scale propensity scores</h2>
+<ul>
+<li><p>Traditional: select a handful of variables to use as predictors of treatment assignment (gender, age, a couple comorbidities)</p></li>
+<li><p>Standardized OHDSI approach: use all data prior to treatment assignment</p></li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Chief citations
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/29939268/">Tian et al, 2018</a></li>
+<li><a href="https://pubmed.ncbi.nlm.nih.gov/36108816/">Zhang et al, 2022</a></li>
+</ul>
+</div>
+</div>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li>All conditions</li>
+<li>All drugs</li>
+<li>All procedures</li>
+<li>All observations, etc</li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="figures/comparative_cohort_carton.png" class="img-fluid"></p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Fully automated, except we must manually remove target and comparator concepts from the covariates!</p>
+<ul>
+<li>the very things we are trying to predict</li>
+</ul>
+</div>
+</div>
+<p>Only practical at OHDSI-scale via <a href="http://ohdsi.github.io/Cyclops">Cyclops</a></p>
+<ul>
+<li>To be discussed (I hope) later in course</li>
+</ul>
+</section>
+<section id="confounding-adjustment-using-propensity-scores" class="level2" data-number="20">
+<h2 data-number="20" class="anchored" data-anchor-id="confounding-adjustment-using-propensity-scores"><span class="header-section-number">20</span> Confounding adjustment using propensity scores</h2>
+<div class="r-stretch">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/garbe_table.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<p><a href="http://www.ncbi.nlm.nih.gov/pubmed/22763756">Garbe et al, 2013</a></p>
+</section>
+<section id="confounding-adjustment-using-propensity-scores-1" class="level2 scrollable" data-number="21">
+<h2 class="scrollable anchored" data-number="21" data-anchor-id="confounding-adjustment-using-propensity-scores-1"><span class="header-section-number">21</span> Confounding adjustment using propensity scores</h2>
+<ul>
+<li>Regression adjustment: not generally recommended</li>
+<li>Matching: OHDSI implemented</li>
+<li>Stratification: OHDSI implemented</li>
+<li>IPW: OHDSI implemented; <a href="https://pubmed.ncbi.nlm.nih.gov/33367288/">empirical evidence</a> that this does not work well</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Different adjustments lead to subtly different casual estimands
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Interesting, but beyond the scope of this course (ATT, ATE, etc)</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Garbe et al’s hd-PS <span class="math inline">\(\neq\)</span> LSPS
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><a href="https://pubmed.ncbi.nlm.nih.gov/29939268">Comparison</a> demonstrating LSPS advantages</p>
+</div>
+</div>
+</section>
+<section id="matching-to-adjust-for-baseline-covariate-imbalance" class="level2" data-number="22">
+<h2 data-number="22" class="anchored" data-anchor-id="matching-to-adjust-for-baseline-covariate-imbalance"><span class="header-section-number">22</span> Matching to adjust for baseline covariate imbalance</h2>
+<div class="r-stretch">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/matching_outcomes.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</section>
+<section id="stratification-to-adjust-for-basline-covariate-imbalance" class="level2" data-number="23">
+<h2 data-number="23" class="anchored" data-anchor-id="stratification-to-adjust-for-basline-covariate-imbalance"><span class="header-section-number">23</span> Stratification to adjust for basline covariate imbalance</h2>
+<div class="r-stretch">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/stratification_outcomes.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</section>
+<section id="practical-issues" class="level2 scrollable" data-number="24">
+<h2 class="scrollable anchored" data-number="24" data-anchor-id="practical-issues"><span class="header-section-number">24</span> Practical issues</h2>
+<p>Exact matching (of continuous PSs) is rarely possible</p>
+<p>Use some tolerance called a “caliper”</p>
+<ul>
+<li>Default: 0.2 on the logit-scale: <a href="https://pubmed.ncbi.nlm.nih.gov/20925139/">Austin, 2011</a></li>
+</ul>
+<p><strong>Preference score</strong> (<span class="math inline">\(F\)</span>) - scale: <a href="https://www.dovepress.com/a-tool-for-assessing-the-feasibility-of-comparative-effectiveness-rese-peer-reviewed-fulltext-article-CER">Walker, 2013</a></p>
+<ul>
+<li>Adjusts for the “market share” of the two treatments</li>
+</ul>
+<p><span class="math display">\[
+\text{logit}(F) = \text{logit}(PS) - \text{logit}(\phi)
+\]</span> where <span class="math inline">\(\phi\)</span> is the proportion of persons receiving the target treatment</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If 10% of patients receive the target treatment, then patients with a <span class="math inline">\(F = 0.5\)</span> have a 10% probability of receiving the target treatment</p>
+</div>
+</div>
+</section>
+<section id="covariate-balance" class="level2 scrollable" data-number="25">
+<h2 class="scrollable anchored" data-number="25" data-anchor-id="covariate-balance"><span class="header-section-number">25</span> Covariate balance</h2>
+<p>PS adjustment aims to make the target (T) and comparator (C) cohorts <strong>comparable</strong> (balanced)</p>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/balance_book.png" class="img-fluid figure-img" style="width:50.0%"></p>
+</figure>
+</div>
+</div>
+<p>Rule of thumb: after-adjustment standardized difference of means <span class="math inline">\(&lt; 0.1\)</span> <a href="https://link.springer.com/article/10.1023/A:1020363010465">Rubin, 2001</a></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Recent work shows that chance imbalance (smaller sample sizes) often violates <span class="math inline">\(0.1\)</span> cutoff</p>
+</div>
+</div>
+</section>
+<section id="demonstrating-lsps-modeling" class="level2 scrollable" data-number="26">
+<h2 class="scrollable anchored" data-number="26" data-anchor-id="demonstrating-lsps-modeling"><span class="header-section-number">26</span> Demonstrating LSPS modeling</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li>Comparing paracetamol to ibuprofen</li>
+<li>CPRD data source</li>
+<li>Propensity score matching
+<ul>
+<li>37 “publication covariates”</li>
+<li>Large-scale covariates (from <code>FeatureExtraction</code>)</li>
+<li><span class="math inline">\(L_1\)</span> regularized logistic regression</li>
+<li>Practical via <code>Cyclops</code></li>
+</ul></li>
+</ul>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="figures/lsps_example_paper.png" class="img-fluid"></p>
+<ul>
+<li>Large-scale covariates:
+<ul>
+<li>All Demographics, Conditions</li>
+<li>Drugs, Labs</li>
+<li>Proceedures, <span class="math inline">\(\ldots\)</span></li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Typically between 10,000 and 100,000 features</p>
+</div>
+</div>
+</section>
+<section id="standardized-difference-of-means-sdm" class="level2 scrollable" data-number="27">
+<h2 class="scrollable anchored" data-number="27" data-anchor-id="standardized-difference-of-means-sdm"><span class="header-section-number">27</span> Standardized difference of means (SDM)</h2>
+<div class="border">
+<p><img src="figures/lsps_demo.png" class="img-fluid"></p>
+</div>
+<ul>
+<li>Not adjusted for in manual approach
+<ul>
+<li>paracetamol users are less likely to have a diagnosis of pain recorded in their data</li>
+<li>paracetamol users are more likely to be on cough suppressants or opiods</li>
+</ul></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Automated approach
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>balances on all covariates, including manually selected ones</p>
+</div>
+</div>
+</section>
+<section id="outcome-model-choice-defines-your-research-question" class="level2 scrollable" data-number="28">
+<h2 class="scrollable anchored" data-number="28" data-anchor-id="outcome-model-choice-defines-your-research-question"><span class="header-section-number">28</span> Outcome model choice defines your research question</h2>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/outcome_models.png" class="img-fluid figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Outcome regressors
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Usually with a single variable (treatment-effect)</li>
+<li>Sometimes with (large-scale) multivariable adjustment
+<ul>
+<li>also possible for Cox (and Fine-Grey) models: <a href="https://pubmed.ncbi.nlm.nih.gov/24096388/">Mittal et al, 2014</a> <a href="https://www.tandfonline.com/doi/full/10.1080/10618600.2023.2213279">Yang et al, 2024</a></li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="objective-diagnostics" class="level2 scrollable" data-number="29">
+<h2 class="scrollable anchored" data-number="29" data-anchor-id="objective-diagnostics"><span class="header-section-number">29</span> Objective diagnostics</h2>
+<p>Residual <strong>systematic error</strong> remains pervasive</p>
+<ul>
+<li>Whether study results are reliable depends on whether certain assumptions have been met
+<ul>
+<li>e.g.&nbsp;we assume our PS adjustment makes our treatment groups comparable</li>
+</ul></li>
+<li>Most of these assumptions are testable through diagnostics
+<ul>
+<li>e.g.&nbsp;we can test whether our PS adjustment achieved balance by computing the standardized difference of means (SDM)</li>
+</ul></li>
+<li>By <strong>objective</strong> diagnostics we mean diagnostics that are evaluated while blinded to the results of the study
+<ul>
+<li>e.g.&nbsp;pre-specify that we will not look at results where max(|SDM|) &gt; 0.1</li>
+<li>using negative controls</li>
+</ul></li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Unique feature of HADES
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Only (arguably) possible through standardization <span class="math inline">\(\rightarrow\)</span> large-scale, repeatable
+<ul>
+<li>Many T/C pairs</li>
+<li>Many <strong>outcomes</strong> (O) <span class="math inline">\(\ldots\)</span> including <strong>negative control outcomes</strong></li>
+</ul></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="example-of-a-negative-control" class="level2 scrollable" data-number="30">
+<h2 class="scrollable anchored" data-number="30" data-anchor-id="example-of-a-negative-control"><span class="header-section-number">30</span> Example of a negative control</h2>
+<div style="margin-bottom: -1.5em;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/zaadstra1.png" class="img-fluid figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+</div>
+<p>From a modestly impactful study</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/zaadstra3.png" class="img-fluid figure-img" style="width:50.0%"></p>
+</figure>
+</div>
+</section>
+<section id="example-of-a-negative-control-1" class="level2 scrollable" data-number="31">
+<h2 class="scrollable anchored" data-number="31" data-anchor-id="example-of-a-negative-control-1"><span class="header-section-number">31</span> Example of a negative control</h2>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/zaadstra2.png" class="img-fluid figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Findings are less impressive
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>in comparison to the negative control estimates</p>
+</div>
+</div>
+</section>
+<section id="negative-controls-in-a-comparative-cohort-study" class="level2 scrollable" data-number="32">
+<h2 class="scrollable anchored" data-number="32" data-anchor-id="negative-controls-in-a-comparative-cohort-study"><span class="header-section-number">32</span> Negative controls in a comparative cohort study</h2>
+<ul>
+<li><p>If neither target nor comparator causes the outcome, the hazard ratio / incidence rate ratio / odds ratio should be 1 <!-- * a diagnostic could measure distance from ground truth, or --> <!-- * we could **calibrate** estimates to retain nominal operating characteristics, e.g. Type 1 Error rate --></p></li>
+<li><p>Select 50-100 negative control outcomes per study</p></li>
+<li><p>ATLAS can help, using information (<a href="https://github.com/OHDSI/CommonEvidenceModel">common evidence model</a>) from</p>
+<ul>
+<li>Product labels</li>
+<li>Scientific literature</li>
+<li>Spontaneous reporting</li>
+</ul></li>
+</ul>
+<div class="border">
+<p><img src="figures/common_evidence_model.png" class="img-fluid"></p>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+GenAI opportunity
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>LLMs to parse multiple data source to expand CEM</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="how-to-interpret-negative-control-findings" class="level2" data-number="33">
+<h2 data-number="33" class="anchored" data-anchor-id="how-to-interpret-negative-control-findings"><span class="header-section-number">33</span> How to interpret negative control findings?</h2>
+<ul>
+<li><p>Idea: use a sample (<span class="math inline">\(N &gt; 50\)</span>) of negative controls to understand distribution of bias</p></li>
+<li><p><strong>Systematic error distribution</strong> can be used as</p>
+<ul>
+<li><em>Diagnostic</em>: if too much systematic error, we stop</li>
+<li><em>Calibration</em>: can adjust <span class="math inline">\(p\)</span>-values and confidence intervals to take into account possible systematic error</li>
+</ul></li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Course plan
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Have a more in-depth discussion of negative controls and calibration</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="quantifying-residual-systematic-error" class="level2 scrollable" data-number="34">
+<h2 class="scrollable anchored" data-number="34" data-anchor-id="quantifying-residual-systematic-error"><span class="header-section-number">34</span> Quantifying residual systematic error</h2>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/systematic_error1.png" class="img-fluid figure-img" style="width:90.0%"></p>
+</figure>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Under null hypothesis <span class="math inline">\(H_0\)</span>
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>95% of estimates should lie above dashed line(s)</li>
+<li>single-line (one-sided) / V-shape (two-sided)</li>
+</ul>
+</div>
+</div>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="border">
+<p><img src="figures/systematic_error_paper.png" class="img-fluid" style="width:100.0%"></p>
+</div>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li><a href="https://ohdsi-studies.github.io/Eumaeus/Protocol.html">EUMAEUS</a> study
+<ul>
+<li>Evaluate performance of vaccine safety designs</li>
+<li>Multiple designs</li>
+<li>Multiple vaccines</li>
+<li>100 negative control outcomes</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="eumaeus-illustration" class="level2 scrollable" data-number="35">
+<h2 class="scrollable anchored" data-number="35" data-anchor-id="eumaeus-illustration"><span class="header-section-number">35</span> EUMAEUS illustration</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 70.0%;justify-content: center;">
+<div class="border">
+<p><img src="figures/eumaeus2.png" class="img-fluid" style="width:100.0%"></p>
+</div>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: center;">
+<ul>
+<li><p>Historical comparator: relative incidence rate btw two different populations</p></li>
+<li><p>SCCS: relative incidence rate btw exposed/unexposed time within subject</p></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="eumaeus-illustration-1" class="level2 scrollable" data-number="36">
+<h2 class="scrollable anchored" data-number="36" data-anchor-id="eumaeus-illustration-1"><span class="header-section-number">36</span> EUMAEUS illustration</h2>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="first-column" class="quarto-layout-cell" style="flex-basis: 70.0%;justify-content: center;">
+<div class="border">
+<p><img src="figures/eumaeus1.png" class="img-fluid" style="width:100.0%"></p>
+</div>
+</div>
+<div id="second-column" class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: center;">
+<ul>
+<li>SCCS <span class="math inline">\(\gg\)</span> historical comparator</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+EASE
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Expected absolute systematic error summarizes this distribution</p>
+<ul>
+<li>We use a <em>prespecified</em> EASE threshold (&lt; 0.25) for go - no go decisions for our studies</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Class projects based on vaccine safety designs
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><a href="https://data.ohdsi.org/Eumaeus/">EUMAEUS results</a></li>
+<li><a href="https://data.ohdsi.org/BetterExplorer/">BETTER results</a> - Bayesian extensions</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="review" class="level2" data-number="37">
+<h2 data-number="37" class="anchored" data-anchor-id="review"><span class="header-section-number">37</span> Review</h2>
+<p>When designing or reviewing a comparative cohort study, we ask</p>
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/cohort_method_madlibs.png" class="img-fluid figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
