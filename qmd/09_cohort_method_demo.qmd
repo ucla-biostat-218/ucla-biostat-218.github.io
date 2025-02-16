@@ -1,0 +1,593 @@
+---
+title: "Comparative cohort methods"
+subtitle: Biostat 218
+author: "Marc A Suchard @ UCLA"
+date: "February 18, 2025"
+format:
+  revealjs :
+    width: 1280
+    height: 720
+    output-ext: revealjs.html
+    footer: Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)
+    logo: figures/logo.png
+    chalkboard: true
+    highlight-style: a11y
+    theme: [default, custom.sccs]
+    code-line-numbers: false
+  html:
+    output-ext: html
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+    highlight-style: a11y
+    code-line-numbers: false
+bibliography: "../ohdsi.bib"
+csl: "apa.csl"
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    fig.width: 6
+    fig.height: 4
+    message: FALSE
+    cache: false
+    echo: true
+---
+
+## Introduction
+
+In these lectures we will learn about:
+
+- Using `CohortMethod` to perform comparative cohort studies
+
+- LSPS through `FeatureExtraction` and `Cyclops`
+
+- Evaluating objective diagnostics
+
+::: {style="margin-top: 3em;"}
+![](figures/hades.png){width=50% fig-align="center"}
+:::
+
+## Motivating study {.scrollable}
+
+What is the relative risk of gastrointestinal (GI) bleeding-related hospitalization within 30 days of celecoxib vs diclofenac treatment in patients with osteoarthritis of the knee?
+
+::: {style="margin-bottom: -2em;"}
+![](figures/comparative_cohort_carton.png){width=80% fig-align="center"}
+:::
+
+- Indication (I): osteoarthritis of the knee
+- Target (T): celecoxib first-exposure
+- Comparator (C): diclofenac first-exposure
+- Outcome (O): GI-bleed hospitalization
+- Time-at-risk (TAR): all time after exposure initiation
+- Model specification: LSPS-matched Cox proportional hazards regression
+
+## Exposures and outcomes {.scrollable}
+
+Standard vocabulary terms:
+
+- Condition: osteoarthritis of the knee ([4079750](https://athena.ohdsi.org/search-terms/terms/4079750))
+- Drug ingredient: celecoxib ([1118084](https://athena.ohdsi.org/search-terms/terms/1118084))
+- Drug ingredient: diclonefac ([1124300](https://athena.ohdsi.org/search-terms/terms/1124300))
+
+```{r}
+library(Capr)
+
+osteoArthritisOfKneeConceptId <- 4079750
+celecoxibConceptId <- 1118084
+diclofenacConceptId <- 1124300
+
+osteoArthritisOfKnee <- cs(
+  descendants(osteoArthritisOfKneeConceptId),
+  name = "Osteoarthritis of knee")
+
+attrition <- attrition(
+  "prior osteoarthritis of knee" = withAll(
+    atLeast(1, conditionOccurrence(osteoArthritisOfKnee), 
+            duringInterval(eventStarts(-Inf, 0)))))
+
+celecoxib <- cs(descendants(celecoxibConceptId),
+                name = "Celecoxib")
+
+diclofenac <- cs( descendants(diclofenacConceptId), 
+                  name = "Diclofenac")
+
+celecoxibCohort <- cohort(
+  entry = entry(
+    drugExposure(celecoxib, firstOccurrence()), 
+    observationWindow = continuousObservation(priorDays = 365)),
+  attrition = attrition,
+  exit = exit(endStrategy = drugExit(celecoxib,
+                                     persistenceWindow = 30,
+                                     surveillanceWindow = 0)))
+
+diclofenacCohort <- cohort(
+  entry = entry(
+    drugExposure(diclofenac, firstOccurrence()),
+    observationWindow = continuousObservation(priorDays = 365)),
+  attrition = attrition,
+  exit = exit(endStrategy = drugExit(diclofenac,
+                                     persistenceWindow = 30,
+                                     surveillanceWindow = 0)))
+
+# Note: this will automatically assign cohort IDs 1 and 2, respectively:
+exposureCohorts <- makeCohortSet(celecoxibCohort, diclofenacCohort)
+```
+
+## `PhenotypeLibrary` outcomes {.scrollable}
+
+The OHDSI `PhenotypeLibrary` provides a well-curated GI-bleed-related hospitalization phenotying algorithm
+
+```{r}
+#| eval: false
+renv::install("OHDSI/PhenotypeLibrary")
+```
+
+```{r}
+library(PhenotypeLibrary)
+outcomeCohorts <- getPlCohortDefinitionSet(77) # GI bleed
+
+allCohorts <- dplyr::bind_rows(outcomeCohorts, exposureCohorts)
+allCohorts
+```
+
+## Instantiate cohorts in data source {.scrollable}
+
+Use the `Eumonia` data source to demonstrate (actual results from Optum EHR)
+
+```{r}
+#| output: false
+library(CohortGenerator)
+
+connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+cdmDatabaseSchema <- "main"
+cohortDatabaseSchema <- "main"
+cohortTableNames <- getCohortTableNames(cohortTable = "my_cohorts")
+
+createCohortTables(connectionDetails = connectionDetails,
+                   cohortDatabaseSchema = cohortDatabaseSchema,
+                   cohortTableNames = cohortTableNames) 
+
+generateCohortSet(connectionDetails = connectionDetails, 
+                  cdmDatabaseSchema = cdmDatabaseSchema,
+                  cohortDatabaseSchema = cohortDatabaseSchema,
+                  cohortTableNames = cohortTableNames,
+                  cohortDefinitionSet = allCohorts)
+```
+
+```{r}
+getCohortCounts(connectionDetails = connectionDetails,
+                cohortDatabaseSchema = cohortDatabaseSchema,
+                cohortTable = cohortTableNames$cohortTable)
+```
+
+::: {.callout-note}
+## Notice the limitations of synthetic CDMs
+
+- What happened to the exposure cohorts? (missing indication)
+:::
+
+## Data pull
+
+```{r}
+#| eval: false
+# Define which types of covariates must be constructed:
+covSettings <- createDefaultCovariateSettings(
+  excludedCovariateConceptIds = c(diclofenacConceptId, celecoxibConceptId),
+  addDescendantsToExclude = TRUE)
+
+# Pull data (no need to run)
+cohortMethodData <- getDbCohortMethodData(
+  connectionDetails = connectionDetails, 
+  cdmDatabaseSchema = cdmDatabaseSchema,
+  targetId = 1,
+  comparatorId = 2,
+  outcomeIds = 77,
+  firstExposureOnly = FALSE,
+  removeDuplicateSubjects = "keep all",
+  restrictToCommonPeriod = FALSE,
+  washoutPeriod = 0,
+  exposureDatabaseSchema = cohortDatabaseSchema,
+  exposureTable = cohortTableNames$cohortTable,
+  outcomeDatabaseSchema = cohortDatabaseSchema,
+  outcomeTable = cohortTableNames$cohortTable,
+  covariateSettings = covSettings)
+```
+
+## Simulating patient-level data from a shareable profile {.scrollable}
+
+J&J has kindly shared a **profile** of these cohorts from the Optum EHR data source (contains no patient-level information) for synthetic tutorial purposes
+
+- Download [cohortMethodDataSimulationProfile](https://www.dropbox.com/scl/fi/bjo68sffq53g125fqigbm/cohortMethodDataSimulationProfile.rds?rlkey=3jvcvsbuhan1hek0vu3202qqy&st=qp9ls4ps&dl=1)
+- Copy into `ucla-biostat-218/data` for uniform access in class
+
+To load profile and simulate `cohortMethodData` object
+
+```{r}
+library(CohortMethod)
+
+simulationProfile <- readRDS(
+  file.path(getwd(), "data", 
+            "cohortMethodDataSimulationProfile.rds"))
+
+# Population sizes used to create profile
+simulationProfile$metaData$attrition %>% 
+  dplyr::select(description, targetPersons, comparatorPersons)
+simulationProfile$metaData$populationSize
+
+cohortMethodData <- simulateCohortMethodData(
+  profile = simulationProfile,
+  n = 10000             # for demonstration purposes
+)
+
+summary(cohortMethodData)
+```
+
+::: {.callout-important}
+Creating a `cohortMethodData` object from a remote DB takes considerable time; please remember to save object locally.
+
+- Local back-end is `Andromeda`
+:::
+
+```{r}
+saveCohortMethodData(cohortMethodData, "coxibVsNonselVsGiBleed.zip")
+
+# Reload into memory for use
+cohortMethodData <- loadCohortMethodData("coxibVsNonselVsGiBleed.zip")
+```
+
+
+## Definng the study population {.scrollable}
+
+```{r}
+studyPop <- createStudyPopulation(
+  cohortMethodData = cohortMethodData,
+  outcomeId = 77,
+  firstExposureOnly = FALSE,        # See note
+  restrictToCommonPeriod = FALSE,   # See note
+  washoutPeriod = 0,                # See note
+  removeDuplicateSubjects = "keep all",
+  removeSubjectsWithPriorOutcome = TRUE,
+  minDaysAtRisk = 1,
+  riskWindowStart = 0,
+  startAnchor = "cohort start",
+  riskWindowEnd = 30,
+  endAnchor = "cohort end"
+)
+```
+
+::: {.callout-note}
+These options could have defined in
+
+- the cohorts (fastest, least re-usable)
+- `getDbCohortMethodData()` (middle-ground, what we did)
+- `createStudyPopulation()` (slowest, most re-usable)
+:::
+
+```{r}
+DT::datatable(getAttritionTable(studyPop))
+```
+
+## Propensity scores {.scrollable}
+
+Building a large-scale propensity score (LSPS) model is straight-forward:
+
+```{r}
+#| eval: false
+ps <- createPs(
+  cohortMethodData = cohortMethodData, 
+  population = studyPop,
+  # excludedCovariateConceptIds = c(diclofenacConceptId, celecoxibConceptId),
+  control = Cyclops::createControl(
+    seed = 1,      # reproducibility of CV
+    threads = 4))  # multicore parallelization
+```
+
+- `excludeCovariateIds` parameter is not needed; exposure variables removed in data fetch
+
+::: {.callout-important}
+## Uses `Cyclops` to efficiently fit large-scale regularized logistic regression
+- Supports SIMD / multicore / GPU parallelization
+:::
+
+Even with parallelization, LSPS models can take a long time.  So remember to save the result locally
+
+```{r}
+#| eval: false
+saveRDS(ps, "ps_coxibVsNonselVsGiBleed.rds")
+```
+
+```{r}
+ps <- readRDS("ps_coxibVsNonselVsGiBleed.rds")
+```
+
+## Propensity score diagnostics {.scrollable}
+
+Compute the area under the receiver-operator curve (AUC) for treatment assignment
+
+```{r}
+computePsAuc(ps)
+```
+
+Plot the propensity score distribution (on the **preference-score** scale)
+
+```{r}
+#| layout: [[300]]
+plotPs(ps, 
+       scale = "preference", 
+       showCountsLabel = TRUE, 
+       showAucLabel = TRUE, 
+       showEquiposeLabel = TRUE)
+```
+
+## Propensity score diagnostics {.scrollable}
+
+Inspect the fitted model by showing covariates with non-0 coefficients
+
+- possibly identify drugs of interest that we forget to exclude, or
+- other **instrumental variables**
+
+::: {.callout-tip}
+## Remember
+we used cross-validated $L_1$ regularized regression
+
+- most coefficient will shrink to 0
+:::
+
+```{r}
+DT::datatable(getPsModel(ps, cohortMethodData) %>%
+                mutate(absCoef = abs(coefficient)) %>%
+                select(absCoef, coefficient, covariateName)) %>%
+   DT::formatRound(columns=c("absCoef", "coefficient"), digits=3)
+```
+
+## Propensity score diagnostics {.scrollable}
+
+Inspect empirical equipoise
+
+```{r}
+computeEquipoise(ps)
+```
+
+::: {.callout-tip}
+A low equipoise (not seen here) indicates little overlap between T and C populations
+:::
+
+## Using propensity scores {.scrollable}
+
+Match, stratify or weigh our population
+
+- `CohortMethod` also supports "trimming" to equipoise (less studied)
+
+Stratification:
+
+```{r}
+stratifiedPop <- stratifyByPs(ps, numberOfStrata = 5)
+plotPs(stratifiedPop, ps, scale = "preference")
+```
+
+Matching:
+
+```{r}
+  matchedPop <- matchOnPs(ps, 
+                          caliper = 0.2, 
+                          caliperScale = "standardized logit", 
+                          maxRatio = 1) # 1-to-1 matching
+  plotPs(matchedPop, ps)
+```
+
+::: {.callout-important}
+## Exact matching on covariates
+
+- `stratifyByPsAndCovariates(covariateIds = c(...))`
+- `matchOnPsAndCovariates(covariateIds = c(...))`
+:::
+
+See the effect of matching on the population
+
+```{r}
+DT::datatable(getAttritionTable(matchedPop))
+```
+
+## Attrition diagram {.scrollable}
+
+```{r}
+drawAttritionDiagram(matchedPop)
+```
+
+::: {.callout-important}
+A little broken when injecting a simulation in the middle
+
+- Who is going to file a `github` issue and pull-request fix?
+:::
+
+## Evaluating covariate balance {.scrollable}
+
+Compute **covariate balance** before and after PS adjustment
+
+- to check that cohorts are more / sufficiently comparable
+
+```{r}
+balance <- computeCovariateBalance(matchedPop, cohortMethodData)
+plotCovariateBalanceScatterPlot(balance, 
+                                showCovariateCountLabel = TRUE, 
+                                showMaxLabel = TRUE)
+
+```
+
+::: {.callout-tip}
+## Simulation effect
+Ellipsoid (most covariates are independent $\ldots$ unlike reality)
+:::
+
+From the original patient cohorts
+
+![](figures/cm_covariate_balance.png){width=50% fig-align="center"}
+
+## Evaluating covariate balance {.scrollable}
+
+```{r}
+plotCovariateBalanceOfTopVariables(balance)
+```
+
+## Reporting population characteristics {.scrollable}
+
+Most comparative cohort studies report **select** population characteristics before and after PS adjustment
+
+```{r}
+DT::datatable(createCmTable1(balance))
+```
+
+## Generalizability {.scrollable}
+
+PS adjustment $\rightarrow$ make T and C more comparable
+
+- Consequence: modified population is less similar to starting data source
+
+- How different?  And in what ways?
+
+```{r}
+DT::datatable(getGeneralizabilityTable(balance))
+```
+
+::: {.callout-note}
+PS matching suggests an **average treatment effect in the treated** (ATT) analysis.  So, `getGeneralizibilityTable()` automatically selected the T cohort for evaluation.
+:::
+
+## Follow-up and power {.scrollable}
+
+Minimum detectable relative risk (MDRR) reports a relative risk (under a simple Poisson model) for which there is >80% power to detect
+
+```{r}
+computeMdrr(
+  population = studyPop, # Should also compute under matchedPop
+  modelType = "cox",
+  alpha = 0.05,
+  power = 0.8,
+  twoSided = TRUE
+)
+```
+
+## Follow-up and power {.scrollable}
+
+Follow-up time distribution statistics
+
+```{r}
+getFollowUpDistribution(population = matchedPop)
+```
+
+```{r}
+#| layout: [[200]]
+plotFollowUpDistribution(population = matchedPop)
+```
+
+::: {.callout-note}
+Simulated time-at-risk is exponentially distribution
+:::
+
+## Kaplan-Meier plot {.scrollable}
+
+```{r}
+#| message: false
+#| layout: [[200]]
+plotKaplanMeier(matchedPop)
+```
+
+::: {.callout-note}
+Plot will automatically adjust for any stratification, matching, etc.
+:::
+
+## Fitting the outcome model {.scrollable}
+
+Using a Cox proportional hazards model
+
+- univariate: treatment-effect only
+
+```{r}
+outcomeModel <- fitOutcomeModel(population = matchedPop,
+                                modelType = "cox")
+outcomeModel
+```
+
+## Fitting the outcome model {.scrollable}
+
+Adding interaction terms to the outcome model
+
+```{r}
+interactionCovariateIds <- c(8532001) 
+# 8532001 = Female
+outcomeModel <- fitOutcomeModel(population = matchedPop,
+                                cohortMethodData = cohortMethodData,
+                                modelType = "cox",
+                                interactionCovariateIds = interactionCovariateIds)
+outcomeModel
+```
+
+::: {.callout-tip}
+- Include gender main-effect as well via `includeCovariateIds = c(interactionCovariateIds)`
+:::
+
+## Multiple TCOs {.scrollable}
+
+`CohortMethod` has been finely tuned to **efficiently** execute across multiple
+
+- Targets (T)
+- Comparators (C)
+- Outcomes (O) -- think: negative control outcomes (NCOs)
+- Analyses (A) -- think: TARs, matching vs stratification
+
+by caching intermediate study artifacts
+
+For an example, please see [Running multiple analyses](https://raw.githubusercontent.com/OHDSI/CohortMethod/main/inst/doc/MultipleAnalyses.pdf) vignette
+
+## Including negative control outcomes {.scrollable}
+
+Define NCOs through `condition_occurrence` concept IDs
+
+  - Hypothyroidism ([140673](https://athena.ohdsi.org/search-terms/terms/140673))
+
+```{r}
+#| output: false
+negativeControlIds <- c(29735, 140673, 197494,
+                        198185, 198199, 200528, 257315,
+                        314658, 317376, 321319, 380731,
+                        432661, 432867, 433516, 433701,
+                        433753, 435140, 435459, 435524,
+                        435783, 436665, 436676, 442619,
+                        444252, 444429, 4131756, 4134120,
+                        4134454, 4152280, 4165112, 4174262,
+                        4182210, 4270490, 4286201, 4289933)
+negativeControlCohorts <- tibble(
+  cohortId = negativeControlIds,
+  cohortName = sprintf("Negative control %d", negativeControlIds), 
+  outcomeConceptId = negativeControlIds
+)
+
+generateNegativeControlOutcomeCohorts(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = cdmDatabaseSchema, 
+  cohortDatabaseSchema = cohortDatabaseSchema,
+  cohortTable = cohortTableNames$cohortTable, 
+  negativeControlOutcomeCohortSet = negativeControlCohorts
+)
+```
+
+```{r}
+getCohortCounts(connectionDetails = connectionDetails,
+                cohortDatabaseSchema = cohortDatabaseSchema,
+                cohortTable = cohortTableNames$cohortTable)
+```
+
+## Acknowledging the community {.scrollable}
+
+Considerable work has been dedicated to provide the `CohortMethod` and `Cyclops` packages
+
+```{r}
+citation("CohortMethod")
+citation("Cyclops")
+```
+
+This work is supported in part through the National Institutes of Health and the U.S. Department of Veterans Affairs
