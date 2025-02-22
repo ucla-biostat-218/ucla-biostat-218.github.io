@@ -31,8 +31,8 @@ Mar 4, 18
 |    | Feb 9  | In-person | Incidence / Strategus \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/07_strategus.qmd), [html](../slides/07_strategus.revealjs.html)\] |
 |  6 |        | No class  | 
 |  7 | Feb 18 | Online    | Comparative Cohort Method \[slides 1: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/08_cohort_method.qmd), [html](../slides/08_cohort_method.revealjs.html)\] \[slides 2: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/09_cohort_method_demo.qmd), [html](../slides/09_cohort_method_demo.revealjs.html)\] |
-|  8 | Feb 25 | Online    | Patient-Level Prediction | | Final project abstract (due 2/28)
-|  9 | Mar 4  | Online    | OHDSI Network Research |
+|  8 | Feb 25 | Online    | Concurrent Comparator \[slides: [qmd]() [pdf]() \] | | Final project abstract (due 2/28)
+|  9 | Mar 4  | Online    | Patient-Level Prediction|
 |    | Mar 8  | In-person | Case Studies: Best Practices |
 |    | Mar 9  | In-person | Evidence Synthesis |
 | 10 |        | No class  |
