@@ -1,0 +1,542 @@
+---
+title: "Patient-level prediction: demonstration"
+subtitle: Biostat 218
+author: "Marc A Suchard @ UCLA"
+date: "March 7, 2025"
+format:
+  revealjs :
+    width: 1280
+    height: 720
+    output-ext: revealjs.html
+    footer: Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)
+    logo: figures/logo.png
+    chalkboard: true
+    highlight-style: a11y
+    theme: [default, custom.sccs]
+    code-line-numbers: false
+  html:
+    output-ext: html
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+    highlight-style: a11y
+    code-line-numbers: false
+bibliography: "../ohdsi.bib"
+csl: "apa.csl"
+knitr:
+  opts_chunk: 
+    out.width: '70%'
+    fig.align: 'center'
+    fig.width: 6
+    fig.asp: 0.618
+    message: FALSE
+    cache: false
+    echo: true
+---
+
+## Introduction
+
+In these lectures we will learn about:
+
+- Implementing standardized patient-level prediction 
+
+- Execution within an OMOP CDM data source
+
+- Exploring model performance and validation statistics
+
+::: {style="margin-top: 3em;"}
+![](figures/hades.png){width="50%" fig-align="center"}
+:::
+
+## Motivating study {.scrollable}
+
+What is the risk of an acute myocardial infraction (AMI) within 1 year of a first hypertension (HTN) diagnosis?
+
+::: {style="margin-bottom: -1em;"}
+![](figures/prediction2.png){width="70%" fig-align="center"}
+:::
+
+-   Target (T): HTN patients
+-   Outcome (O): AMI
+-   Time-at-risk (TAR): 1 year from T cohort start-date
+-   Model specification: regularlized, logistic regression and much more!
+
+## Target (T) and outcome (O) definitions {.scrollable}
+
+```{r aa}
+library(Capr)
+
+# Hypertension
+essentialHypertension <- cs(
+  descendants(320128),
+  name = "Essential hypertension"
+)
+
+sbp <- cs(3004249, name = "SBP")
+dbp <- cs(3012888, name = "DBP")
+
+hypertensionCohort <- cohort(
+  entry = entry(
+    conditionOccurrence(essentialHypertension),
+    measurement(sbp, valueAsNumber(gte(130)), unit(8876)),
+    measurement(dbp, valueAsNumber(gte(80)), unit(8876))
+  ),
+  exit = exit(
+    endStrategy = observationExit()
+  )
+)
+
+# Acute myocardial infarction
+myocardialInfarction <- cs(
+  descendants(4329847),
+  exclude(descendants(314666)),
+  name = "Myocardial infarction"
+)
+inpatientOrEr <- cs(
+  descendants(9201),
+  descendants(262),
+  name = "Inpatient or ER"
+)
+amiCohort <- cohort(
+  entry = entry(
+    conditionOccurrence(myocardialInfarction),
+    additionalCriteria = withAll(
+      atLeast(1,
+              visit(inpatientOrEr),
+              aperture = duringInterval(eventStarts(-Inf, 0), eventEnds(0, Inf)))
+    ),
+    primaryCriteriaLimit = "All",
+    qualifiedLimit = "All"
+  ),
+  attrition = attrition(
+    "No prior AMI" = withAll(
+      exactly(0,
+              conditionOccurrence(myocardialInfarction),
+              duringInterval(eventStarts(-365, -1)))
+    )
+  ),
+  exit = exit(
+    endStrategy = fixedExit(index = "startDate", offsetDays = 1)
+  )
+)
+cohortDefinitionSet <- makeCohortSet(hypertensionCohort, amiCohort)
+```
+
+## Instantiate cohorts {.scrollable}
+
+```{r bb}
+#| output: false
+connectionDetails <- DatabaseConnector::createConnectionDetails(
+  dbms = "duckdb", 
+  server = file.path(getwd(), "data", "synthetic.duckdb"))
+
+cohortTableNames <- CohortGenerator::getCohortTableNames(
+  cohortTable = "my_cohorts")
+
+CohortGenerator::createCohortTables(
+  connectionDetails = connectionDetails,
+  cohortDatabaseSchema = "main",
+  cohortTableNames = cohortTableNames)
+
+cohortsGenerated <- CohortGenerator::generateCohortSet(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = "main",
+  cohortDatabaseSchema = "main",
+  cohortTableNames = cohortTableNames,
+  cohortDefinitionSet = cohortDefinitionSet)
+```
+
+```{r cc}
+CohortGenerator::getCohortCounts(
+  connectionDetails = connectionDetails,
+  cohortDatabaseSchema = "main",
+  cohortTable = cohortTableNames$cohortTable
+)
+```
+
+## Covariate construction via `FeatureExtraction` {.scrollable}
+
+```{r dataExtraction1}
+library(FeatureExtraction)
+
+covariateSettings <- createCovariateSettings(
+  useDemographicsGender = TRUE,
+  useDemographicsAgeGroup = TRUE,
+  useConditionGroupEraLongTerm = TRUE,
+  useConditionGroupEraAnyTimePrior = TRUE,
+  useDrugGroupEraLongTerm = TRUE,
+  useDrugGroupEraAnyTimePrior = TRUE,
+  useVisitConceptCountLongTerm = TRUE,
+  longTermStartDays = -365,
+  endDays = -1
+)
+```
+
+::: {.callout-important}
+## Standardized covariates
+Reusable (and reproducible) across different
+- ML models
+- data sources
+:::
+
+## Data extraction {.scrollable}
+
+```{r dataExtraction2}
+library(PatientLevelPrediction)
+
+databaseDetails <- createDatabaseDetails(
+  connectionDetails = connectionDetails, 
+  cdmDatabaseName = "synthetic",
+  cdmDatabaseId = "synthetic",
+  cdmDatabaseSchema = "main", 
+  cohortDatabaseSchema =  "main",
+  cohortTable = cohortTableNames$cohortTable,
+  targetId = 1,
+  outcomeIds = c(2)) # Automatically setup for multiple outcomes
+```
+
+## Sampling and additional restrictions {.scrollable}
+
+Subsample the cohorts and add restrictions based on: 
+
+- Study dates 
+- First-exposure
+- Washout
+
+
+```{r dd}
+restrictPlpDataSettings <- createRestrictPlpDataSettings(
+  # sampleSize = 10000,     # Subsample sized; unused here
+  firstExposureOnly = TRUE,
+  washoutPeriod = 365)
+```
+
+## Pull the data {.scrollable}
+
+```{r dataPull}
+#| eval: false
+plpData <- getPlpData(
+  databaseDetails = databaseDetails,
+  covariateSettings = covariateSettings,
+  restrictPlpDataSettings = restrictPlpDataSettings)
+
+savePlpData(plpData, file.path(getwd(), "data", "plpData")) # Folder name
+```
+
+```{r ee}
+plpData <- loadPlpData(file.path(getwd(), "data", "plpData"))
+```
+
+::: {.callout-tip}
+## Best practices
+Try to always save locally intermediate objects
+
+- NB: these contain PHI and should **not** be shared
+:::
+
+## Defining time-at-risk (TAR) {.scrollable}
+
+```{r ff}
+populationSettings <- createStudyPopulationSettings(
+  riskWindowStart = 1, 
+  startAnchor = "cohort start",
+  riskWindowEnd = 365, 
+  endAnchor = "cohort start",   
+  removeSubjectsWithPriorOutcome = TRUE)
+```
+
+- Many options like: `includeAllOutcomes` and `firstExposureOnly`.  So do not forget the help functions
+
+```{r gg}
+?createStudyPopulationSettings
+```
+
+## Splitting into test/train datasets {.scrollable}
+
+First step in supervised learning (features paired labelled outcomes) is **internal validation**
+
+- Train set: learn the model with hyperparameters
+  * Bootstrap - smaller data size
+  * Cross-validation - larger data size
+  * [BMJ Open paper](https://bmjopen.bmj.com/content/11/12/e050146)
+
+```{r hh}
+splitSettings <- createDefaultSplitSetting(
+  trainFraction = 0.75,
+  testFraction = 0.25,
+  type = "stratified", # or `time` or `subject`
+  nfold = 2,
+  splitSeed = 123)
+```
+
+- Stratified, such that outcome rate is similar across partitions
+
+::: {.callout-tip}
+## Very small data
+Consider having no test-set
+:::
+
+::: {.callout-tip}
+## Vignette
+- [AddingCustomSplitting](https://ohdsi.github.io/PatientLevelPrediction/articles/AddingCustomSplitting.html)
+:::
+
+## Preprocessing the training data {.scrollable}
+
+```{r ii}
+featureEngineeringSettings <- createFeatureEngineeringSettings() # Special covariates
+
+sampleSettings <- createSampleSettings() # Under-/over-sample outcomes
+
+preprocessSettings <- createPreprocessSettings(
+  minFraction = 0.01,
+  normalize = TRUE,
+  removeRedundancy = TRUE)
+```
+
+- Class imbalance $\rightarrow$ under- or over-sampling the training set
+- Create latent variables to reduce dimensionality $\rightarrow$ feature-engineering
+
+::: {.callout-tip}
+## Vignettes
+- [AddingCustomFeatureEngineering](https://ohdsi.github.io/PatientLevelPrediction/articles/AddingCustomFeatureEngineering.html)
+- [AddingCustomSamples](https://ohdsi.github.io/PatientLevelPrediction/articles/AddingCustomSamples.html)
+:::
+
+## Specifying outcome model {.scrollable}
+ 
+Reminder: `PLP` natively supports
+
+- Regularlized logistic regression
+- Gradient boosting machines
+- Random forests
+- Naive Bayes classifier
+- AdaBoost
+- Decision trees
+- Multilayer perception
+- Deep learning
+
+::: {.callout-tip}
+## Extensions
+It is (relatively) straight-forward to add new `models` to `PLP` for automatic, across-data-source deployment
+
+- Example: Large-scale Bayesian logistic regression with specialized priors to ease transfer learning
+:::
+
+::: {.callout-tip}
+## Vignette
+- [AddingCustomModels](https://ohdsi.github.io/PatientLevelPrediction/articles/AddingCustomModels.html)
+:::
+
+```{r jj}
+#| eval: false
+lrModel <- setLassoLogisticRegression( # Unfortunately named
+      seed = 123,
+      threads = 4)
+```
+
+## Execution {.scrollable}
+
+```{r}
+#| eval: false
+lrResults <- runPlp(
+  plpData = plpData,
+  outcomeId = 2,
+  analysisId = "lrDemo",
+  analysisName = "Demonstration of runPlp for training single PLP models",
+  populationSettings = populationSettings,
+  splitSettings = splitSettings,
+  sampleSettings = sampleSettings,
+  featureEngineeringSettings = featureEngineeringSettings,
+  preprocessSettings = preprocessSettings,
+  modelSettings = lrModel,
+  logSettings = createLogSettings(),
+  executeSettings = createExecuteSettings(
+    runSplitData = TRUE,
+    runSampleData = TRUE,
+    runFeatureEngineering = TRUE,
+    runPreprocessData = TRUE,
+    runModelDevelopment = TRUE,
+    runCovariateSummary = TRUE
+  ),
+  saveDirectory = file.path(getwd(), "data", "lrModel")
+)
+
+savePlpResult(lrResults, file.path(getwd(), "data", "model"))
+```
+
+```{r}
+lrResults <- loadPlpResult(file.path(getwd(), "data", "model"))
+```
+
+## Interactive viewer
+
+`PLP` provides a ready-to-deploy `shinyApp` viewer
+
+- Now integrated directly into `Strategus`
+
+```{r}
+#| eval: false
+viewPlp(lrResults)
+```
+
+## Generate plots
+
+`PLP` generates a large number of performance and validation plots
+
+```{r}
+#| eval: false
+plotPlp(lrResults, file.path(getwd(), "data", "plot"))
+```
+
+- Places all plots as `*.pdf` in `file.path(getwd(), "data", "plot")`
+
+## ROC {.scrollable}
+
+::: {#f}
+```{r}
+#| out-width: 50%
+#| fig-asp: 2
+plotSparseRoc(lrResults)
+```
+:::
+
+## Calibration {.scrollable}
+
+::: {#f}
+```{r}
+#| out-width: 50%
+#| fig-asp: 2
+plotSparseCalibration(lrResults)
+```
+:::
+
+## Precision-recall {.scrollable}
+
+- Precision = TP / (TP + FP)
+
+- Recall = TP / (TP + FN)
+
+::: {#f}
+```{r}
+#| out-width: 50%
+#| fig-asp: 2
+plotPrecisionRecall(lrResults)
+```
+:::
+
+::: {.callout-note}
+## F1 score
+Harmonic mean of precision and recall
+:::
+
+## Demographic summary {.scrollable}
+
+::: {#f}
+```{r}
+#| out-width: 50%
+#| fig-asp: 2
+plotDemographicSummary(lrResults)
+```
+:::
+
+## Covariate scatter plot {.scrollable}
+
+::: {#f}
+```{r}
+#| out-width: 80%
+plotVariableScatterplot(lrResults$covariateSummary)
+```
+:::
+
+::: {.callout-important}
+## `shinyApp`
+Can interact with plot by hoovering over a covariate to show more details
+:::
+
+## Learning curves {.scrollable}
+
+```{r}
+#| eval: false
+learningCurve <- createLearningCurve(
+  plpData = plpData,
+  outcomeId = 2,
+  modelSettings = lrModel,
+  trainFractions = c(0.03125, 0.0625, 0.125, 0.25, 0.5),
+  saveDirectory = file.path(getwd(), "data", "curve"))
+
+saveRDS(learningCurve, "learningCurve")
+```
+
+
+::: {#f}
+```{r}
+#| out-width: 80%
+learningCurve <- readRDS("learningCurve")
+plotLearningCurve(learningCurve, abscissa = "observations")
+```
+:::
+
+## Fitting multple models {.scrollable}
+
+```{r}
+#| eval: false
+modelDesign <- list(
+  createModelDesign( # first fit a L_1-regularized logistic regression
+    targetId = 1, 
+    outcomeId = 2, 
+    restrictPlpDataSettings = restrictPlpDataSettings, 
+    populationSettings = populationSettings,
+    covariateSettings = covariateSettings,
+    featureEngineeringSettings = featureEngineeringSettings, 
+    sampleSettings = sampleSettings, 
+    preprocessSettings = preprocessSettings, 
+    splitSettings = splitSettings,
+    modelSettings = setLassoLogisticRegression(
+      seed = 123,
+      threads = 4)
+    ),
+  createModelDesign( # second fit a gradient boosting machine
+    targetId = 1,
+    outcomeId = 2, 
+    restrictPlpDataSettings = restrictPlpDataSettings, 
+    populationSettings = populationSettings,
+    covariateSettings = covariateSettings,
+    featureEngineeringSettings = featureEngineeringSettings, 
+    sampleSettings = sampleSettings, 
+    preprocessSettings = preprocessSettings, 
+    splitSettings = splitSettings,
+    modelSettings = setGradientBoostingMachine(
+      ntrees = 300, 
+      nthread = 4, 
+      maxDepth = c(3,7,10))
+    )
+)
+
+model <- runMultiplePlp(
+  databaseDetails = databaseDetails,
+  cohortDefinitions = cohortDefinitionSet,
+  modelDesignList = modelDesign,
+  saveDirectory = file.path(getwd(), "multipleModels"))
+```
+
+## Interactive viewer and more
+
+```{r}
+#| eval: false
+viewMultiplePlp(file.path(getwd(), "multipleModels"))
+```
+
+Deep learning models are also available
+
+- There is a great [vignette](https://ohdsi.github.io/DeepPatientLevelPrediction/articles/FirstModel.html)
+
+- Packaged as [DeepPatientLevelPrediction](https://ohdsi.github.io/DeepPatientLevelPrediction)
+
+::: {.callout-tip}
+## Final example
+[AMI after GLP1RA initiation](https://results.ohdsi.org/app/25_EstimationTutorial)
+:::

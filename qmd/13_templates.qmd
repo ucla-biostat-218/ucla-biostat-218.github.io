@@ -1,0 +1,539 @@
+---
+title: "High-performance statistical computing"
+subtitle: Biostat 218
+author: "Marc A Suchard @ UCLA"
+date: "March 4, 2025"
+format:
+  revealjs :
+    width: 1280
+    height: 720
+    output-ext: revealjs.html
+    footer: Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)
+    logo: figures/logo.png
+    chalkboard: true
+    highlight-style: a11y
+    theme: [default, custom.sccs]
+    code-line-numbers: false
+  html:
+    output-ext: html
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+    highlight-style: a11y
+    code-line-numbers: false
+bibliography: "../ohdsi.bib"
+csl: "apa.csl"
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    fig.width: 6
+    fig.height: 4
+    message: FALSE
+    cache: false
+    echo: true
+---
+
+## Introduction
+
+In these lectures we will learn about:
+
+- TODO
+- TODO
+- TODO
+
+::: {style="margin-top: 3em;"}
+![](figures/hades.png){width="50%" fig-align="center"}
+:::
+
+## Developers needed!
+
+- Time-varying survival models: unique data representations
+
+- Massive parallelization: constructing an environment with data source, HADES toolstack and GPU access
+
+- Emerging inference proceedures: Bayesian, $L_0$
+
+## Additional dependencies for lecture
+
+Please install
+
+```{r}
+#| eval: false
+install.packages("microbenchmark")
+
+remotes::install_github("suchard-group/CppMetaProgrammingTutorial")
+```
+
+## Use more than a compiled language {.scrollable}
+
+[Rcpp](https://www.rcpp.org) is a great interface between `R` and `C++`
+
+- But there is (much) more $\ldots$
+
+```{cpp}
+#| eval: false
+#| code-line-numbers: true
+// [[Rcpp::export]]
+Rcpp::NumericVector add(const Rcpp::NumericVector& lhs, 
+    const Rcpp::NumericVector& rhs) {
+  NumericVector result(lhs.size());
+  for (int i = 0; i < lhs.size(); ++i) {
+    result[i] = lhs[i] + rhs[i];
+  }
+  return result;
+}
+```
+
+**Compile-time optimization** via *templated* linear algebra libraries
+
+- `RcppEigen`, `RcppArmadilo`
+- *Expression templates* are a form of *meta-programming* (a program that writes a program)
+
+::: {.callout-important}
+## Quiz
+What happens when we write:
+```{r}
+#| eval: false
+r <- rnorm(1e+06)
+fourR <- r + r + r + r
+```
+:::
+
+## Computational matrix algebra {.scrollable}
+
+Start by re-writing in `C++`
+
+```{cpp}
+#| eval: false
+#| code-line-numbers: true
+Rcpp::NumericVector execAlgebraicExpression(
+  const Rcpp::NumericVector& A, const Rcpp::NumericVector& B,
+  const Rcpp::NumericVector& C, const Rcpp::NumericVector& D) {
+
+  using namespace ComponentWiseOps; // Specify operator+
+
+  Rcpp::NumericVector result(n);
+  result = A + B + C + D;
+  return result;
+}
+```
+
+Then use **syntactic sugar** (see `Sugar.h`) to write: `lhs + rhs`
+
+```{cpp}
+#| eval: false
+#| code-line-numbers: true
+template <typename NumericVector>
+NumericVector operator+(const NumericVector& lhs, 
+    const NumericVector& rhs) {
+  const int n = lhs.size();
+  NumericVector result(n);        
+  for (int i = 0; i < n; ++i) {
+    result[i] = lhs[i] + rhs[i];
+  }
+  return result;
+}
+```
+
+## Beware of temporaries at scale {.scrollable}
+
+```{cpp}
+#| eval: false
+#| code-line-numbers: true
+  using namespace ComponentWiseOps; // Specify operator+
+
+  Rcpp::NumericVector result(n);
+  result = A + B + C + D;
+    // Compiler generates:
+    //    tmp1 = A + B;
+    //    tmp2 = tmp1 + C;
+    //    tmp3 = tmp2 + D;
+    //    result = tmp3; // copy, often optimized away   
+```
+
+To count the # of temporaries and copies, use a thin-wrapper around `Rcpp` classes
+
+```{cpp}
+#| eval: false
+#| code-line-numbers: true
+namespace Logging {
+    static long nCtors = 0;
+    static long nCopies = 0;
+    static long nDtors = 0;
+    
+    class NumericVector : public Rcpp::NumericVector {
+    public:
+        NumericVector(size_t n) : Rcpp::NumericVector(n) { 
+            nCtors++; 
+        }
+```
+
+## No performance penalty for wrapped class
+
+```{r}
+#| eval: true
+library(microbenchmark)
+library(CppMetaProgrammingTutorial)
+
+microbenchmark(
+  run1 = execAlgebraicExpression(r,r,r,r),
+  run2 = execSimpleLoop(r,r,r,r, reps = 1, optLevel = 0), 
+  times = 100L, unit = "milliseconds")
+```
+
+`execSimpleLoop` wraps vectors, calls algebraic expression (`optLevel = 0`) and returns event counts
+
+```{r}
+run2 <- execSimpleLoop(r,r,r,r, reps = 1, optLevel = 0)
+paste(run2["ctors"],run2["dtors"],run2["copies"])
+```
+
+## Ideal code via hand-crafted, fused transformation {.scrollable}
+
+```{cpp}
+#| eval: false
+#| code-line-numbers: true
+template <typename NumericVector>
+inline void Transformation(NumericVector& result,
+    const NumericVector& A, const NumericVector& B,
+    const NumericVector& C, const NumericVector& D) {
+
+  const int n = result.size();                      
+  for (int i = 0; i < n; ++i) {
+    // Fused all element-wise operations
+    result[i] = A[i] + B[i] + C[i] + D[i];
+  }						
+}
+```
+
+```{r}
+microbenchmark(
+  # algebraic
+  run1 = execSimpleLoop(r,r,r,r, reps = 1, optLevel = 0), 
+  # transformation
+  run2 = execSimpleLoop(r,r,r,r, reps = 1, optLevel = 1), 
+  times = 100L, unit = "milliseconds")
+```
+
+## Generic solution {.scrollable}
+
+```{cpp}
+#| eval: false
+#| code-line-numbers: true
+template <typename NumericVector>
+inline void AlgebraicExpressionTemplate(NumericVector& result,
+    const NumericVector& A, const NumericVector& B,
+    const NumericVector& C, const NumericVector& D) {            
+
+  // Very modern technique (see Sugar.h)
+  using namespace ExpressionTemplates; 
+  result = A + B + C + D;                
+    
+  // Compiler generates no temporarily intermediates.
+  // A + B + C + D translates into a tree of operation "types" 
+  // called expression templates.
+  // Single operator= performs transformation by expanding 
+  // and optimizing expression into code.	    
+  // Also provides lazy-evaluation, such that 
+  // (A + B + C + D)[i] only evaluates for the i-th entry;
+  // Particularly useful for sparse updates
+}
+```
+
+## Very simple expression template class {.scrollable}
+
+```{cpp}
+#| eval: false
+#| code-line-numbers: true
+template <class L, class O, class R> struct Expression {
+  typedef typename ExpressionTraits<L>::RefType lhsRef;
+  typedef typename ExpressionTraits<R>::RefType rhsRef;
+
+  Expression(lhsRef l, rhsRef r) : l(l), r(r) { }
+
+  double operator[](const unsigned int index) const {
+    return O::eval(l[index], r[index]);
+  }
+};
+
+struct Plus { // Operation as a type
+  static double eval(const double a, const double b) 
+    { return a + b; }
+};
+
+template <class L, class R> 
+Expression<L,Plus,R> operator+(const L& l, const R& r) {
+  return Expression<L,Plus,R>(l, r); // Syntactic sugar
+}
+```
+
+Our **expression tree** operates as `(((A,+,B),+,C),+,D)[i]`
+
+## Generic solution achieves hand-crafted performance {.scrollable}
+
+```{r}
+microbenchmark(
+  # hand-crafted transformation
+  run2 = execSimpleLoop(r,r,r,r, reps = 1, optLevel = 1), 
+  # expression template
+  run3 = execSimpleLoop(r,r,r,r, reps = 1, optLevel = 2), 
+  times = 100L, unit = "milliseconds")
+```
+
+Straight-forward to extend to many operations on vectors and matrices.  Here we will just use component-wise $+$, $-$, $\times$ and $/$ and scalar-multiplication (see `Sugar.h`)
+
+- **Review**: Algebraic expression $\rightarrow$ unique class-type known to compiler
+
+::: {.callout-important}
+## Compiler / architecture dependence
+Relative performance of our **very simple** expression templates depends heavily on compiler.  
+
+- Best to use a hardened *expression template library*
+:::
+
+## Fused transformation-reduction {.scrollable}
+
+In cyclic coordinate descent, we require 1D gradients and Hessians (scalars) of the model log-likelihood
+
+$$
+L(\boldsymbol{\beta}) = \mathbf{Y}' \mathbf{X} \boldsymbol{\beta} - \mathbf{1}' \text{log}\left[ \mathbf{1} + \text{exp} \left( \mathbf{X} \boldsymbol{\beta} \right) \right] ,
+$$
+
+$$ 
+\frac{\partial L}{\partial \beta_j} = \mathbf{Y}'\mathbf{X}_j - \mathbf{1}' \mathbf{W} \text{ and } \frac{\partial^2 L}{\partial \beta_j^2} = - \mathbf{1}' \left[ \mathbf{X} \times \left( \mathbf{X}_j - \mathbf{W} \right)\right]
+$$
+where
+$$
+\mathbf{W} = \frac{\text{exp} \left( \mathbf{X} \boldsymbol{\beta} \right) \times \mathbf{X}_j}{\mathbf{1} + \text{exp}\left( \mathbf{X}\boldsymbol{\beta} \right)}
+$$
+
+- Scalar operations on several tall vectors (*transformation*)
+
+- Inner produces = sums (*reduction*)
+
+- Intermediate values shared, but unneeded later
+
+## Vanilla gradient and Hessian {.scrollable}
+
+```{cpp}
+#| eval: false
+#| code-line-numbers: true
+template <typename NumericVector>
+inline void AlgebraicExpression(
+    double& gradient, double& hessian,
+    const NumericVector& EXB, const NumericVector& Xj) {            
+  using namespace ComponentWiseOps; // Specify sugar
+
+  // Algebraic transformation
+  NumericVector G = EXB * Xj / (1.0 + EXB);
+  NumericVector H = G * (Xj - G);
+
+  // Reduction
+  gradient = 0.0; hessian = 0.0;
+  for (int i = 0; i < EXB.size();  ; ++i) {
+    gradient += G[i]; hessian  += H[i];        
+  }                 
+}
+```
+
+```{r}
+expXb <- exp(rnorm(1E6)); Xj <- rnorm(1E6)
+run0 <- execComplexLoop(expXb,Xj, reps = 1, optLevel = 0)
+paste(run0["grad"],run0["ctors"],run0["dtors"],run0["copies"])
+```
+
+## Expression templated gradient and Hessian {.scrollable}
+
+```{cpp}
+#| eval: false
+#| code-line-numbers: true
+template <typename NumericVector>
+inline void Transformation(
+    double& gradient, double& hessian,
+    const NumericVector& EXB, const NumericVector& Xj) {
+  using namespace ExpressionTemplates; // Very modern technique            
+  NumericVector G(EXB.size()), H(EXB.size());
+  
+  // Expression templated transformation
+  G = EXB * Xj / (1.0 + EXB); // operator= executes
+  H = G * (Xj - G); // NB: Could generate G/H simultaneously
+  
+  // Reduction
+  gradient = 0.0; hessian = 0.0;
+  for (int i = 0; i < EXB.size(); ++i) {
+    gradient += G[i]; hessian  += H[i];        
+  }         
+}
+```
+
+```{r}
+run1 <- execComplexLoop(expXb,Xj, reps = 1, optLevel = 1)
+paste(run1["grad"],run1["ctors"],run1["dtors"],run1["copies"])
+```
+
+## Fused transformation and reduction {.scrollable}
+
+```{cpp}
+#| eval: false
+#| code-line-numbers: true
+template <typename NumericVector>
+inline void FusedTransformationReduction(
+    double& gradient, double& hessian,
+    const NumericVector& EXB, const NumericVector& Xj) {          
+  using namespace ExpressionTemplates; // Very modern technique
+
+  // Expression template construction
+  auto G = EXB * Xj / (1.0 + EXB);
+  auto H = G * (Xj - G); // Nothing gets executed
+
+  // Fused transformation-reduction
+  gradient = 0.0; hessian = 0.0;
+  for (int i = 0; i < EXB.size(); ++i) {
+    gradient += G[i]; hessian  += H[i];        
+  } 	        	          
+}
+```
+
+```{r}
+run2 <- execComplexLoop(expXb,Xj, reps = 1, optLevel = 2)
+paste(run2["grad"],run2["ctors"],run2["dtors"],run2["copies"])
+```
+
+## Performance gain {.scrollable}
+
+```{r}
+microbenchmark(
+    run0 = execComplexLoop(expXb, Xj, reps = 1, optLevel = 0),
+    run1 = execComplexLoop(expXb, Xj, reps = 1, optLevel = 1),
+    run2 = execComplexLoop(expXb, Xj, reps = 1, optLevel = 2),
+    times = 100L, unit = "milliseconds")
+```
+
+Fused transformation-reductions:
+
+- Avoid intermediates
+- Reduce memory-bandwidth
+- Let compiler optimize scalar operation order (*not shown*)
+- Easily generalize for **SIMD**, **multi-core** and **many-core**
+
+## Multi-core parallelization {.scrollable}
+
+Some options:
+
+- OpenMP: minimally intrusive for embarassing parallel, compiler-dependent
+
+- Thread Building Blocks (Intel): surprisingly performant, previously no Windows
+
+- C++11 threads: requires R $\ge$ 3.2 (on Windows)
+
+- `RcppParallel`
+  * Uses TBB on Mac/Linux, open-source light-weight threading on Windows
+  * Almost as *expressive* as C++11 threads
+  * Automatic build via `install.packages("RcppParallel")`
+  
+## Multicore transformation and reduction {.scrollable}
+
+`RcppParallel` requires a small amount of boiler-plate wrapping:
+
+```{cpp}
+#| eval: false
+#| code-line-numbers: true
+template <typename NumericVector>
+struct Reducer : public RcppParallel::Worker {
+  // Thread-safe containers
+  RcppParallel::RVector<double> EXB, Xj; 
+  double gradient; double hessian;
+
+  Reducer(const NumericVector EXB, const NumericVector Xj) 
+    : EXB(EXB), Xj(Xj), gradient(0), hessian(0) {}
+
+  Reducer(const Reducer& r, RcppParallel::Split) 
+    : EXB(r.EXB), Xj(r.Xj), gradient(0), hessian(0) {}
+
+  // API: Operate over a range
+  void operator()(std::size_t begin, std::size_t end);
+
+  // API: Join results
+  void join(const Reducer& rhs);
+};
+```
+
+- Work gets executed in `operator()` and `join`
+
+## Multi-core transformation and reduction {.scrollable}
+
+```{cpp}
+#| eval: false
+#| code-line-numbers: true
+void operator()(std::size_t begin, std::size_t end) {
+  using namespace ExpressionTemplates; // Very modern technique
+  auto G = EXB * Xj / (1.0 + EXB);
+  auto H = G * (Xj - G); // Nothing gets executed						
+  for (; begin != end; ++begin) {
+    gradient += G[begin]; hessian += H[begin];        
+  } // All work executed in loop 	        	          
+}	   	
+    
+void join(const Reducer& rhs) { 
+  gradient += rhs.gradient; hessian += rhs.hessian;
+}
+```
+
+```{r}
+microbenchmark(
+  serial   = execComplexLoop(expXb, Xj, reps = 1, optLevel = 2), 
+  parallel = execComplexLoop(expXb, Xj, reps = 1, optLevel = 3), 
+  times = 100L, unit = "milliseconds")
+```
+
+## `R` interface to `RcppParallel` {.scrollable}
+
+```{r}
+library(RcppParallel) 
+setThreadOptions(numThreads = 1) 
+microbenchmark(
+  serial   = execComplexLoop(expXb, Xj, reps = 1, optLevel = 2), 
+  parallel = execComplexLoop(expXb, Xj, reps = 1, optLevel = 3), 
+  times = 100L, unit = "milliseconds")
+```
+
+- TBB (usually) does no extra work if:
+  * insufficient threads, or
+  * task size too small
+  
+- Simple transformation via `paralleFor()`, running totals via `parallel_scan()` (TBB)
+
+## Massive parallelization on GPUs
+
+**Graphics processing units** (GPUs) are inexpensive, dedicated numerical processors, designed for rendering computer graphics
+
+- GPUs contain 1000s of processing cores on a single chip; several chips can fit in a desktop PC
+- Each core carries out the same operations in parallel on different input data -- single program, multiple data (SPMD) paradigm
+
+**Extremely high arthimetic intensity** if one can transfer the data onto and results off of the processors quickly
+
+## Self-controlled case series {.scrollable}
+
+::: {.callout-tip}
+## Cases-only dataset ranges
+
+- $N$ = 115K to 3.6M patients, taking $J$ = 1224 to 1428 different drugs in $K$ = 3.8M to 75M expsoure eras
+- Fitting largest original drained 51 hours (pt-estimate)
+:::
+
+:::: {layout="[50,50]"}
+::: {#f}
+::: {.border}
+![](figures/bsccs_speed_ups.png){fig-align="center"}
+:::
+:::
+::: {#s}
+- Genkin/Wu/Park (white circles), all sparse on CPU (black circles), all sparse on GPU (black squares)
+- 51 hours $\rightarrow$ 29 seconds
+- Makes cross-validation and full Bayesian inference possible
+- Off by an order-of-magnitude on hyperparameter $\lambda$
+:::
+::::

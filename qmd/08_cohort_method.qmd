@@ -61,6 +61,12 @@ In these lectures we will learn about:
 and what choice was Neo offered?
 :::
 
+## Red pill / blue pill
+
+::: {.r-stretch}
+![](figures/red_pill_blue_pill.png)
+:::
+
 ## Counterfactual reasoning for one person {.scrollable}
 
 ::: {.border}

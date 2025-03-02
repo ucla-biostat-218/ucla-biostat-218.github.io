@@ -1,0 +1,488 @@
+---
+title: "Cyclops - high-performance regression at scale"
+subtitle: Biostat 218
+author: "Marc A Suchard @ UCLA"
+date: "March 4, 2025"
+format:
+  revealjs :
+    width: 1280
+    height: 720
+    output-ext: revealjs.html
+    footer: Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)
+    logo: figures/logo.png
+    chalkboard: true
+    highlight-style: a11y
+    theme: [default, custom.sccs]
+    code-line-numbers: false
+  html:
+    output-ext: html
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+    highlight-style: a11y
+    code-line-numbers: false
+bibliography: "../ohdsi.bib"
+csl: "apa.csl"
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    fig.width: 6
+    fig.height: 4
+    message: FALSE
+    cache: false
+    echo: true
+---
+
+## Introduction
+
+In these lectures we will learn about:
+
+- TODO
+- TODO
+- TODO
+
+::: {style="margin-top: 3em;"}
+![](figures/hades.png){width="50%" fig-align="center"}
+:::
+
+## Ludicrous numbers of potential covariates {.scrollable}
+
+:::: {layout="[70, 30]"}
+::: {#f}
+- All [drugs]{style="color: darkgreen;"} by
+  * RxNorm ingredients, and
+  * ATC drug class
+- All [conditions]{style="color: darkgreen;"}
+  * SNOMED concept
+  * MedDRA PT/HLT/HLGT groupings
+- All [procedures]{style="color: darkgreen;"}
+  * ICD-9/10
+  * CPT4
+- Others: demographics, total counts
+:::
+::: {#s}
+![](figures/pills2.jpg)
+![](figures/conditions.jpg)
+![](figures/procedures.jpg)
+
+:::
+::::
+
+**Encoded**: Binary indicator (yes/no) in, e.g., 6 months prior to treatment/exposure initiation
+
+::: {.callout-important}
+## Key issues
+**Scale**: 10Ms of covariates (trouble for usual regression)
+:::
+
+## Large-scale regularized regression {.scrollable}
+
+:::: {layout="[70,30]"}
+::: {#f}
+- Models with millions of covariates
+- Throw in everything; **let data decide**
+- Avoids overfitting
+
+Long history:
+
+- Ridge regression (Hoerl and Kennard, 1970)
+- Least absolute shrinkage and selection operator (Tibshirani et al, 1996)
+
+::: {.callout-tip}
+# Limitations / advantages
+- Regularization strength $\lambda$ unknown *a priori*; cross-validation
+- Modestly biased coefficients $\rightarrow 0$
+- Lower MSE; better prediction (propensity scores improved)
+:::
+
+:::
+::: {#s}
+![](figures/L1_L2_2.png)
+![](figures/posterior_2.png)
+:::
+::::
+
+## Fitting large-scale regressions {.scrollable}
+
+:::: {layout="[40,60]"}
+::: {#f}
+![](figures/CCD_2.png)
+:::
+::: {#s}
+- Linear, logistic, Poisson
+- Conditioned models:
+  * Case controlled (logistic)
+  * Self-controlled (Poisson)
+  * Cox survival
+- Parametric survival
+- More to come?
+:::
+::::
+
+But, **conditioning** $\rightarrow$ very expensive likelihood $e^{\mathbf{x_i \beta}} / \sum_{j \in {S}_i} e^{\mathbf{x_j \beta}}$
+
+- Convex optimiation
+- Cyclic coordinate descent (CCD) for sparse $\mathbf{X}$ and tall $\mathbf{Y}$
+- Scalable for millions of samples and covariates
+- R package [Cyclops](https://ohdsi.github.io/Cyclops)
+  * [Suchard et al, 2013](add)
+  * [Mittal et al, 2014](add)
+  * [Yang, Schuemie and Suchard, 2024](add)
+  
+## Why noy other tools? {.scrollable}
+
+- Big $N$, little $P$ - `biglm`
+  * LINPACK / LAPACK (1970s $\rightarrow$)
+  * Chunk / shard / stream data, low rank updates of decompositions
+  
+- Little $N$, big $P$ - `glmnet`
+  * Sparsity (2000s $\rightarrow$)
+  * Often overlooked here: David Madigan, Ken Lange
+  
+- Big $N$, big $P$
+  * High-performance statistical computing
+  * Massive parallelization, memory-bandwidth limited
+  
+::: {.callout-tip}
+## On the horizon 
+CCD $\rightarrow$ MM algorithms, improve parallelization
+- [Zhou, Lange and Suchard, 2010](todo)
+:::
+
+## Installing `Cyclops`
+
+[Cyclops](https://ohdsi.github.io/Cyclops) is currently hosted at https://github.com/OHDSI/Cyclops as a source code project.
+
+To build latest developments
+
+```{r}
+#| eval: false
+library(remotes)
+remotes::install_github("OHDSI/Cyclops", ref="develop")
+```
+
+Also on CRAN
+
+```{r}
+#| eval: false
+install.packages("Cyclops")
+```
+
+To load `Cyclops` and its dependencies
+```{r}
+library(Cyclops)
+```
+
+## `Cyclops` workflow {.scrollable}
+
+Worflow involves (at present) 2 steps:
+
+- Data wrangling (load)
+- Model fitting (analyze)
+
+Advantages: data reuse, multiple wrangle implementations
+
+```{r}
+#| eval: false
+cyclopsData <- createCyclopsData(
+  counts ~ outcome + treatment, 
+  modelType = "pr")
+cyclopsFit <- fitCyclopsModel(cyclopsData)
+```
+
+::: {.callout-note}
+# Discussion point
+- Should we provide a 1-step wrapper? (standard in `R`)
+- Could still allow reuse via data accessor function
+:::
+
+## At the beginning $\ldots$ {.scrollable}
+
+$\ldots$ there was the model (data likelihood). `Cyclops` supports many GLMs with a focus on conditioned models (case-control, self-controlled, survival)
+
+```{r}
+#| eval: false
+?createCyclopsData
+```
+
+```{r}
+#| echo: false
+helpfile <- utils:::.getHelpFile(help(createCyclopsData))
+hs <- capture.output(tools::Rd2txt(helpfile))
+lines = c(114:123)
+hs2 <- sub('^\n', '', paste(format(hs[lines]), collapse = '\n'))
+cat(hs2)
+```
+
+Model specification: determines required data-firleds (computing efficiency)
+
+::: {.callout-tip}
+## R-pro tip
+How did I output just part of the help-file?
+:::
+
+## Three ways to wrange your data
+
+Using standard `R` formulae (with a **Big Data** twist)
+
+```{r}
+counts <- c(18,17,15,20,10,20,25,13,12) 
+outcome <- gl(3,1,9)
+treatment <- gl(3,3)
+cyclopsData <- createCyclopsData(
+     counts ~ outcome + treatment,
+     modelType = "pr")
+```
+
+Twist: RHS-only formulae to specify sparse / indicator covariates
+
+```{r}
+cyclopsData2 <- createCyclopsData( counts ~ outcome,
+     indicatorFormula = ~ treatment,
+     modelType = "pr")
+```
+
+## Sparse formats for vectors (matrices)
+
+```{r}
+mat <- model.matrix(~ treatment)
+mat[,"treatment2"]
+```
+
+- Dense: access $N$ values
+
+```{r}
+which(mat[,"treatment2"] != 0)
+mat[which(mat[,"treatment2"] !=0), "treatment2"]
+```
+
+- Sparse: access 2 x #(!= 0) values
+- Indicator: access #(!= 0) values
+
+For matrices: compressed sparse row vs column formats
+
+## Quck data summaries
+
+```{r}
+summary(cyclopsData)
+```
+
+```{r}
+summary(cyclopsData2)
+```
+
+## Three ways to wrangle your data (cont)
+
+Using raw vectors and matrices
+
+```{r}
+library(Matrix)
+sx <- Matrix(model.matrix(
+  ~ outcome + treatment), sparse=TRUE) 
+cyclopsData3 <- createCyclopsData(
+     y = counts, sx = sx,
+     modelType = "pr")
+```
+
+::: {.callout-tip}
+## All raw arguments: `y`, `dx`, `sx`, `ix`
+Bonus: `pid` (for stratification), `time` (for time-to-event) and `weight` (for weighting)
+:::
+
+::: {.callout-tip}
+## Discussion point
+- What to call `pid` (it's not just a patient identifier)
+:::
+
+## Three ways to wrangle your data (cont)
+
+Using dense / sparse data-pulls directly from `SQL`.  Interface involves 2 data-tables, served in chunks:
+
+- Dense `outcome` table (stratum identifier, unique row identifier, y, time)
+- Sparse `covariate` table (unique row identified, covariate name, covariate value)
+
+```{r}
+#| eval: false
+sqlData <- createSqlCyclopsData( modelType = "pr")
+appendSqlCyclopsData(sqlData, ...) 
+finalizeSqlCyclopsData(sqlData)
+```
+
+Heavily used in HADES packages like `CohortMethod` and `PatientLevelPrediction`; rarely used interactively
+
+## Maxium likelihood estimates and confidence intervals {.scrollable}
+
+We can use `Cyclops` to compute MLEs
+
+```{r}
+cyclopsFit <- fitCyclopsModel(cyclopsData, 
+                              prior = createPrior("none"))
+coef(cyclopsFit)
+```
+
+`Cyclops` computes 95% confidence intervals using a likelihood-profiling approach; must specify covariate names for profile
+
+```{r}
+confint(cyclopsFit, parm = "outcome2")
+```
+
+## Regularization and priors
+
+$L_1$ (Laplace) and $L_2$ (normal) regularization (priors) are readily available and greatly reduce overfitting in high-dimension
+
+```{r}
+cyclopsFit2 <- fitCyclopsModel(
+  cyclopsData,
+  prior = createPrior("laplace", variance = 10,
+                      exclude = "(Intercept)"))
+coef(cyclopsFit2)
+```
+
+Cross-validation avoids setting the prior variance *a priori*
+
+```{r}
+#| eval: false
+createPrior("normal", useCrossValidation = TRUE)
+```
+
+## Conditioned / hierarchical models {.scrollable}
+
+Case-control:
+
+```{r}
+library(survival) ## Load some standard data 
+cyclopsData <- createCyclopsData(
+  case ~ spontaneous + induced + strata(stratum), 
+  data = infert, modelType = "clr")
+```
+
+Conditional Poisson / SCCS:
+
+```{r}
+#| eval: false
+install.package(chopdat) ## Load small dataset from Farrington
+```
+
+```{r}
+#| eval: false
+data(chopdat) 
+cyclopsData <- createCyclopsData(
+  event ~ exgr + agegr + strata(indiv) + offset(loginterval),
+  data = chopdat, modelType = "cpr") ## or
+cyclopsData <- createCyclopsData(
+  event ~ exgr + agegr + strata(indiv), time = chopdat$interval,
+  data = chopdat, modelType = "sccs")
+```
+
+## Conditioned / hierarchical models 
+
+Cox proportional hazards:
+
+```{r}
+library(survival) ## Load some standard data 
+cyclopsData <- createCyclopsData(
+  Surv(time, status) ~ x,
+  data = aml, modelType = "cox")
+```
+
+Multiple outcomes hierarchy:
+
+```{r}
+#| eval: false
+## Do not run; still in development
+cyclopsData <- createCyclopsData(
+  Multitype(counts, type) ~ outcome + treatment, 
+  modelType = "pr")
+cyclopsFit <- fitCyclopsModel(
+  cyclopsData,
+  prior = createPrior(c("normal","normal"), c(1,10),
+                      graph = "type"))
+```
+
+## Fitting a simple cohort model
+
+TODO using `outcomes` and `covariates`
+
+## Comparison with existing tools {.scrollable}
+
+Simulate and fit a small-ish conditional logistic regression model:
+
+```{r}
+model <- "logistic" ## Synthetic case-control
+
+set.seed(123)
+sim <- simulateCyclopsData( ## Generator by MJ Schuemie
+  nstrata = 200, nrows = 10000,
+  ncovars = 20, effectSizeSd = 1,
+  zeroEffectSizeProp = 0.9, eCovarsPerRow = 2,
+  model = model)
+
+coefGoldStandard <- log(sim$effectSizes$rr)
+
+fitR <- fitCyclopsSimulation(
+  sim, useCyclops = FALSE,
+  model = model, coverage = FALSE)
+
+fitCyclops <- fitCyclopsSimulation(
+  sim, useCyclops = TRUE, 
+  model = model, coverage = FALSE)
+```
+
+## Comparison with existing tools (cont) {.scrollable}
+
+Bigger, faster and better $\ldots$
+
+```{r}
+writeLines(paste("MSE other:", 
+                 mse(fitR$coef,coefGoldStandard)))
+
+writeLines(paste("MSE Cyclops:", 
+                 mse(fitCyclops$coef,coefGoldStandard)))
+```
+
+
+To be honest: MSE is a poor measure here; most coefficients $\approx 0$
+
+- Cannot *directly* fit via `glmnet`
+
+## Complie-time delegation and optimization {.scrollable}
+
+**Key**: C++ templates $\rightarrow$ write-once-compile-many-run-fast
+
+```{cpp}
+#| eval: false
+#| code-line-numbers: true
+template <class BaseModel, class WeightType> template <class IteratorType>
+void ModelSpecifics<BaseModel,WeightType>::computeGradientAndHessianImpl(
+        int index, double *ogradient,
+        double *ohessian, Weights w) {
+    real gradient = static_cast<real>(0);
+    real hessian = static_cast<real>(0);
+
+    IteratorType it(*(*sparseIndices)[index], N);
+
+    for (; it; ++it) { // Compile-time delegation for dense/sparse/indicator
+        const int k = it.index();
+        // Compile-time delegation
+         BaseModel::incrementGradientAndHessian(it,
+            w, // Signature-only, for iterator-type specialization
+            &gradient, &hessian, numerPid[k], numerPid2[k],
+            denomPid[k], hNWeight[k], it.value(), hXBeta[k], hY[k]); 
+    } // When function is in-lined, compiler will only use necessary arguments
+    
+
+    if (BaseModel::precomputeGradient) { // Compile-time switch
+        gradient -= hXjY[index];
+    }
+    if (BaseModel::precomputeHessian) { // Compile-time switch
+        hessian += static_cast<real>(2.0) * hXjX[index];
+    }
+    *ogradient = static_cast<double>(gradient);
+    *ohessian = static_cast<double>(hessian);
+}
+```
+
+<!--![](figures/templates1.png){width=90%}-->

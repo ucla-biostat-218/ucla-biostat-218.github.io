@@ -450,7 +450,9 @@ PS adjustment $\rightarrow$ make T and C more comparable
 - How different?  And in what ways?
 
 ```{r}
-DT::datatable(getGeneralizabilityTable(balance))
+DT::datatable(getGeneralizabilityTable(balance)) %>%
+  DT::formatRound(columns=c("beforeMatchingMean", "afterMatchingMean", "stdDiff"), 
+                  digits=3)
 ```
 
 ::: {.callout-note}

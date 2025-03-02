@@ -1,0 +1,447 @@
+---
+title: "Patient-level prediction"
+subtitle: Biostat 218
+author: "Marc A Suchard @ UCLA"
+date: "March 4, 2025"
+format:
+  revealjs :
+    width: 1280
+    height: 720
+    output-ext: revealjs.html
+    footer: Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)
+    logo: figures/logo.png
+    chalkboard: true
+    highlight-style: a11y
+    theme: [default, custom.sccs]
+    code-line-numbers: false
+  html:
+    output-ext: html
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+    highlight-style: a11y
+    code-line-numbers: false
+bibliography: "../ohdsi.bib"
+csl: "apa.csl"
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    fig.width: 6
+    fig.height: 4
+    message: FALSE
+    cache: false
+    echo: true
+---
+
+## Introduction
+
+In these lectures we will learn about:
+
+-   Prediction modeling
+
+-   Differences with casual inference
+
+-   Standardizing prediction via the `PatientLevelPrediction` package
+
+::: {style="margin-top: 3em;"}
+![](figures/hades.png){width="50%" fig-align="center"}
+:::
+
+## `PatientLevelPrediction` package {.scrollable}
+
+::: border
+![](figures/prediction.png){width="70%" fig-align="center"}
+:::
+
+Build a model to predict who in the target (T) cohort will the have (enter) the outcome (O) cohort
+
+-   Uses all observed data up to T-start-date
+-   Implements many machine learning / deep learning algorithms
+
+::: callout-tip
+## Example
+
+Of persons initiating GLP1RAs, can we predict who will experience diarrhea?
+
+-   T: GLP1RA exposure, restricted to those with T2DM (and first use only)
+-   O: Diarrhea
+:::
+
+## Prediction problem statement {.scrollable}
+
+::: border
+![](figures/prediction2.png){width="80%" fig-align="center"}
+:::
+
+-   Among a target (T) cohort, we aim to predict which patients at a defined moment in time ($t = 0$) will experience some outcome (O) during a time-at-risk.
+
+-   Prediction is done using **only** information about the patients in an observation window prior to that moment in time
+
+## Key input to a prediction study {.scrollable}
+
+We extract data from the persons in target (T) cohorts, of which some will experience the outcome (O)
+
+::: {.border}
+![](figures/t_o.png){fig-align="center" width=30%}
+:::
+
+Key input (must specify)
+
+- Target (T) cohort 
+- Outcome (O) cohort 
+- Time-at-risk 
+- Model specification 
+  * features
+  * algorithm
+  * hyperparameters
+  
+## Predicting stroke in patients with atrial fibrillation {.scrollable}
+
+::: {.border}
+![](figures/chads1.png){width=80% fig-align="center"}
+:::
+
+| Input parameter | Design choice |
+|-----------------|---------------|
+| Target cohort (T) | Patients newly diagnosed with AF |
+| Outcome cohort (O) | Stroke |
+| Time-at-risk (TAR) | 1000 days |
+| Model specification | Logistic regression using 5 pre-specified covariates |
+
+Fitted (and clinically used) model:
+
+| CHADS2             | Score |
+|--------------------|-------|
+| Congestive heart failure | 1 |
+| Hypertension | 1 |
+| Age $\ge$ 75 | 1 |
+| Diabetes | 1 |
+| Prior stroke / TIA | 2 |
+
+## Types of prediction questions in healthcare
+
+::: r-stretch
+![](figures/prediction_question.png){fig-align="center"}
+:::
+
+## Difference between explanatory and predictive models
+
+Researchs build prediction models and make causal claims. This is not correct!
+
+![](figures/why.png){width="40%" fig-align="center"}
+
+## Some definitions {.scrollable}
+
+-   Explanatory model: data generative (statistical) model (often) for testing hypothesis
+-   Explanatory power: strength of relationship in statistical model
+-   Predictive model: empirical model / algorithm for predicting new observations
+-   Predictive power: ability to accurately predict new observations
+
+::: {.callout-note}
+One can empirically evaluate the predictive power of an explanatory model, but one cannot empirically evaluate the explanatory power of a predictive model
+
+The best explanatory model is not necessariy the best predictive model
+
+One does not have to understand the underlying causes in order to predict well!
+:::
+
+[Shmueli, To explain or to predict? 2010](https://www.stat.berkeley.edu/~aldous/157/Papers/shmueli.pdf)
+
+## Why should we avoid the term "risk factor?"
+
+**Risk factor** is an ambiguous term
+
+A predictive model is not selecting features based on their explanatory power, but is using **association** to improve **predictive** accuracy
+
+::: callout-important
+## Other use-cases
+
+-   If the goal is search for causal factors, then use a population-level (causal) effect framework
+
+-   If the goal is to search for association of individual features, then use clinical characterization
+:::
+
+We should avoid using the term "risk factor" and use the term "predictors" to make explicit that we are assessing **predictive** value
+
+## Why is predictive modeling still valuable?
+
+-   In healthcare, the question "what is going to happen to me?" is often more relevant than "why?"
+
+-   Knowing if something is predictable or not based on the available data is valuable on its own
+
+## Current state of predictive modeling
+
+-   Inadequate internal validation
+-   Small sets of features
+-   Incomplete dissemination of model
+-   Almost no transportability assessment (external validation)
+
+::: callout-important
+## Consequence
+
+Surprisingly few predictive models are used in clinical practice
+:::
+
+[Goldstein et al, JAMIA, 2017](https://pubmed.ncbi.nlm.nih.gov/27189013/)
+
+## Standardized models and evaluation
+
+<!-- ::: r-stretch -->
+<!-- ![](figures/plp_masthead.png){fig-align="center"} -->
+<!-- ::: -->
+
+<!-- [Reps et al, JAMIA, 2017](https://academic.oup.com/jamia/article/25/8/969/4989437) -->
+
+<!-- ## Other masthead -->
+
+::: r-stretch
+![](figures/plp_masthead2.png)
+:::
+
+[Reps et al, JAMIA, 2017](https://academic.oup.com/jamia/article/25/8/969/4989437)
+
+## Standardized models and evaluation
+
+::: {style="margin-bottom: -1em;"}
+![](figures/plp_standard1_crop.png){fig-align="center" width="90%"}
+:::
+
+**Problem pre-specification**: a study protocol should  unambiguously pre-specify the planned analysis
+
+**Transparency**: Others should be able to reproduce the study in every detail using the provided information.  All analysis code should be made available as open-source software (e.g. on the [OHDSI-Studies github](https://github.com/ohdsi-studies))
+
+## Standarded models and evaluation {.scrollable}
+
+::: {style="margin-bottom: -1em;"}
+![](figures/plp_standard2_crop.png){fig-align="center" width="90%"}
+:::
+
+Target (T) and outcome (O) cohorts should be defined reproducibly and using standardized concepts
+
+- [ATLAS](https://atlas-demo.ohdsi.org)
+- [Capr](https://ohdsi.github.io/Capr)
+
+::: {.border}
+![](figures/plp_data_extract.png){width=50% fig-align="center"}
+:::
+
+Standardized data extraction using [FeatureExtraction](https://ohdsi.github.io/FeatureExtraction)
+
+- This allows for a (reproducible) specification of the candidate predictors and their time-windows
+
+::: {.callout-tip}
+## Reminder
+
+A covariate (like a cohort) is **not** just a concept set; it has time component (relative to T index-date)
+:::
+
+## Standardized models and evaluation {.scrollable}
+
+::: {style="margin-bottom: -1em;"}
+![](figures/plp_standard3_crop.png){fig-align="center" width="90%"}
+:::
+
+**Model training** and **internal validation** is performed using a test-train split:
+
+* Person-split: individuals are assigned randomly to the trait or test sets, or
+* Time-split: a split is made at a moment in time (*temporal validation*)
+
+::: {.border}
+![](figures/plp_time_split.png){width=80% fig-align="center"}
+:::
+
+## Standardized models and evaluation {.scrollable}
+
+::: {style="margin-bottom: -1em;"}
+![](figures/plp_standard3_crop.png){fig-align="center" width="90%"}
+:::
+
+- Which predictive model to choose?
+  
+- How to evaluate that choice?
+
+::: {.border}
+![](figures/plp_models.png){width=80% fig-align="center"}
+:::
+
+## Training the classifier {.scrollable}
+
+:::: {layout="[50,50]"}
+::: {#first-column}
+- Learns a decision boundary that attempts to partition outcome classes
+- Different classifiers lead to different decision boundaries
+- Hyper-parameters control properties of decision boundaries (e.g. *smoothness*, *complexity*)
+:::
+::: {#second-column}
+::: {.border}
+![](figures/decisionBoundary.png){width=80% fig-align="center"}
+:::
+:::
+::::
+
+::: {.callout-important}
+## Cross-validation
+- Often used to select hyper-parameters (generally **within** train-set)
+- Bias-variance trade-off on complexity
+:::
+
+::: {.border}
+![](figures/bias_variance.png){fig-align="center" width=70%}
+:::
+
+## Interpreting logistic regression prediction {.scrollable}
+
+$$
+\text{logit}(p_i) = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \cdots
+$$
+
+| estimate         | association                                                                                                                                           | causation |
+|----------------------------|------------------------|---------------------|
+| $\beta_j = 0$    | unknown                                                                                                                                               | unknown   |
+| $\beta_j \neq 0$ | yes                                                                                                                                                   | unknown   |
+| $\beta_j > 0$    | positive association when other variables are fixed; if variable $j$ is correlated to any other variable then the direction of association is unknown | unknown   |
+| $\beta_j < 0$    | negative association when other variables are fixed; if variable $j$ is correlated to any other variable then the direction of association is unknown | unknown   |
+
+## Books
+
+![](figures/plp_books.png)
+
+## Model selection is an empirical process
+
+The **No Free Lunch theorem** states that there is not one model that works best for every problem.  The assumptions of a great model for one problem may not hold for another problem.
+
+It is common in machine learning to try multiple models and find one that works best for a particular problem.
+
+## Standardized model selection?
+
+::: {.r-stretch}
+![](figures/no_free_lunch.png){fig-align="center"}
+:::
+
+## Standardized models and evaluation {.scrollable}
+
+::: {style="margin-bottom: -1em;"}
+![](figures/plp_standard3_crop.png){fig-align="center" width="90%"}
+:::
+
+What makes a good model?
+
+**Discrimination**: differentiates between those with and without the outcome event, i.e. predicts higher probabilities for those with the event compared to those who do not experience the event
+
+**Calibration**: estimated probabilities are close to their observed frequencies
+
+## How to assess discrimination? {.scrollable}
+
+Suppose our classifier is *simply* BMI $> x$ for some outcome (O)
+
+Both outome classes (blue = no O; red = yes O) have their own probability distribution of BMI
+
+So, the choice of cutoff $x$ then determines how **sensitive** or **specific** our (very simple) algorithm is
+
+:::: {layout="[45,55]"}
+::: {#first-column}
+![](figures/plp_outcomes.png)
+:::
+::: {#second-column}
+![](figures/plp_confusion_matrix.png)
+Confusion matrix
+:::
+::::
+
+::: {.callout-tip}
+## Definitions
+
+- **TN**: true negative (from blue)
+- **FN**: false negative (from red)
+- **TP**: true positive (from red)
+- **FP**: false positive (from blue)
+:::
+
+- True positive rate (TPR) = TP / (TP + FN)  -- sensitivity
+- False positive rate (FPR) = FP / (FP + TN) -- $1 -$ specificity
+
+::: {.callout-important}
+## We extract these values from the **confusion matrix**
+:::
+
+## Receiver operator characteristic (ROC) curve {.scrollable}
+
+:::: {layout="[58,42]" style="margin-bottom: -1em;"}
+::: {#first-column}
+::: {.border}
+![](figures/plp_outcomes.png){width=50% fig-align="center"}
+:::
+:::
+::: {#second-column}
+::: {.border}
+![](figures/plp_auc.png){width=50% fig-align="center"}
+:::
+:::
+::::
+
+- Plot TPR and FPR for **all possible** values of cutoff $x$
+
+- Area under the ROC curve (AUC) is a popular measure of discrimination
+
+::: {.callout-tip}
+## Mathematically
+AUC = probability that an individual with outcome (O) scores higher than an individual without O
+:::
+
+## Calibration
+
+- Agreement between observed and predicted risk (probability)
+
+- We want a model that has good calibration across the range of predictions (not just **on average**)
+
+- A model is well calibrated if, say, for every 100 individuals given a risk of $p$% close to $p$ of them have the event. 
+
+- For example, if we predict a 12% risk that an atrial fibrillation patient will have a stroke within 365 days, the observed proportion should be approx. 12 strokes per 100 patients
+
+## Calibration assessment
+
+::: r-stretch
+![](figures/plp_calibration.png){fig-align="center"}
+:::
+
+How close is the average predicted probability to the observed fraction with the outcome?
+
+
+## Standardized models and evaluation
+
+::: {style="margin-bottom: -1em;"}
+![](figures/plp_standard4_crop.png){fig-align="center" width="90%"}
+:::
+
+**External validation** is performed using data from multiple populations *not* used for training
+
+::: {.border}
+![](figures/plp_external.png){width=40% fig-align="center"}
+:::
+
+## Standardized models and evaluation {.scrollable}
+
+::: {style="margin-bottom: -1em;"}
+![](figures/plp_standard5_crop.png){fig-align="center" width="90%"}
+:::
+
+**Dissemination** of study results should follow the minimum requirements as stated in the [Transparent Reporting of a multivariate prediction model for Individual Prognosis Or Diagnosis (TRIPOD)](https://pubmed.ncbi.nlm.nih.gov/25560730/)
+
+- Internal and external validation
+- Sharing for full model details
+- Sharing of all analysis code to allow full reproducibility
+
+::: {.callout-important}
+## Please do not fall victim to **lazy** acronyms
+:::
+
+## Review
+
+`PatientLevelPrediction` delivers a standardized framework across most popular predictive models
+
+::: {.border}
+![](figures/plp_model_list.png){fig-align="center" width=40%}
+:::
