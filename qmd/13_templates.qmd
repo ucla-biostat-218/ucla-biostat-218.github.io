@@ -40,9 +40,10 @@ knitr:
 
 In these lectures we will learn about:
 
-- TODO
-- TODO
-- TODO
+- Under-the-hood `R` computing
+- Compile-time optimization strategies
+- Operation fusion
+- Meta-programming using expression-templates
 
 ::: {style="margin-top: 3em;"}
 ![](figures/hades.png){width="50%" fig-align="center"}
@@ -60,7 +61,7 @@ In these lectures we will learn about:
 
 Please install
 
-```{r}
+```{r aa}
 #| eval: false
 install.packages("microbenchmark")
 
@@ -95,8 +96,7 @@ Rcpp::NumericVector add(const Rcpp::NumericVector& lhs,
 ::: {.callout-important}
 ## Quiz
 What happens when we write:
-```{r}
-#| eval: false
+```{r bb}
 r <- rnorm(1e+06)
 fourR <- r + r + r + r
 ```
@@ -173,7 +173,7 @@ namespace Logging {
 
 ## No performance penalty for wrapped class
 
-```{r}
+```{r cc}
 #| eval: true
 library(microbenchmark)
 library(CppMetaProgrammingTutorial)
@@ -186,9 +186,9 @@ microbenchmark(
 
 `execSimpleLoop` wraps vectors, calls algebraic expression (`optLevel = 0`) and returns event counts
 
-```{r}
+```{r dd}
 run2 <- execSimpleLoop(r,r,r,r, reps = 1, optLevel = 0)
-paste(run2["ctors"],run2["dtors"],run2["copies"])
+paste(run2["ctors"],run2["copies"])
 ```
 
 ## Ideal code via hand-crafted, fused transformation {.scrollable}
@@ -292,6 +292,8 @@ Straight-forward to extend to many operations on vectors and matrices.  Here we 
 Relative performance of our **very simple** expression templates depends heavily on compiler.  
 
 - Best to use a hardened *expression template library*
+
+Results here use `gcc v12`
 :::
 
 ## Fused transformation-reduction {.scrollable}
@@ -342,7 +344,7 @@ inline void AlgebraicExpression(
 ```{r}
 expXb <- exp(rnorm(1E6)); Xj <- rnorm(1E6)
 run0 <- execComplexLoop(expXb,Xj, reps = 1, optLevel = 0)
-paste(run0["grad"],run0["ctors"],run0["dtors"],run0["copies"])
+paste(run0["grad"],run0["ctors"],run0["copies"])
 ```
 
 ## Expression templated gradient and Hessian {.scrollable}
@@ -371,7 +373,7 @@ inline void Transformation(
 
 ```{r}
 run1 <- execComplexLoop(expXb,Xj, reps = 1, optLevel = 1)
-paste(run1["grad"],run1["ctors"],run1["dtors"],run1["copies"])
+paste(run1["grad"],run1["ctors"],run1["copies"])
 ```
 
 ## Fused transformation and reduction {.scrollable}
@@ -398,13 +400,15 @@ inline void FusedTransformationReduction(
 ```
 
 ```{r}
+#| eval: true
 run2 <- execComplexLoop(expXb,Xj, reps = 1, optLevel = 2)
-paste(run2["grad"],run2["ctors"],run2["dtors"],run2["copies"])
+paste(run2["grad"],run2["ctors"],run2["copies"])
 ```
 
 ## Performance gain {.scrollable}
 
 ```{r}
+#| eval: true
 microbenchmark(
     run0 = execComplexLoop(expXb, Xj, reps = 1, optLevel = 0),
     run1 = execComplexLoop(expXb, Xj, reps = 1, optLevel = 1),
@@ -483,6 +487,7 @@ void join(const Reducer& rhs) {
 ```
 
 ```{r}
+#| eval: false # TODO
 microbenchmark(
   serial   = execComplexLoop(expXb, Xj, reps = 1, optLevel = 2), 
   parallel = execComplexLoop(expXb, Xj, reps = 1, optLevel = 3), 
@@ -492,6 +497,7 @@ microbenchmark(
 ## `R` interface to `RcppParallel` {.scrollable}
 
 ```{r}
+#| eval: false # TODO
 library(RcppParallel) 
 setThreadOptions(numThreads = 1) 
 microbenchmark(

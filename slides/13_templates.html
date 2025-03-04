@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.361">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Marc A Suchard @ UCLA">
+<meta name="dcterms.date" content="2025-03-04">
+
+<title>High-performance statistical computing</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="floating">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#developers-needed" id="toc-developers-needed" class="nav-link" data-scroll-target="#developers-needed"><span class="header-section-number">2</span> Developers needed!</a></li>
+  <li><a href="#additional-dependencies-for-lecture" id="toc-additional-dependencies-for-lecture" class="nav-link" data-scroll-target="#additional-dependencies-for-lecture"><span class="header-section-number">3</span> Additional dependencies for lecture</a></li>
+  <li><a href="#use-more-than-a-compiled-language" id="toc-use-more-than-a-compiled-language" class="nav-link" data-scroll-target="#use-more-than-a-compiled-language"><span class="header-section-number">4</span> Use more than a compiled language</a></li>
+  <li><a href="#computational-matrix-algebra" id="toc-computational-matrix-algebra" class="nav-link" data-scroll-target="#computational-matrix-algebra"><span class="header-section-number">5</span> Computational matrix algebra</a></li>
+  <li><a href="#beware-of-temporaries-at-scale" id="toc-beware-of-temporaries-at-scale" class="nav-link" data-scroll-target="#beware-of-temporaries-at-scale"><span class="header-section-number">6</span> Beware of temporaries at scale</a></li>
+  <li><a href="#no-performance-penalty-for-wrapped-class" id="toc-no-performance-penalty-for-wrapped-class" class="nav-link" data-scroll-target="#no-performance-penalty-for-wrapped-class"><span class="header-section-number">7</span> No performance penalty for wrapped class</a></li>
+  <li><a href="#ideal-code-via-hand-crafted-fused-transformation" id="toc-ideal-code-via-hand-crafted-fused-transformation" class="nav-link" data-scroll-target="#ideal-code-via-hand-crafted-fused-transformation"><span class="header-section-number">8</span> Ideal code via hand-crafted, fused transformation</a></li>
+  <li><a href="#generic-solution" id="toc-generic-solution" class="nav-link" data-scroll-target="#generic-solution"><span class="header-section-number">9</span> Generic solution</a></li>
+  <li><a href="#very-simple-expression-template-class" id="toc-very-simple-expression-template-class" class="nav-link" data-scroll-target="#very-simple-expression-template-class"><span class="header-section-number">10</span> Very simple expression template class</a></li>
+  <li><a href="#generic-solution-achieves-hand-crafted-performance" id="toc-generic-solution-achieves-hand-crafted-performance" class="nav-link" data-scroll-target="#generic-solution-achieves-hand-crafted-performance"><span class="header-section-number">11</span> Generic solution achieves hand-crafted performance</a></li>
+  <li><a href="#fused-transformation-reduction" id="toc-fused-transformation-reduction" class="nav-link" data-scroll-target="#fused-transformation-reduction"><span class="header-section-number">12</span> Fused transformation-reduction</a></li>
+  <li><a href="#vanilla-gradient-and-hessian" id="toc-vanilla-gradient-and-hessian" class="nav-link" data-scroll-target="#vanilla-gradient-and-hessian"><span class="header-section-number">13</span> Vanilla gradient and Hessian</a></li>
+  <li><a href="#expression-templated-gradient-and-hessian" id="toc-expression-templated-gradient-and-hessian" class="nav-link" data-scroll-target="#expression-templated-gradient-and-hessian"><span class="header-section-number">14</span> Expression templated gradient and Hessian</a></li>
+  <li><a href="#fused-transformation-and-reduction" id="toc-fused-transformation-and-reduction" class="nav-link" data-scroll-target="#fused-transformation-and-reduction"><span class="header-section-number">15</span> Fused transformation and reduction</a></li>
+  <li><a href="#performance-gain" id="toc-performance-gain" class="nav-link" data-scroll-target="#performance-gain"><span class="header-section-number">16</span> Performance gain</a></li>
+  <li><a href="#multi-core-parallelization" id="toc-multi-core-parallelization" class="nav-link" data-scroll-target="#multi-core-parallelization"><span class="header-section-number">17</span> Multi-core parallelization</a></li>
+  <li><a href="#multicore-transformation-and-reduction" id="toc-multicore-transformation-and-reduction" class="nav-link" data-scroll-target="#multicore-transformation-and-reduction"><span class="header-section-number">18</span> Multicore transformation and reduction</a></li>
+  <li><a href="#multi-core-transformation-and-reduction" id="toc-multi-core-transformation-and-reduction" class="nav-link" data-scroll-target="#multi-core-transformation-and-reduction"><span class="header-section-number">19</span> Multi-core transformation and reduction</a></li>
+  <li><a href="#r-interface-to-rcppparallel" id="toc-r-interface-to-rcppparallel" class="nav-link" data-scroll-target="#r-interface-to-rcppparallel"><span class="header-section-number">20</span> <code>R</code> interface to <code>RcppParallel</code></a></li>
+  <li><a href="#massive-parallelization-on-gpus" id="toc-massive-parallelization-on-gpus" class="nav-link" data-scroll-target="#massive-parallelization-on-gpus"><span class="header-section-number">21</span> Massive parallelization on GPUs</a></li>
+  <li><a href="#self-controlled-case-series" id="toc-self-controlled-case-series" class="nav-link" data-scroll-target="#self-controlled-case-series"><span class="header-section-number">22</span> Self-controlled case series</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="13_templates.revealjs.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">High-performance statistical computing</h1>
+<p class="subtitle lead">Biostat 218</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Marc A Suchard @ UCLA </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 4, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
+<p>In these lectures we will learn about:</p>
+<ul>
+<li>Under-the-hood <code>R</code> computing</li>
+<li>Compile-time optimization strategies</li>
+<li>Operation fusion</li>
+<li>Meta-programming using expression-templates</li>
+</ul>
+<div style="margin-top: 3em;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/hades.png" class="img-fluid figure-img" style="width:50.0%"></p>
+</figure>
+</div>
+</div>
+</section>
+<section id="developers-needed" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="developers-needed"><span class="header-section-number">2</span> Developers needed!</h2>
+<ul>
+<li><p>Time-varying survival models: unique data representations</p></li>
+<li><p>Massive parallelization: constructing an environment with data source, HADES toolstack and GPU access</p></li>
+<li><p>Emerging inference proceedures: Bayesian, <span class="math inline">\(L_0\)</span></p></li>
+</ul>
+</section>
+<section id="additional-dependencies-for-lecture" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="additional-dependencies-for-lecture"><span class="header-section-number">3</span> Additional dependencies for lecture</h2>
+<p>Please install</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"microbenchmark"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"suchard-group/CppMetaProgrammingTutorial"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="use-more-than-a-compiled-language" class="level2 scrollable" data-number="4">
+<h2 class="scrollable anchored" data-number="4" data-anchor-id="use-more-than-a-compiled-language"><span class="header-section-number">4</span> Use more than a compiled language</h2>
+<p><a href="https://www.rcpp.org">Rcpp</a> is a great interface between <code>R</code> and <code>C++</code></p>
+<ul>
+<li>But there is (much) more <span class="math inline">\(\ldots\)</span></li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">// [[Rcpp::export]]</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>Rcpp<span class="op">::</span>NumericVector add<span class="op">(</span><span class="at">const</span> Rcpp<span class="op">::</span>NumericVector<span class="op">&amp;</span> lhs<span class="op">,</span> </span>
+<span id="cb2-3"><a href="#cb2-3"></a>    <span class="at">const</span> Rcpp<span class="op">::</span>NumericVector<span class="op">&amp;</span> rhs<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a>  NumericVector result<span class="op">(</span>lhs<span class="op">.</span>size<span class="op">());</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>  <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> lhs<span class="op">.</span>size<span class="op">();</span> <span class="op">++</span>i<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a>    result<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> lhs<span class="op">[</span>i<span class="op">]</span> <span class="op">+</span> rhs<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb2-7"><a href="#cb2-7"></a>  <span class="op">}</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a>  <span class="cf">return</span> result<span class="op">;</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Compile-time optimization</strong> via <em>templated</em> linear algebra libraries</p>
+<ul>
+<li><code>RcppEigen</code>, <code>RcppArmadilo</code></li>
+<li><em>Expression templates</em> are a form of <em>meta-programming</em> (a program that writes a program)</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Quiz
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>What happens when we write:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fl">1e+06</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>fourR <span class="ot">&lt;-</span> r <span class="sc">+</span> r <span class="sc">+</span> r <span class="sc">+</span> r</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="computational-matrix-algebra" class="level2 scrollable" data-number="5">
+<h2 class="scrollable anchored" data-number="5" data-anchor-id="computational-matrix-algebra"><span class="header-section-number">5</span> Computational matrix algebra</h2>
+<p>Start by re-writing in <code>C++</code></p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1"></a>Rcpp<span class="op">::</span>NumericVector execAlgebraicExpression<span class="op">(</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>  <span class="at">const</span> Rcpp<span class="op">::</span>NumericVector<span class="op">&amp;</span> A<span class="op">,</span> <span class="at">const</span> Rcpp<span class="op">::</span>NumericVector<span class="op">&amp;</span> B<span class="op">,</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="at">const</span> Rcpp<span class="op">::</span>NumericVector<span class="op">&amp;</span> C<span class="op">,</span> <span class="at">const</span> Rcpp<span class="op">::</span>NumericVector<span class="op">&amp;</span> D<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a></span>
+<span id="cb4-5"><a href="#cb4-5"></a>  <span class="kw">using</span> <span class="kw">namespace</span> ComponentWiseOps<span class="op">;</span> <span class="co">// Specify operator+</span></span>
+<span id="cb4-6"><a href="#cb4-6"></a></span>
+<span id="cb4-7"><a href="#cb4-7"></a>  Rcpp<span class="op">::</span>NumericVector result<span class="op">(</span>n<span class="op">);</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a>  result <span class="op">=</span> A <span class="op">+</span> B <span class="op">+</span> C <span class="op">+</span> D<span class="op">;</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a>  <span class="cf">return</span> result<span class="op">;</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then use <strong>syntactic sugar</strong> (see <code>Sugar.h</code>) to write: <code>lhs + rhs</code></p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> NumericVector<span class="op">&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>NumericVector <span class="kw">operator</span><span class="op">+(</span><span class="at">const</span> NumericVector<span class="op">&amp;</span> lhs<span class="op">,</span> </span>
+<span id="cb5-3"><a href="#cb5-3"></a>    <span class="at">const</span> NumericVector<span class="op">&amp;</span> rhs<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a>  <span class="at">const</span> <span class="dt">int</span> n <span class="op">=</span> lhs<span class="op">.</span>size<span class="op">();</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a>  NumericVector result<span class="op">(</span>n<span class="op">);</span>        </span>
+<span id="cb5-6"><a href="#cb5-6"></a>  <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> <span class="op">++</span>i<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb5-7"><a href="#cb5-7"></a>    result<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> lhs<span class="op">[</span>i<span class="op">]</span> <span class="op">+</span> rhs<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a>  <span class="op">}</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a>  <span class="cf">return</span> result<span class="op">;</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="beware-of-temporaries-at-scale" class="level2 scrollable" data-number="6">
+<h2 class="scrollable anchored" data-number="6" data-anchor-id="beware-of-temporaries-at-scale"><span class="header-section-number">6</span> Beware of temporaries at scale</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1"></a>  <span class="kw">using</span> <span class="kw">namespace</span> ComponentWiseOps<span class="op">;</span> <span class="co">// Specify operator+</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a></span>
+<span id="cb6-3"><a href="#cb6-3"></a>  Rcpp<span class="op">::</span>NumericVector result<span class="op">(</span>n<span class="op">);</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a>  result <span class="op">=</span> A <span class="op">+</span> B <span class="op">+</span> C <span class="op">+</span> D<span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a>    <span class="co">// Compiler generates:</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a>    <span class="co">//    tmp1 = A + B;</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a>    <span class="co">//    tmp2 = tmp1 + C;</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a>    <span class="co">//    tmp3 = tmp2 + D;</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a>    <span class="co">//    result = tmp3; // copy, often optimized away   </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To count the # of temporaries and copies, use a thin-wrapper around <code>Rcpp</code> classes</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">namespace</span> Logging <span class="op">{</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>    <span class="at">static</span> <span class="dt">long</span> nCtors <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>    <span class="at">static</span> <span class="dt">long</span> nCopies <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a>    <span class="at">static</span> <span class="dt">long</span> nDtors <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a>    </span>
+<span id="cb7-6"><a href="#cb7-6"></a>    <span class="kw">class</span> NumericVector <span class="op">:</span> <span class="kw">public</span> Rcpp<span class="op">::</span>NumericVector <span class="op">{</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>    <span class="kw">public</span><span class="op">:</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a>        NumericVector<span class="op">(</span><span class="dt">size_t</span> n<span class="op">)</span> <span class="op">:</span> Rcpp<span class="op">::</span>NumericVector<span class="op">(</span>n<span class="op">)</span> <span class="op">{</span> </span>
+<span id="cb7-9"><a href="#cb7-9"></a>            nCtors<span class="op">++;</span> </span>
+<span id="cb7-10"><a href="#cb7-10"></a>        <span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="no-performance-penalty-for-wrapped-class" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="no-performance-penalty-for-wrapped-class"><span class="header-section-number">7</span> No performance penalty for wrapped class</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(microbenchmark)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(CppMetaProgrammingTutorial)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">run1 =</span> <span class="fu">execAlgebraicExpression</span>(r,r,r,r),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">run2 =</span> <span class="fu">execSimpleLoop</span>(r,r,r,r, <span class="at">reps =</span> <span class="dv">1</span>, <span class="at">optLevel =</span> <span class="dv">0</span>), </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> 100L, <span class="at">unit =</span> <span class="st">"milliseconds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: milliseconds
+ expr      min       lq     mean   median       uq      max neval
+ run1 9.705906 10.19944 18.94845 21.32826 23.58619 61.20085   100
+ run2 9.584922 10.20022 19.87779 20.89899 23.95905 69.16079   100</code></pre>
+</div>
+</div>
+<p><code>execSimpleLoop</code> wraps vectors, calls algebraic expression (<code>optLevel = 0</code>) and returns event counts</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>run2 <span class="ot">&lt;-</span> <span class="fu">execSimpleLoop</span>(r,r,r,r, <span class="at">reps =</span> <span class="dv">1</span>, <span class="at">optLevel =</span> <span class="dv">0</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(run2[<span class="st">"ctors"</span>],run2[<span class="st">"copies"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "3 0"</code></pre>
+</div>
+</div>
+</section>
+<section id="ideal-code-via-hand-crafted-fused-transformation" class="level2 scrollable" data-number="8">
+<h2 class="scrollable anchored" data-number="8" data-anchor-id="ideal-code-via-hand-crafted-fused-transformation"><span class="header-section-number">8</span> Ideal code via hand-crafted, fused transformation</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> NumericVector<span class="op">&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2"></a><span class="kw">inline</span> <span class="dt">void</span> Transformation<span class="op">(</span>NumericVector<span class="op">&amp;</span> result<span class="op">,</span></span>
+<span id="cb12-3"><a href="#cb12-3"></a>    <span class="at">const</span> NumericVector<span class="op">&amp;</span> A<span class="op">,</span> <span class="at">const</span> NumericVector<span class="op">&amp;</span> B<span class="op">,</span></span>
+<span id="cb12-4"><a href="#cb12-4"></a>    <span class="at">const</span> NumericVector<span class="op">&amp;</span> C<span class="op">,</span> <span class="at">const</span> NumericVector<span class="op">&amp;</span> D<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-5"><a href="#cb12-5"></a></span>
+<span id="cb12-6"><a href="#cb12-6"></a>  <span class="at">const</span> <span class="dt">int</span> n <span class="op">=</span> result<span class="op">.</span>size<span class="op">();</span>                      </span>
+<span id="cb12-7"><a href="#cb12-7"></a>  <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> n<span class="op">;</span> <span class="op">++</span>i<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb12-8"><a href="#cb12-8"></a>    <span class="co">// Fused all element-wise operations</span></span>
+<span id="cb12-9"><a href="#cb12-9"></a>    result<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> A<span class="op">[</span>i<span class="op">]</span> <span class="op">+</span> B<span class="op">[</span>i<span class="op">]</span> <span class="op">+</span> C<span class="op">[</span>i<span class="op">]</span> <span class="op">+</span> D<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb12-10"><a href="#cb12-10"></a>  <span class="op">}</span>                     </span>
+<span id="cb12-11"><a href="#cb12-11"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># algebraic</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">run1 =</span> <span class="fu">execSimpleLoop</span>(r,r,r,r, <span class="at">reps =</span> <span class="dv">1</span>, <span class="at">optLevel =</span> <span class="dv">0</span>), </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># transformation</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">run2 =</span> <span class="fu">execSimpleLoop</span>(r,r,r,r, <span class="at">reps =</span> <span class="dv">1</span>, <span class="at">optLevel =</span> <span class="dv">1</span>), </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> 100L, <span class="at">unit =</span> <span class="st">"milliseconds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: milliseconds
+ expr      min        lq      mean    median        uq      max neval
+ run1 9.062561 10.054378 15.592566 13.735905 18.718228 67.79371   100
+ run2 3.815011  4.218269  7.365742  4.350466  4.627527 68.22087   100</code></pre>
+</div>
+</div>
+</section>
+<section id="generic-solution" class="level2 scrollable" data-number="9">
+<h2 class="scrollable anchored" data-number="9" data-anchor-id="generic-solution"><span class="header-section-number">9</span> Generic solution</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> NumericVector<span class="op">&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="kw">inline</span> <span class="dt">void</span> AlgebraicExpressionTemplate<span class="op">(</span>NumericVector<span class="op">&amp;</span> result<span class="op">,</span></span>
+<span id="cb15-3"><a href="#cb15-3"></a>    <span class="at">const</span> NumericVector<span class="op">&amp;</span> A<span class="op">,</span> <span class="at">const</span> NumericVector<span class="op">&amp;</span> B<span class="op">,</span></span>
+<span id="cb15-4"><a href="#cb15-4"></a>    <span class="at">const</span> NumericVector<span class="op">&amp;</span> C<span class="op">,</span> <span class="at">const</span> NumericVector<span class="op">&amp;</span> D<span class="op">)</span> <span class="op">{</span>            </span>
+<span id="cb15-5"><a href="#cb15-5"></a></span>
+<span id="cb15-6"><a href="#cb15-6"></a>  <span class="co">// Very modern technique (see Sugar.h)</span></span>
+<span id="cb15-7"><a href="#cb15-7"></a>  <span class="kw">using</span> <span class="kw">namespace</span> ExpressionTemplates<span class="op">;</span> </span>
+<span id="cb15-8"><a href="#cb15-8"></a>  result <span class="op">=</span> A <span class="op">+</span> B <span class="op">+</span> C <span class="op">+</span> D<span class="op">;</span>                </span>
+<span id="cb15-9"><a href="#cb15-9"></a>    </span>
+<span id="cb15-10"><a href="#cb15-10"></a>  <span class="co">// Compiler generates no temporarily intermediates.</span></span>
+<span id="cb15-11"><a href="#cb15-11"></a>  <span class="co">// A + B + C + D translates into a tree of operation "types" </span></span>
+<span id="cb15-12"><a href="#cb15-12"></a>  <span class="co">// called expression templates.</span></span>
+<span id="cb15-13"><a href="#cb15-13"></a>  <span class="co">// Single operator= performs transformation by expanding </span></span>
+<span id="cb15-14"><a href="#cb15-14"></a>  <span class="co">// and optimizing expression into code.       </span></span>
+<span id="cb15-15"><a href="#cb15-15"></a>  <span class="co">// Also provides lazy-evaluation, such that </span></span>
+<span id="cb15-16"><a href="#cb15-16"></a>  <span class="co">// (A + B + C + D)[i] only evaluates for the i-th entry;</span></span>
+<span id="cb15-17"><a href="#cb15-17"></a>  <span class="co">// Particularly useful for sparse updates</span></span>
+<span id="cb15-18"><a href="#cb15-18"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="very-simple-expression-template-class" class="level2 scrollable" data-number="10">
+<h2 class="scrollable anchored" data-number="10" data-anchor-id="very-simple-expression-template-class"><span class="header-section-number">10</span> Very simple expression template class</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">class</span> L<span class="op">,</span> <span class="kw">class</span> O<span class="op">,</span> <span class="kw">class</span> R<span class="op">&gt;</span> <span class="kw">struct</span> Expression <span class="op">{</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a>  <span class="kw">typedef</span> <span class="kw">typename</span> ExpressionTraits<span class="op">&lt;</span>L<span class="op">&gt;::</span>RefType lhsRef<span class="op">;</span></span>
+<span id="cb16-3"><a href="#cb16-3"></a>  <span class="kw">typedef</span> <span class="kw">typename</span> ExpressionTraits<span class="op">&lt;</span>R<span class="op">&gt;::</span>RefType rhsRef<span class="op">;</span></span>
+<span id="cb16-4"><a href="#cb16-4"></a></span>
+<span id="cb16-5"><a href="#cb16-5"></a>  Expression<span class="op">(</span>lhsRef l<span class="op">,</span> rhsRef r<span class="op">)</span> <span class="op">:</span> l<span class="op">(</span>l<span class="op">),</span> r<span class="op">(</span>r<span class="op">)</span> <span class="op">{</span> <span class="op">}</span></span>
+<span id="cb16-6"><a href="#cb16-6"></a></span>
+<span id="cb16-7"><a href="#cb16-7"></a>  <span class="dt">double</span> <span class="kw">operator</span><span class="op">[](</span><span class="at">const</span> <span class="dt">unsigned</span> <span class="dt">int</span> index<span class="op">)</span> <span class="at">const</span> <span class="op">{</span></span>
+<span id="cb16-8"><a href="#cb16-8"></a>    <span class="cf">return</span> O<span class="op">::</span>eval<span class="op">(</span>l<span class="op">[</span>index<span class="op">],</span> r<span class="op">[</span>index<span class="op">]);</span></span>
+<span id="cb16-9"><a href="#cb16-9"></a>  <span class="op">}</span></span>
+<span id="cb16-10"><a href="#cb16-10"></a><span class="op">};</span></span>
+<span id="cb16-11"><a href="#cb16-11"></a></span>
+<span id="cb16-12"><a href="#cb16-12"></a><span class="kw">struct</span> Plus <span class="op">{</span> <span class="co">// Operation as a type</span></span>
+<span id="cb16-13"><a href="#cb16-13"></a>  <span class="at">static</span> <span class="dt">double</span> eval<span class="op">(</span><span class="at">const</span> <span class="dt">double</span> a<span class="op">,</span> <span class="at">const</span> <span class="dt">double</span> b<span class="op">)</span> </span>
+<span id="cb16-14"><a href="#cb16-14"></a>    <span class="op">{</span> <span class="cf">return</span> a <span class="op">+</span> b<span class="op">;</span> <span class="op">}</span></span>
+<span id="cb16-15"><a href="#cb16-15"></a><span class="op">};</span></span>
+<span id="cb16-16"><a href="#cb16-16"></a></span>
+<span id="cb16-17"><a href="#cb16-17"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">class</span> L<span class="op">,</span> <span class="kw">class</span> R<span class="op">&gt;</span> </span>
+<span id="cb16-18"><a href="#cb16-18"></a>Expression<span class="op">&lt;</span>L<span class="op">,</span>Plus<span class="op">,</span>R<span class="op">&gt;</span> <span class="kw">operator</span><span class="op">+(</span><span class="at">const</span> L<span class="op">&amp;</span> l<span class="op">,</span> <span class="at">const</span> R<span class="op">&amp;</span> r<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb16-19"><a href="#cb16-19"></a>  <span class="cf">return</span> Expression<span class="op">&lt;</span>L<span class="op">,</span>Plus<span class="op">,</span>R<span class="op">&gt;(</span>l<span class="op">,</span> r<span class="op">);</span> <span class="co">// Syntactic sugar</span></span>
+<span id="cb16-20"><a href="#cb16-20"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Our <strong>expression tree</strong> operates as <code>(((A,+,B),+,C),+,D)[i]</code></p>
+</section>
+<section id="generic-solution-achieves-hand-crafted-performance" class="level2 scrollable" data-number="11">
+<h2 class="scrollable anchored" data-number="11" data-anchor-id="generic-solution-achieves-hand-crafted-performance"><span class="header-section-number">11</span> Generic solution achieves hand-crafted performance</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># hand-crafted transformation</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">run2 =</span> <span class="fu">execSimpleLoop</span>(r,r,r,r, <span class="at">reps =</span> <span class="dv">1</span>, <span class="at">optLevel =</span> <span class="dv">1</span>), </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># expression template</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">run3 =</span> <span class="fu">execSimpleLoop</span>(r,r,r,r, <span class="at">reps =</span> <span class="dv">1</span>, <span class="at">optLevel =</span> <span class="dv">2</span>), </span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> 100L, <span class="at">unit =</span> <span class="st">"milliseconds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: milliseconds
+ expr      min       lq     mean   median       uq      max neval
+ run2 3.989886 4.241268 5.631394 4.320186 4.419866 24.03703   100
+ run3 3.560421 3.999161 6.329397 4.117239 4.253410 25.06073   100</code></pre>
+</div>
+</div>
+<p>Straight-forward to extend to many operations on vectors and matrices. Here we will just use component-wise <span class="math inline">\(+\)</span>, <span class="math inline">\(-\)</span>, <span class="math inline">\(\times\)</span> and <span class="math inline">\(/\)</span> and scalar-multiplication (see <code>Sugar.h</code>)</p>
+<ul>
+<li><strong>Review</strong>: Algebraic expression <span class="math inline">\(\rightarrow\)</span> unique class-type known to compiler</li>
+</ul>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Compiler / architecture dependence
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Relative performance of our <strong>very simple</strong> expression templates depends heavily on compiler.</p>
+<ul>
+<li>Best to use a hardened <em>expression template library</em></li>
+</ul>
+<p>Results here use <code>gcc v12</code></p>
+</div>
+</div>
+</section>
+<section id="fused-transformation-reduction" class="level2 scrollable" data-number="12">
+<h2 class="scrollable anchored" data-number="12" data-anchor-id="fused-transformation-reduction"><span class="header-section-number">12</span> Fused transformation-reduction</h2>
+<p>In cyclic coordinate descent, we require 1D gradients and Hessians (scalars) of the model log-likelihood</p>
+<p><span class="math display">\[
+L(\boldsymbol{\beta}) = \mathbf{Y}' \mathbf{X} \boldsymbol{\beta} - \mathbf{1}' \text{log}\left[ \mathbf{1} + \text{exp} \left( \mathbf{X} \boldsymbol{\beta} \right) \right] ,
+\]</span></p>
+<p><span class="math display">\[
+\frac{\partial L}{\partial \beta_j} = \mathbf{Y}'\mathbf{X}_j - \mathbf{1}' \mathbf{W} \text{ and } \frac{\partial^2 L}{\partial \beta_j^2} = - \mathbf{1}' \left[ \mathbf{X} \times \left( \mathbf{X}_j - \mathbf{W} \right)\right]
+\]</span> where <span class="math display">\[
+\mathbf{W} = \frac{\text{exp} \left( \mathbf{X} \boldsymbol{\beta} \right) \times \mathbf{X}_j}{\mathbf{1} + \text{exp}\left( \mathbf{X}\boldsymbol{\beta} \right)}
+\]</span></p>
+<ul>
+<li><p>Scalar operations on several tall vectors (<em>transformation</em>)</p></li>
+<li><p>Inner produces = sums (<em>reduction</em>)</p></li>
+<li><p>Intermediate values shared, but unneeded later</p></li>
+</ul>
+</section>
+<section id="vanilla-gradient-and-hessian" class="level2 scrollable" data-number="13">
+<h2 class="scrollable anchored" data-number="13" data-anchor-id="vanilla-gradient-and-hessian"><span class="header-section-number">13</span> Vanilla gradient and Hessian</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> NumericVector<span class="op">&gt;</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a><span class="kw">inline</span> <span class="dt">void</span> AlgebraicExpression<span class="op">(</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a>    <span class="dt">double</span><span class="op">&amp;</span> gradient<span class="op">,</span> <span class="dt">double</span><span class="op">&amp;</span> hessian<span class="op">,</span></span>
+<span id="cb19-4"><a href="#cb19-4"></a>    <span class="at">const</span> NumericVector<span class="op">&amp;</span> EXB<span class="op">,</span> <span class="at">const</span> NumericVector<span class="op">&amp;</span> Xj<span class="op">)</span> <span class="op">{</span>            </span>
+<span id="cb19-5"><a href="#cb19-5"></a>  <span class="kw">using</span> <span class="kw">namespace</span> ComponentWiseOps<span class="op">;</span> <span class="co">// Specify sugar</span></span>
+<span id="cb19-6"><a href="#cb19-6"></a></span>
+<span id="cb19-7"><a href="#cb19-7"></a>  <span class="co">// Algebraic transformation</span></span>
+<span id="cb19-8"><a href="#cb19-8"></a>  NumericVector G <span class="op">=</span> EXB <span class="op">*</span> Xj <span class="op">/</span> <span class="op">(</span><span class="fl">1.0</span> <span class="op">+</span> EXB<span class="op">);</span></span>
+<span id="cb19-9"><a href="#cb19-9"></a>  NumericVector H <span class="op">=</span> G <span class="op">*</span> <span class="op">(</span>Xj <span class="op">-</span> G<span class="op">);</span></span>
+<span id="cb19-10"><a href="#cb19-10"></a></span>
+<span id="cb19-11"><a href="#cb19-11"></a>  <span class="co">// Reduction</span></span>
+<span id="cb19-12"><a href="#cb19-12"></a>  gradient <span class="op">=</span> <span class="fl">0.0</span><span class="op">;</span> hessian <span class="op">=</span> <span class="fl">0.0</span><span class="op">;</span></span>
+<span id="cb19-13"><a href="#cb19-13"></a>  <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> EXB<span class="op">.</span>size<span class="op">();</span>  <span class="op">;</span> <span class="op">++</span>i<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb19-14"><a href="#cb19-14"></a>    gradient <span class="op">+=</span> G<span class="op">[</span>i<span class="op">];</span> hessian  <span class="op">+=</span> H<span class="op">[</span>i<span class="op">];</span>        </span>
+<span id="cb19-15"><a href="#cb19-15"></a>  <span class="op">}</span>                 </span>
+<span id="cb19-16"><a href="#cb19-16"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>expXb <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">rnorm</span>(<span class="fl">1E6</span>)); Xj <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fl">1E6</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>run0 <span class="ot">&lt;-</span> <span class="fu">execComplexLoop</span>(expXb,Xj, <span class="at">reps =</span> <span class="dv">1</span>, <span class="at">optLevel =</span> <span class="dv">0</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(run0[<span class="st">"grad"</span>],run0[<span class="st">"ctors"</span>],run0[<span class="st">"copies"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "418.414145465602 5 0"</code></pre>
+</div>
+</div>
+</section>
+<section id="expression-templated-gradient-and-hessian" class="level2 scrollable" data-number="14">
+<h2 class="scrollable anchored" data-number="14" data-anchor-id="expression-templated-gradient-and-hessian"><span class="header-section-number">14</span> Expression templated gradient and Hessian</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb22-1"><a href="#cb22-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> NumericVector<span class="op">&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a><span class="kw">inline</span> <span class="dt">void</span> Transformation<span class="op">(</span></span>
+<span id="cb22-3"><a href="#cb22-3"></a>    <span class="dt">double</span><span class="op">&amp;</span> gradient<span class="op">,</span> <span class="dt">double</span><span class="op">&amp;</span> hessian<span class="op">,</span></span>
+<span id="cb22-4"><a href="#cb22-4"></a>    <span class="at">const</span> NumericVector<span class="op">&amp;</span> EXB<span class="op">,</span> <span class="at">const</span> NumericVector<span class="op">&amp;</span> Xj<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-5"><a href="#cb22-5"></a>  <span class="kw">using</span> <span class="kw">namespace</span> ExpressionTemplates<span class="op">;</span> <span class="co">// Very modern technique            </span></span>
+<span id="cb22-6"><a href="#cb22-6"></a>  NumericVector G<span class="op">(</span>EXB<span class="op">.</span>size<span class="op">()),</span> H<span class="op">(</span>EXB<span class="op">.</span>size<span class="op">());</span></span>
+<span id="cb22-7"><a href="#cb22-7"></a>  </span>
+<span id="cb22-8"><a href="#cb22-8"></a>  <span class="co">// Expression templated transformation</span></span>
+<span id="cb22-9"><a href="#cb22-9"></a>  G <span class="op">=</span> EXB <span class="op">*</span> Xj <span class="op">/</span> <span class="op">(</span><span class="fl">1.0</span> <span class="op">+</span> EXB<span class="op">);</span> <span class="co">// operator= executes</span></span>
+<span id="cb22-10"><a href="#cb22-10"></a>  H <span class="op">=</span> G <span class="op">*</span> <span class="op">(</span>Xj <span class="op">-</span> G<span class="op">);</span> <span class="co">// NB: Could generate G/H simultaneously</span></span>
+<span id="cb22-11"><a href="#cb22-11"></a>  </span>
+<span id="cb22-12"><a href="#cb22-12"></a>  <span class="co">// Reduction</span></span>
+<span id="cb22-13"><a href="#cb22-13"></a>  gradient <span class="op">=</span> <span class="fl">0.0</span><span class="op">;</span> hessian <span class="op">=</span> <span class="fl">0.0</span><span class="op">;</span></span>
+<span id="cb22-14"><a href="#cb22-14"></a>  <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> EXB<span class="op">.</span>size<span class="op">();</span> <span class="op">++</span>i<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb22-15"><a href="#cb22-15"></a>    gradient <span class="op">+=</span> G<span class="op">[</span>i<span class="op">];</span> hessian  <span class="op">+=</span> H<span class="op">[</span>i<span class="op">];</span>        </span>
+<span id="cb22-16"><a href="#cb22-16"></a>  <span class="op">}</span>         </span>
+<span id="cb22-17"><a href="#cb22-17"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>run1 <span class="ot">&lt;-</span> <span class="fu">execComplexLoop</span>(expXb,Xj, <span class="at">reps =</span> <span class="dv">1</span>, <span class="at">optLevel =</span> <span class="dv">1</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(run1[<span class="st">"grad"</span>],run1[<span class="st">"ctors"</span>],run1[<span class="st">"copies"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "418.414145465602 2 2"</code></pre>
+</div>
+</div>
+</section>
+<section id="fused-transformation-and-reduction" class="level2 scrollable" data-number="15">
+<h2 class="scrollable anchored" data-number="15" data-anchor-id="fused-transformation-and-reduction"><span class="header-section-number">15</span> Fused transformation and reduction</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb25-1"><a href="#cb25-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> NumericVector<span class="op">&gt;</span></span>
+<span id="cb25-2"><a href="#cb25-2"></a><span class="kw">inline</span> <span class="dt">void</span> FusedTransformationReduction<span class="op">(</span></span>
+<span id="cb25-3"><a href="#cb25-3"></a>    <span class="dt">double</span><span class="op">&amp;</span> gradient<span class="op">,</span> <span class="dt">double</span><span class="op">&amp;</span> hessian<span class="op">,</span></span>
+<span id="cb25-4"><a href="#cb25-4"></a>    <span class="at">const</span> NumericVector<span class="op">&amp;</span> EXB<span class="op">,</span> <span class="at">const</span> NumericVector<span class="op">&amp;</span> Xj<span class="op">)</span> <span class="op">{</span>          </span>
+<span id="cb25-5"><a href="#cb25-5"></a>  <span class="kw">using</span> <span class="kw">namespace</span> ExpressionTemplates<span class="op">;</span> <span class="co">// Very modern technique</span></span>
+<span id="cb25-6"><a href="#cb25-6"></a></span>
+<span id="cb25-7"><a href="#cb25-7"></a>  <span class="co">// Expression template construction</span></span>
+<span id="cb25-8"><a href="#cb25-8"></a>  <span class="kw">auto</span> G <span class="op">=</span> EXB <span class="op">*</span> Xj <span class="op">/</span> <span class="op">(</span><span class="fl">1.0</span> <span class="op">+</span> EXB<span class="op">);</span></span>
+<span id="cb25-9"><a href="#cb25-9"></a>  <span class="kw">auto</span> H <span class="op">=</span> G <span class="op">*</span> <span class="op">(</span>Xj <span class="op">-</span> G<span class="op">);</span> <span class="co">// Nothing gets executed</span></span>
+<span id="cb25-10"><a href="#cb25-10"></a></span>
+<span id="cb25-11"><a href="#cb25-11"></a>  <span class="co">// Fused transformation-reduction</span></span>
+<span id="cb25-12"><a href="#cb25-12"></a>  gradient <span class="op">=</span> <span class="fl">0.0</span><span class="op">;</span> hessian <span class="op">=</span> <span class="fl">0.0</span><span class="op">;</span></span>
+<span id="cb25-13"><a href="#cb25-13"></a>  <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> EXB<span class="op">.</span>size<span class="op">();</span> <span class="op">++</span>i<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb25-14"><a href="#cb25-14"></a>    gradient <span class="op">+=</span> G<span class="op">[</span>i<span class="op">];</span> hessian  <span class="op">+=</span> H<span class="op">[</span>i<span class="op">];</span>        </span>
+<span id="cb25-15"><a href="#cb25-15"></a>  <span class="op">}</span>                           </span>
+<span id="cb25-16"><a href="#cb25-16"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>run2 <span class="ot">&lt;-</span> <span class="fu">execComplexLoop</span>(expXb,Xj, <span class="at">reps =</span> <span class="dv">1</span>, <span class="at">optLevel =</span> <span class="dv">2</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(run2[<span class="st">"grad"</span>],run2[<span class="st">"ctors"</span>],run2[<span class="st">"copies"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "418.414145465602 0 0"</code></pre>
+</div>
+</div>
+</section>
+<section id="performance-gain" class="level2 scrollable" data-number="16">
+<h2 class="scrollable anchored" data-number="16" data-anchor-id="performance-gain"><span class="header-section-number">16</span> Performance gain</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">run0 =</span> <span class="fu">execComplexLoop</span>(expXb, Xj, <span class="at">reps =</span> <span class="dv">1</span>, <span class="at">optLevel =</span> <span class="dv">0</span>),</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">run1 =</span> <span class="fu">execComplexLoop</span>(expXb, Xj, <span class="at">reps =</span> <span class="dv">1</span>, <span class="at">optLevel =</span> <span class="dv">1</span>),</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">run2 =</span> <span class="fu">execComplexLoop</span>(expXb, Xj, <span class="at">reps =</span> <span class="dv">1</span>, <span class="at">optLevel =</span> <span class="dv">2</span>),</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">times =</span> 100L, <span class="at">unit =</span> <span class="st">"milliseconds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unit: milliseconds
+ expr       min        lq      mean    median        uq      max neval
+ run0 17.301715 23.139982 25.936554 24.603705 27.222155 84.55785   100
+ run1  9.658007 10.011493 14.172302 10.186246 16.970785 68.73204   100
+ run2  9.147757  9.459029  9.609944  9.561267  9.708306 10.56919   100</code></pre>
+</div>
+</div>
+<p>Fused transformation-reductions:</p>
+<ul>
+<li>Avoid intermediates</li>
+<li>Reduce memory-bandwidth</li>
+<li>Let compiler optimize scalar operation order (<em>not shown</em>)</li>
+<li>Easily generalize for <strong>SIMD</strong>, <strong>multi-core</strong> and <strong>many-core</strong></li>
+</ul>
+</section>
+<section id="multi-core-parallelization" class="level2 scrollable" data-number="17">
+<h2 class="scrollable anchored" data-number="17" data-anchor-id="multi-core-parallelization"><span class="header-section-number">17</span> Multi-core parallelization</h2>
+<p>Some options:</p>
+<ul>
+<li><p>OpenMP: minimally intrusive for embarassing parallel, compiler-dependent</p></li>
+<li><p>Thread Building Blocks (Intel): surprisingly performant, previously no Windows</p></li>
+<li><p>C++11 threads: requires R <span class="math inline">\(\ge\)</span> 3.2 (on Windows)</p></li>
+<li><p><code>RcppParallel</code></p>
+<ul>
+<li>Uses TBB on Mac/Linux, open-source light-weight threading on Windows</li>
+<li>Almost as <em>expressive</em> as C++11 threads</li>
+<li>Automatic build via <code>install.packages("RcppParallel")</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="multicore-transformation-and-reduction" class="level2 scrollable" data-number="18">
+<h2 class="scrollable anchored" data-number="18" data-anchor-id="multicore-transformation-and-reduction"><span class="header-section-number">18</span> Multicore transformation and reduction</h2>
+<p><code>RcppParallel</code> requires a small amount of boiler-plate wrapping:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb30-1"><a href="#cb30-1"></a><span class="kw">template</span> <span class="op">&lt;</span><span class="kw">typename</span> NumericVector<span class="op">&gt;</span></span>
+<span id="cb30-2"><a href="#cb30-2"></a><span class="kw">struct</span> Reducer <span class="op">:</span> <span class="kw">public</span> RcppParallel<span class="op">::</span>Worker <span class="op">{</span></span>
+<span id="cb30-3"><a href="#cb30-3"></a>  <span class="co">// Thread-safe containers</span></span>
+<span id="cb30-4"><a href="#cb30-4"></a>  RcppParallel<span class="op">::</span>RVector<span class="op">&lt;</span><span class="dt">double</span><span class="op">&gt;</span> EXB<span class="op">,</span> Xj<span class="op">;</span> </span>
+<span id="cb30-5"><a href="#cb30-5"></a>  <span class="dt">double</span> gradient<span class="op">;</span> <span class="dt">double</span> hessian<span class="op">;</span></span>
+<span id="cb30-6"><a href="#cb30-6"></a></span>
+<span id="cb30-7"><a href="#cb30-7"></a>  Reducer<span class="op">(</span><span class="at">const</span> NumericVector EXB<span class="op">,</span> <span class="at">const</span> NumericVector Xj<span class="op">)</span> </span>
+<span id="cb30-8"><a href="#cb30-8"></a>    <span class="op">:</span> EXB<span class="op">(</span>EXB<span class="op">),</span> Xj<span class="op">(</span>Xj<span class="op">),</span> gradient<span class="op">(</span><span class="dv">0</span><span class="op">),</span> hessian<span class="op">(</span><span class="dv">0</span><span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb30-9"><a href="#cb30-9"></a></span>
+<span id="cb30-10"><a href="#cb30-10"></a>  Reducer<span class="op">(</span><span class="at">const</span> Reducer<span class="op">&amp;</span> r<span class="op">,</span> RcppParallel<span class="op">::</span>Split<span class="op">)</span> </span>
+<span id="cb30-11"><a href="#cb30-11"></a>    <span class="op">:</span> EXB<span class="op">(</span>r<span class="op">.</span>EXB<span class="op">),</span> Xj<span class="op">(</span>r<span class="op">.</span>Xj<span class="op">),</span> gradient<span class="op">(</span><span class="dv">0</span><span class="op">),</span> hessian<span class="op">(</span><span class="dv">0</span><span class="op">)</span> <span class="op">{}</span></span>
+<span id="cb30-12"><a href="#cb30-12"></a></span>
+<span id="cb30-13"><a href="#cb30-13"></a>  <span class="co">// API: Operate over a range</span></span>
+<span id="cb30-14"><a href="#cb30-14"></a>  <span class="dt">void</span> <span class="kw">operator</span><span class="op">()(</span><span class="bu">std::</span>size_t<span class="op"> </span>begin<span class="op">,</span> <span class="bu">std::</span>size_t<span class="op"> </span>end<span class="op">);</span></span>
+<span id="cb30-15"><a href="#cb30-15"></a></span>
+<span id="cb30-16"><a href="#cb30-16"></a>  <span class="co">// API: Join results</span></span>
+<span id="cb30-17"><a href="#cb30-17"></a>  <span class="dt">void</span> join<span class="op">(</span><span class="at">const</span> Reducer<span class="op">&amp;</span> rhs<span class="op">);</span></span>
+<span id="cb30-18"><a href="#cb30-18"></a><span class="op">};</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Work gets executed in <code>operator()</code> and <code>join</code></li>
+</ul>
+</section>
+<section id="multi-core-transformation-and-reduction" class="level2 scrollable" data-number="19">
+<h2 class="scrollable anchored" data-number="19" data-anchor-id="multi-core-transformation-and-reduction"><span class="header-section-number">19</span> Multi-core transformation and reduction</h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource cpp number-lines code-with-copy"><code class="sourceCode cpp"><span id="cb31-1"><a href="#cb31-1"></a><span class="dt">void</span> <span class="kw">operator</span><span class="op">()(</span><span class="bu">std::</span>size_t<span class="op"> </span>begin<span class="op">,</span> <span class="bu">std::</span>size_t<span class="op"> </span>end<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb31-2"><a href="#cb31-2"></a>  <span class="kw">using</span> <span class="kw">namespace</span> ExpressionTemplates<span class="op">;</span> <span class="co">// Very modern technique</span></span>
+<span id="cb31-3"><a href="#cb31-3"></a>  <span class="kw">auto</span> G <span class="op">=</span> EXB <span class="op">*</span> Xj <span class="op">/</span> <span class="op">(</span><span class="fl">1.0</span> <span class="op">+</span> EXB<span class="op">);</span></span>
+<span id="cb31-4"><a href="#cb31-4"></a>  <span class="kw">auto</span> H <span class="op">=</span> G <span class="op">*</span> <span class="op">(</span>Xj <span class="op">-</span> G<span class="op">);</span> <span class="co">// Nothing gets executed                       </span></span>
+<span id="cb31-5"><a href="#cb31-5"></a>  <span class="cf">for</span> <span class="op">(;</span> begin <span class="op">!=</span> end<span class="op">;</span> <span class="op">++</span>begin<span class="op">)</span> <span class="op">{</span></span>
+<span id="cb31-6"><a href="#cb31-6"></a>    gradient <span class="op">+=</span> G<span class="op">[</span>begin<span class="op">];</span> hessian <span class="op">+=</span> H<span class="op">[</span>begin<span class="op">];</span>        </span>
+<span id="cb31-7"><a href="#cb31-7"></a>  <span class="op">}</span> <span class="co">// All work executed in loop                          </span></span>
+<span id="cb31-8"><a href="#cb31-8"></a><span class="op">}</span>       </span>
+<span id="cb31-9"><a href="#cb31-9"></a>    </span>
+<span id="cb31-10"><a href="#cb31-10"></a><span class="dt">void</span> join<span class="op">(</span><span class="at">const</span> Reducer<span class="op">&amp;</span> rhs<span class="op">)</span> <span class="op">{</span> </span>
+<span id="cb31-11"><a href="#cb31-11"></a>  gradient <span class="op">+=</span> rhs<span class="op">.</span>gradient<span class="op">;</span> hessian <span class="op">+=</span> rhs<span class="op">.</span>hessian<span class="op">;</span></span>
+<span id="cb31-12"><a href="#cb31-12"></a><span class="op">}</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">serial   =</span> <span class="fu">execComplexLoop</span>(expXb, Xj, <span class="at">reps =</span> <span class="dv">1</span>, <span class="at">optLevel =</span> <span class="dv">2</span>), </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">parallel =</span> <span class="fu">execComplexLoop</span>(expXb, Xj, <span class="at">reps =</span> <span class="dv">1</span>, <span class="at">optLevel =</span> <span class="dv">3</span>), </span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> 100L, <span class="at">unit =</span> <span class="st">"milliseconds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="r-interface-to-rcppparallel" class="level2 scrollable" data-number="20">
+<h2 class="scrollable anchored" data-number="20" data-anchor-id="r-interface-to-rcppparallel"><span class="header-section-number">20</span> <code>R</code> interface to <code>RcppParallel</code></h2>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RcppParallel) </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">setThreadOptions</span>(<span class="at">numThreads =</span> <span class="dv">1</span>) </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">serial   =</span> <span class="fu">execComplexLoop</span>(expXb, Xj, <span class="at">reps =</span> <span class="dv">1</span>, <span class="at">optLevel =</span> <span class="dv">2</span>), </span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">parallel =</span> <span class="fu">execComplexLoop</span>(expXb, Xj, <span class="at">reps =</span> <span class="dv">1</span>, <span class="at">optLevel =</span> <span class="dv">3</span>), </span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">times =</span> 100L, <span class="at">unit =</span> <span class="st">"milliseconds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>TBB (usually) does no extra work if:
+<ul>
+<li>insufficient threads, or</li>
+<li>task size too small</li>
+</ul></li>
+<li>Simple transformation via <code>paralleFor()</code>, running totals via <code>parallel_scan()</code> (TBB)</li>
+</ul>
+</section>
+<section id="massive-parallelization-on-gpus" class="level2" data-number="21">
+<h2 data-number="21" class="anchored" data-anchor-id="massive-parallelization-on-gpus"><span class="header-section-number">21</span> Massive parallelization on GPUs</h2>
+<p><strong>Graphics processing units</strong> (GPUs) are inexpensive, dedicated numerical processors, designed for rendering computer graphics</p>
+<ul>
+<li>GPUs contain 1000s of processing cores on a single chip; several chips can fit in a desktop PC</li>
+<li>Each core carries out the same operations in parallel on different input data – single program, multiple data (SPMD) paradigm</li>
+</ul>
+<p><strong>Extremely high arthimetic intensity</strong> if one can transfer the data onto and results off of the processors quickly</p>
+</section>
+<section id="self-controlled-case-series" class="level2 scrollable" data-number="22">
+<h2 class="scrollable anchored" data-number="22" data-anchor-id="self-controlled-case-series"><span class="header-section-number">22</span> Self-controlled case series</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Cases-only dataset ranges
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><span class="math inline">\(N\)</span> = 115K to 3.6M patients, taking <span class="math inline">\(J\)</span> = 1224 to 1428 different drugs in <span class="math inline">\(K\)</span> = 3.8M to 75M expsoure eras</li>
+<li>Fitting largest original drained 51 hours (pt-estimate)</li>
+</ul>
+</div>
+</div>
+<div class="quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div id="f" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="border">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/bsccs_speed_ups.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="s" class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<ul>
+<li>Genkin/Wu/Park (white circles), all sparse on CPU (black circles), all sparse on GPU (black squares)</li>
+<li>51 hours <span class="math inline">\(\rightarrow\)</span> 29 seconds</li>
+<li>Makes cross-validation and full Bayesian inference possible</li>
+<li>Off by an order-of-magnitude on hyperparameter <span class="math inline">\(\lambda\)</span></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
