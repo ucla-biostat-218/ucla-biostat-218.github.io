@@ -178,6 +178,7 @@ covariateSettings <- createCovariateSettings(
 ::: {.callout-important}
 ## Standardized covariates
 Reusable (and reproducible) across different
+
 - ML models
 - data sources
 :::

@@ -40,9 +40,9 @@ knitr:
 
 In these lectures we will learn about:
 
-- TODO
-- TODO
-- TODO
+- Fitting several important regression models
+- Handling many covariates through regularization
+- Efficient statistical computing
 
 ::: {style="margin-top: 3em;"}
 ![](figures/hades.png){width="50%" fig-align="center"}
@@ -149,7 +149,7 @@ But, **conditioning** $\rightarrow$ very expensive likelihood $e^{\mathbf{x_i \b
 ::: {.callout-tip}
 ## On the horizon 
 CCD $\rightarrow$ MM algorithms, improve parallelization
-- [Zhou, Lange and Suchard, 2010](todo)
+- [Zhou, Lange and Suchard, 2010](https://pubmed.ncbi.nlm.nih.gov/21847315/)
 :::
 
 ## Installing `Cyclops`
@@ -245,7 +245,7 @@ cyclopsData2 <- createCyclopsData( counts ~ outcome,
      modelType = "pr")
 ```
 
-## Sparse formats for vectors (matrices)
+## Sparse formats for vectors (matrices) {.scrollable}
 
 ```{r}
 mat <- model.matrix(~ treatment)
@@ -366,7 +366,7 @@ Conditional Poisson / SCCS:
 install.package(chopdat) ## Load small dataset from Farrington
 ```
 
-```{r}
+```{r dd}
 #| eval: false
 data(chopdat) 
 cyclopsData <- createCyclopsData(
@@ -381,7 +381,7 @@ cyclopsData <- createCyclopsData(
 
 Cox proportional hazards:
 
-```{r}
+```{r cc}
 library(survival) ## Load some standard data 
 cyclopsData <- createCyclopsData(
   Surv(time, status) ~ x,
@@ -390,7 +390,7 @@ cyclopsData <- createCyclopsData(
 
 Multiple outcomes hierarchy:
 
-```{r}
+```{r bb}
 #| eval: false
 ## Do not run; still in development
 cyclopsData <- createCyclopsData(
@@ -402,22 +402,65 @@ cyclopsFit <- fitCyclopsModel(
                       graph = "type"))
 ```
 
-## Fitting a simple cohort model
+## Fitting a simple cohort model {.scrollable}
 
-TODO using `outcomes` and `covariates`
+`Cyclops` readily takes an `outcomes` (dense) table and `covariates` (sparse) table as input.   Highly useful:
+
+- At scale -- `covariates` $\leftarrow$ `FeatureExtraction`
+- Reusable across multiple outcomes / multiple models
+
+```{r}
+library(dplyr)
+
+set.seed(123)
+sim <- simulateCyclopsData(
+  nstrata = 1, nrows = 100, # number independent of `outcomes`
+  ncovars = 20,             # number of possible `covariates`
+  effectSizeSd = 0.1,
+  zeroEffectSizeProp = 0.5,
+  eCovarsPerRow = 5,
+  model = "poisson")
+
+head(sim$outcomes %>% select(rowId, y, time))
+
+head(sim$covariates %>% select(rowId, covariateId, covariateValue))
+```
+
+Build the `cyclopsData` object
+
+```{r}
+cyclopsData <- convertToCyclopsData(
+  outcomes = sim$outcomes,
+  covariates = sim$covariates,
+  modelType = "pr")
+
+cyclopsData
+```
+
+Fit the model
+
+```{r}
+fit <- fitCyclopsModel(cyclopsData)
+coef(fit)
+```
+
+::: {.callout-note}
+## Can also batch-feed `outcomes` and `covariates` directly from SQL
+:::
 
 ## Comparison with existing tools {.scrollable}
 
 Simulate and fit a small-ish conditional logistic regression model:
 
-```{r}
+```{r aa}
+#| warning: false
 model <- "logistic" ## Synthetic case-control
 
 set.seed(123)
 sim <- simulateCyclopsData( ## Generator by MJ Schuemie
-  nstrata = 200, nrows = 10000,
-  ncovars = 20, effectSizeSd = 1,
-  zeroEffectSizeProp = 0.9, eCovarsPerRow = 2,
+  nstrata = 200, nrows = 2000,
+  ncovars = 20, effectSizeSd = 0.2,
+  zeroEffectSizeProp = 0.8, eCovarsPerRow = 2,
   model = model)
 
 coefGoldStandard <- log(sim$effectSizes$rr)
@@ -484,5 +527,3 @@ void ModelSpecifics<BaseModel,WeightType>::computeGradientAndHessianImpl(
     *ohessian = static_cast<double>(hessian);
 }
 ```
-
-<!--![](figures/templates1.png){width=90%}-->
