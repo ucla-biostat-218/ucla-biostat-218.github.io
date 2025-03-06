@@ -33,7 +33,8 @@ Mar 4, 18
 |  7 | Feb 18 | Online    | Comparative Cohort Method \[slides 1: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/08_cohort_method.qmd), [html](../slides/08_cohort_method.revealjs.html)\] \[slides 2: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/09_cohort_method_demo.qmd), [html](../slides/09_cohort_method_demo.revealjs.html)\] |
 |  8 | Feb 25 | Online    | Concurrent Comparator \[slides: [qmd]() [pdf]() \] | | Final project abstract (due 2/28)
 |  9 | Mar 4  | Online    | Comparative Cohort Method |
-|    | Mar 8  | In-person | Patient-Level Prediction \[slides 1: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/10_prediction.qmd), [html](../slides/10_prediction.revealjs.html)\] \[slides 2: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/11_prediction_demo.qmd), [html](../slides/11_prediction_demo.revealjs.html)\] |
-|    | Mar 9  | In-person | Cyclops |
+|    | Mar 8  | In-person | Patient-Level Prediction \[slides 1: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/10_prediction.qmd), [html](../slides/10_prediction.revealjs.html)\] |
+|    | Mar 9  | In-person | Patient-Level Prediction  \[slides 2: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/11_prediction_demo.qmd), [html](../slides/11_prediction_demo.revealjs.html)\] |
 | 10 |        | No class  |
-| 11 | Mar 18 | Online    | Mini-Seminars |
+| 11 | Mar 18 | Online    | Mini-Seminars | | Final report (due Mar 21 by 11:59pm on BruinLearn)|
+|    |        | Bonus     | Cyclops \[slides 1: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/12_cyclops.qmd), [html](../slides/12_cyclops.revealjs.html)\] \[slides 2: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/13_templates.qmd), [html](../slides/13_templates.revealjs.html)\] |
