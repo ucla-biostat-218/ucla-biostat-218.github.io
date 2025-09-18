@@ -23,12 +23,12 @@ Email: <msuchard@ucla.edu>
 
 ### Teaching Assistant
 
-Brendon Chau\
-Email: <brendonchau@ucla.edu>
+Kelly Li\
+Email: <kmli@g.ucla.edu>
 
 ### Class Days, Times, Locations
 
-In-person sessions: Sat-Sun, 5:30 - 8:50pm\
+In-person sessions: Sat-Sun, 8:30 - 11:50am\
 Online sessions: Tue, 5:00 - 7:30pm
 
 ### Office Hours
@@ -105,14 +105,14 @@ UCLA’s Office for Equity, Diversity, and Inclusion provides resources, events,
 
 ### Homework Assignments
 
-Homework assignments will generally come from the exercises provided in _The Book of OHDSI_.  Each homework will include an exercise in analyzing a real public health-related problem.  Assignments will be posted on Monday and due approximately two weeks after assignment by 5PM via email (PDF).
+Homework assignments will generally come from the exercises provided in _The Book of OHDSI_.  Each homework will include an exercise in analyzing a real public health-related problem.  Assignments will be posted on Monday and due approximately two weeks after assignment by 11:59pm via BruinLearn (in PDF format).
 
 ### Data Analysis Project
 
-Students are expected to perform an original observational health data science analysis project during this course and present their theoretical or empirical findings in a mini-seminar series (approximately 15-20 mins per student) during Finals week.
+Students are expected to perform an original observational health data science analysis project during this course and present their theoretical or empirical findings in a mini-seminar series (approximately 5 mins per student) during Finals week.
 Additionally, a written report of your work (max. 5 typed pages) is due on
-March 21, 2025 by 5PM via email (PDF).  Students are responsible for finding an appropriate health domain and designing their study. One page project proposals are due
-February 28, 2025 by 5PM via email (PDF).  Students should plan on attending several Biostatistics (Wednesdays at 3:30PM) and Bioinformatics (Mondays at 11:00AM) department seminars to get a feeling for the appropriate format.
+December 5, 2025 by 11:59pm via BruinLearn (in PDF format).  Students are responsible for finding an appropriate health domain and designing their study. One page project proposals are due
+November 14, 2025 by 11:59pm via BruinLearn (in PDF format).
 
 ### Grading
 

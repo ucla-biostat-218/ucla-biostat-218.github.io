@@ -7,34 +7,34 @@ title: Biostat 218
 
 Biomath 218 tentative schedule and handouts (expect frequent updates)
 
-### In-person -- 5:30 - 8:50pm
+### In-person -- 8:30 - 11:50am
 
-Jan 11 - 12 (CHS 33-105)\
-Feb 8 - 9 (CHS 73-105)\
-Mar 8 - 9 (CHS 33-105)
+Sep 27 - 28 (CHS 33-105)\
+Oct 25 - 26 (CHS 33-105)\
+Nov 22 - 23 (CHS 33-105)\
 
-### Online -- 5:00 - 7:30pm
+### Online -- 5:00 - 7:30pm (see BruinLearn for Zoom link)
 
-Jan 21, 28\
-Feb 4, 18, 25\
-Mar 4, 18
+Oct 7, 14, 21\
+Nov 4, 18\
+Dec 2
 
 | Week | Class Dates | Where | Tentative Topics | Posts | Due |
 |:-----------|:-----------|:-----------|:----------------------|:------------|:------------|:------------|
-|  1 | Jan 11 | In-person | OHDSI \[slides: [pdf](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/latex/01_ohdsi_intro.pdf)\] <br> Open Science \[slides: [pdf](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/latex/01_open_science.pdf)\] <br> Tooling-up \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/01_tooling_up.qmd), [html](../slides/01_tooling_up.html)\] |
-|    | Jan 12 | In-person | OMOP CDM 1 \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/01_cdm.qmd), [html](../slides/01_cdm.revealjs.html)\] |
+|  1 | Sep 27 | In-person | OHDSI \[slides: [pdf](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/latex/01_ohdsi_intro.pdf)\] <br> Open Science \[slides: [pdf](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/latex/01_open_science.pdf)\] <br> Tooling-up \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/01_tooling_up.qmd), [html](../slides/01_tooling_up.html)\] |
+|    | Sep 28 | In-person | OMOP CDM 1 \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/01_cdm.qmd), [html](../slides/01_cdm.revealjs.html)\] |
 |  2 |        | No class  |
-|  3 | Jan 21 | Online    | OMOP CDM 2  |
-|  4 | Jan 28 | Online    | SQL \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/03_sql.qmd), [html](../slides/03_sql.revealjs.html)\] | | 
-|  5 | Feb 4  | Online    | Defining Cohorts  \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/04_phenotyping.qmd), [html](../slides/04_phenotyping.revealjs.html)\] | | Problem set 1 (due 2/7) \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/01_problem_set.qmd), [html](../slides/01_problem_set.html)\]
-|    | Feb 8  | In-person | HADES / Characterization  \[slides 1: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/05_hades.qmd), [html](../slides/05_hades.revealjs.html)\]  \[slides 2: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/06_characterization.qmd), [html](../slides/06_characterization.revealjs.html)\] |
-|    | Feb 9  | In-person | Incidence / Strategus \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/07_strategus.qmd), [html](../slides/07_strategus.revealjs.html)\] |
+|  3 | Oct 7  | Online    | 
+|  4 | Oct 14 | Online    | 
+|  5 | Oct 21 | Online    | 
+|    | Oct 25 | In-person | 
+|    | Oct 26 | In-person | 
 |  6 |        | No class  | 
-|  7 | Feb 18 | Online    | Comparative Cohort Method \[slides 1: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/08_cohort_method.qmd), [html](../slides/08_cohort_method.revealjs.html)\] \[slides 2: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/09_cohort_method_demo.qmd), [html](../slides/09_cohort_method_demo.revealjs.html)\] |
-|  8 | Feb 25 | Online    | Concurrent Comparator \[slides: [qmd]() [pdf]() \] | | Final project abstract (due 2/28)
-|  9 | Mar 4  | Online    | Comparative Cohort Method |
-|    | Mar 8  | In-person | Patient-Level Prediction \[slides 1: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/10_prediction.qmd), [html](../slides/10_prediction.revealjs.html)\] |
-|    | Mar 9  | In-person | Patient-Level Prediction  \[slides 2: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/11_prediction_demo.qmd), [html](../slides/11_prediction_demo.revealjs.html)\] |
+|  7 | Nov 4  | Online    | 
+|  8 |        | Holiday   | | | Final project abstract (due Nov 14 by 11:59pm on BruinLearn) |
+|  9 | Nov 18 | Online    | 
+|    | Nov 22 | In-person | 
+|    | Nov 23 | In-person | 
 | 10 |        | No class  |
-| 11 | Mar 18 | Online    | Mini-Seminars | | Final report (due Mar 21 by 11:59pm on BruinLearn)|
-|    |        | Bonus     | Cyclops \[slides 1: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/12_cyclops.qmd), [html](../slides/12_cyclops.revealjs.html)\] \[slides 2: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/13_templates.qmd), [html](../slides/13_templates.revealjs.html)\] |
+| 11 | Dec 2  | Online    | Mini-Seminars | | Final report (due Dec 5 by 11:59pm on BruinLearn) |
+|    |        | Bonus     | 

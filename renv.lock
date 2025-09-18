@@ -31,39 +31,14 @@
     },
     "Capr": {
       "Package": "Capr",
-      "Version": "2.0.8",
+      "Version": "2.1.0",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "Capr",
       "RemoteUsername": "OHDSI",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "c25f7365476b05af79497201e165d33acd1f110a",
-      "Requirements": [
-        "CirceR",
-        "DBI",
-        "DatabaseConnector",
-        "R",
-        "SqlRender",
-        "checkmate",
-        "cli",
-        "digest",
-        "dplyr",
-        "fs",
-        "generics",
-        "glue",
-        "jsonlite",
-        "lubridate",
-        "magrittr",
-        "methods",
-        "purrr",
-        "readr",
-        "rlang",
-        "stringr",
-        "tibble",
-        "tidyr"
-      ],
-      "Hash": "9f6109f92821d1799da4b15fc73d0066"
+      "RemoteRepo": "Capr",
+      "RemoteRef": "main",
+      "RemoteSha": "335bf37fb5a2fcba6c9c68a83705d847430c08fa"
     },
     "CirceR": {
       "Package": "CirceR",
@@ -77,6 +52,12 @@
       ],
       "Hash": "2f9522a81dac11183e90b4236afa441d"
     },
+    "testthat": {
+      "Package": "testthat",
+      "Version": "3.2.3",
+      "Source": "Repository",
+      "Repository": "CRAN"
+    },    
     "CohortGenerator": {
       "Package": "CohortGenerator",
       "Version": "0.11.2",

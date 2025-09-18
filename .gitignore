@@ -12,3 +12,5 @@ strategusWork
 strategusOutput
 errorReportSql.txt
 studySpecifications.json
+
+*.Rproj
