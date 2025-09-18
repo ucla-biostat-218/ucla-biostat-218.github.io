@@ -2,7 +2,7 @@
 title: "OMOP CDM and Standardized Vocabularies"
 subtitle: Biostat 218
 author: "Marc A Suchard @ UCLA"
-date: "January 6, 2025"
+# date: "January 6, 2025"
 format: 
   revealjs :
     width: 1280

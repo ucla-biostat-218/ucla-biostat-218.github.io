@@ -21,7 +21,7 @@ Dec 2
 
 | Week | Class Dates | Where | Tentative Topics | Posts | Due |
 |:-----------|:-----------|:-----------|:----------------------|:------------|:------------|:------------|
-|  1 | Sep 27 | In-person | OHDSI \[slides: [pdf](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/latex/01_ohdsi_intro.pdf)\] <br> Open Science \[slides: [pdf](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/latex/01_open_science.pdf)\] <br> Tooling-up \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/01_tooling_up.qmd), [html](../slides/01_tooling_up.html)\] |
+|  1 | Sep 27 | In-person | OHDSI \[slides: [pdf](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/latex/01_ohdsi_intro.pdf)\] <br> Open Science \[slides: [pdf](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/latex/01_open_science.pdf)\] <br> Tooling-up \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/01_tooling_up.qmd), [html](../slides/01_tooling_up.revealjs.html)\] |
 |    | Sep 28 | In-person | OMOP CDM 1 \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/01_cdm.qmd), [html](../slides/01_cdm.revealjs.html)\] |
 |  2 |        | No class  |
 |  3 | Oct 7  | Online    | 

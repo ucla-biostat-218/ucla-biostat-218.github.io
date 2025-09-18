@@ -2,33 +2,44 @@
 title: "Tooling up for OHDSI"
 subtitle: Biostat 218
 author: "Marc A Suchard @ UCLA"
-date: "January 6, 2025"
+# date: "January 6, 2025"
 format:
   revealjs :
+    width: 1280
+    height: 720
     output-ext: revealjs.html
     footer: Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)
-    logo: figures/logo.png  
+    logo: figures/logo.png
+    chalkboard: true
+    highlight-style: a11y
+    theme: [default, custom.sccs]
+    code-line-numbers: false
   html:
+    output-ext: html
     theme: cosmo
     number-sections: true
     toc: true
     toc-depth: 4
     toc-location: left
     code-fold: false
+    highlight-style: a11y
+    code-line-numbers: false
 bibliography: "../ohdsi.bib"
 csl: "apa.csl"
 knitr:
   opts_chunk: 
+    out.width: '70%'
     fig.align: 'center'
     fig.width: 6
-    fig.height: 4
+    fig.asp: 0.618
     message: FALSE
     cache: false
+    echo: true
 ---
 
 ## Introduction
 
-In this lecture we will learn how to:
+In these lectures we will learn about:
 
 - Prepare our R environments for the OHDSI toolstack
 
