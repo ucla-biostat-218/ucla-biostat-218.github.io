@@ -33,7 +33,11 @@ Online sessions: Tue, 5:00 - 7:30pm
 
 ### Office Hours
 
-Offered generously; please email me.
+**Instructor**  
+Offered generously; please email.  
+
+**TA (Kelly Li)**  
+Mondays 3-5pm PST (link on BruinLearn)
 
 ### Course Webpage
 
