@@ -24,8 +24,8 @@ Dec 2
 |  1 | Sep 27 | In-person | OHDSI \[slides: [pdf](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/latex/01_ohdsi_intro.pdf)\] <br> Open Science \[slides: [pdf](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/latex/01_open_science.pdf)\] <br> Tooling-up \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/01_tooling_up.qmd), [html](../slides/01_tooling_up.revealjs.html)\] |
 |    | Sep 28 | In-person | OMOP CDM 1 \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/01_cdm.qmd), [html](../slides/01_cdm.revealjs.html)\] |
 |  2 |        | No class  |
-|  3 | Oct 7  | Online    | 
-|  4 | Oct 14 | Online    | 
+|  3 | Oct 7  | Online    | OMOP CDM 2 |
+|  4 | Oct 14 | Online    | SQL \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/03_sql.qmd), [html](../slides/03_sql.revealjs.html)\] | |
 |  5 | Oct 21 | Online    | 
 |    | Oct 25 | In-person | 
 |    | Oct 26 | In-person | 

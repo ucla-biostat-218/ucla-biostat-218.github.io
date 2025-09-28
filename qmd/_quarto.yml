@@ -3,10 +3,16 @@ project:
   output-dir: ../slides
   render:
     - 01_tooling_up.qmd
-    - 01_problem_set.qmd
+#     - 01_problem_set.qmd
     - 01_cdm.qmd
     - 03_sql.qmd
-    - 04_phenotyping.qmd
-    - 05_hades.qmd
-    - 06_characterization.qmd
-    - 07_strategus.qmd    
+#     - 04_phenotyping.qmd
+#     - 05_hades.qmd
+#     - 06_characterization.qmd
+#     - 07_strategus.qmd    
+#     - 08_cohort_method.qmd
+#     - 09_cohort_method_demo.qmd
+#     - 10_prediction.qmd
+#     - 11_prediction_demo.qmd
+#     - 12_cyclops.qmd
+#     - 13_templates.qmd
