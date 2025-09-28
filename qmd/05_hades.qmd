@@ -479,7 +479,7 @@ lisinoprilCohort <- cohort(
 
 ## Using `Capr`, `CohortGenerator` and `CirceR` {.scrollable}
 
-Here we will design a cohort of patients suffering from a gastroinstinal (GI) bleed and build the cohort table in `Eumonia`.
+Here we will design a cohort of patients suffering from a gastroinstinal (GI) bleed and build the cohort table in `Eunomia`.
 
 ```{r c3}
 #| echo: true

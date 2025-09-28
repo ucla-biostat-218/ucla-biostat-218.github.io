@@ -136,7 +136,7 @@ allCohorts
 
 ## Instantiate cohorts in data source {.scrollable}
 
-Use the `Eumonia` data source to demonstrate (actual results from Optum EHR)
+Use the `Eunomia` data source to demonstrate (actual results from Optum EHR)
 
 ```{r}
 #| output: false

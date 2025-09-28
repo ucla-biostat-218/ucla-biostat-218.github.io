@@ -91,7 +91,7 @@ renv::restore()
 
 ## Synthetic data source {.scrollable}
 
-- Eumonia -- who? (used primarily for continuous integration testing)
+- Eunomia -- who? (used primarily for continuous integration testing)
   - SQLite
 
 - 1M patients: [download the example database](https://www.dropbox.com/scl/fi/rpqks4ud5n7kthy4i8mkg/synthetic.zip?rlkey=pye84vhflfhvfg1jsbeg703j5&st=0zcnlvgy&dl=1) . This may take a while.  Unzip it and place `synthetic.duckdb` in the `data` directory.
