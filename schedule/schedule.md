@@ -25,7 +25,7 @@ Dec 2
 |    | Sep 28 | In-person | OMOP CDM 1 \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/01_cdm.qmd), [html](../slides/01_cdm.revealjs.html)\] |
 |  2 |        | No class  |
 |  3 | Oct 7  | Online    | OMOP CDM 2 |
-|  4 | Oct 14 | Online    | SQL \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/03_sql.qmd), [html](../slides/03_sql.revealjs.html)\] | |
+|  4 | Oct 14 | Online    | SQL \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/03_sql.qmd), [html](../slides/03_sql.revealjs.html)\] | | Problem set 1 (due 10/31) \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/01_problem_set.qmd), [html](../slides/01_problem_set.html)\]
 |  5 | Oct 21 | Online    | 
 |    | Oct 25 | In-person | 
 |    | Oct 26 | In-person | 

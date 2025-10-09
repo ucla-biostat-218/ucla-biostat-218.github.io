@@ -1,8 +1,8 @@
 ---
 title: "Bostat 218 Problem Set 1"
-subtitle: "Due Feb 07 @ 11:59PM in PDF by email"
+subtitle: "Due Oct 31 @ 11:59PM in PDF via BruinLearn"
 author: "Marc A Suchard @ UCLA"
-date: "January 6, 2025"
+date: "October 8, 2025"
 format:
   html:
     theme: cosmo
