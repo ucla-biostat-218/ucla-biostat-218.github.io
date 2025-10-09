@@ -11,7 +11,7 @@ Biomath 218 tentative schedule and handouts (expect frequent updates)
 
 Sep 27 - 28 (CHS 33-105)\
 Oct 25 - 26 (CHS 33-105)\
-Nov 22 - 23 (CHS 33-105)\
+Nov 22 - 23 (CHS 33-105)
 
 ### Online -- 5:00 - 7:30pm (see BruinLearn for Zoom link)
 
