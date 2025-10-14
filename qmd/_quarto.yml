@@ -6,7 +6,7 @@ project:
     - 01_problem_set.qmd
     - 01_cdm.qmd
     - 03_sql.qmd
-#     - 04_phenotyping.qmd
+    - 04_phenotyping.qmd
 #     - 05_hades.qmd
 #     - 06_characterization.qmd
 #     - 07_strategus.qmd    

@@ -2,7 +2,7 @@
 title: "Phenotyping"
 subtitle: Biostat 218
 author: "Marc A Suchard @ UCLA"
-date: "January 28, 2025"
+# date: "January 28, 2025"
 format:
   revealjs :
     width: 1280
