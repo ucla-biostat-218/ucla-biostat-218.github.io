@@ -27,7 +27,7 @@ Dec 2
 |  3 | Oct 7  | Online    | OMOP CDM 2 |
 |  4 | Oct 14 | Online    | SQL \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/03_sql.qmd), [html](../slides/03_sql.revealjs.html)\] | | Problem set 1 (due 10/31) \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/01_problem_set.qmd), [html](../slides/01_problem_set.html)\]
 |  5 | Oct 21 | Online    | Defining Cohorts  \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/04_phenotyping.qmd), [html](../slides/04_phenotyping.revealjs.html)\] | 
-|    | Oct 25 | In-person | 
+|    | Oct 25 | In-person | HADES / Characterization  \[slides 1: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/05_hades.qmd), [html](../slides/05_hades.revealjs.html)\]  \[slides 2: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/06_characterization.qmd), [html](../slides/06_characterization.revealjs.html)\] |
 |    | Oct 26 | In-person | 
 |  6 |        | No class  | 
 |  7 | Nov 4  | Online    | 
