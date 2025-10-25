@@ -1,0 +1,46 @@
+---
+title: "Concluding Remarks"
+subtitle: Biostat 218
+author: "Marc A Suchard @ UCLA"
+format:
+  revealjs :
+    width: 1280
+    height: 720
+    output-ext: revealjs.html
+    footer: Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)
+    logo: figures/logo.png
+    chalkboard: true
+    highlight-style: a11y
+    theme: [default, custom.sccs]
+    code-line-numbers: false
+  html:
+    output-ext: html
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+    highlight-style: a11y
+    code-line-numbers: false
+bibliography: "../ohdsi.bib"
+csl: "apa.csl"
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    fig.width: 6
+    fig.height: 4
+    message: FALSE
+    cache: false
+    echo: true
+---
+
+## One concluding remark
+
+I encourage you to make part of *your* (professional) mission:
+
+* To improve health by empowering a community to collaboratively generate the evidence that promotes better health decisions and better care
+
+Here is direct impact on my friend, colleague and PhD-mentee Jamie Weaver: [His personal story](https://www.youtube.com/watch?v=XUyOG_iTLD8)
+
+What are you going doing to do to help patients like Jamie?
