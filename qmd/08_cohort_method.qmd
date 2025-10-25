@@ -2,7 +2,6 @@
 title: "Comparative cohort methods"
 subtitle: Biostat 218
 author: "Marc A Suchard @ UCLA"
-date: "February 18, 2025"
 format:
   revealjs :
     width: 1280

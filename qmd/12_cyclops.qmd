@@ -2,7 +2,6 @@
 title: "Cyclops - high-performance regression at scale"
 subtitle: Biostat 218
 author: "Marc A Suchard @ UCLA"
-date: "March 4, 2025"
 format:
   revealjs :
     width: 1280
