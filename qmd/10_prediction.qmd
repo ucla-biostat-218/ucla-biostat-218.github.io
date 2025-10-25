@@ -128,7 +128,7 @@ Fitted (and clinically used) model:
 
 ## Difference between explanatory and predictive models
 
-Researchs build prediction models and make causal claims. This is not correct!
+Researchers build prediction models and make causal claims. This is not correct!
 
 ![](figures/why.png){width="40%" fig-align="center"}
 

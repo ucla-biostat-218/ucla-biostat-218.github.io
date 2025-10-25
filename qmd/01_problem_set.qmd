@@ -47,5 +47,3 @@ knitr:
 9. What is the minimum, maximum, and mean length (in days) of observation from the `synthetic` dataset? (Hint: you can use the `DATEDIFF` function to compute the time between two dates.)
 
 10. How many people have at least one prescription of celecoxib from the `Eunomia` dataset? (Note: there’s an easy way to do this, using `DRUG_ERA`, and a harder way using `DRUG_EXPOSURE` and `CONCEPT_ANCESTOR`. Can you do both?)
-
-<!-- 11. During which period in time (calender start and end date) did people start a celecoxib prescription from the `synthetic` dataset? -->
