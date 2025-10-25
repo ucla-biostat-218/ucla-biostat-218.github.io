@@ -35,6 +35,6 @@ Dec 2
 |  9 | Nov 18 | Online    | Comparative Cohort Method
 |    | Nov 22 | In-person | Patient-Level Prediction \[slides 1: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/10_prediction.qmd), [html](../slides/10_prediction.revealjs.html)\] |
 |    | Nov 23 | In-person | Patient-Level Prediction \[slides 2: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/11_prediction_demo.qmd), [html](../slides/11_prediction_demo.revealjs.html)\] |
-| 10 |        | No class  | Concluding Remarks \[ slides: [qmd]((https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/14_conclusion.qmd), [html](../slides/14_conclusion.revealjs.html) \] |
+| 10 |        | No class  | Concluding Remarks \[slides: [qmd]((https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/14_conclusion.qmd), [html](../slides/14_conclusion.revealjs.html)\] |
 | 11 | Dec 2  | Online    | Mini-Seminars | | Final report (due Dec 5 by 11:59pm on BruinLearn) |
 |    |        | Bonus     | Cyclops \[slides 1: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/12_cyclops.qmd), [html](../slides/12_cyclops.revealjs.html)\] \[slides 2: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/13_templates.qmd), [html](../slides/13_templates.revealjs.html)\] |
