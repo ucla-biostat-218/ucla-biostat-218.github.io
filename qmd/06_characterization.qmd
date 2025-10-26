@@ -374,7 +374,7 @@ result
 
 Use `CohortIncidence` ([link](https://ohdsi.github.io/CohortIncidence/)) to do the heavy-lifting
 
-- Plenty of sublety (e.g. cenoring TAR at event or observation end)
+- Plenty of sublety (e.g. censoring TAR at event or observation end)
 
 ```{r}
 #| output: false
