@@ -80,8 +80,8 @@ dbp <- cs(3012888, name = "DBP")
 hypertensionCohort <- cohort(
   entry = entry(
     conditionOccurrence(essentialHypertension),
-    measurement(sbp, valueAsNumber(gte(130)), unit(8876)),
-    measurement(dbp, valueAsNumber(gte(80)), unit(8876))
+    measurement(sbp, valueAsNumber(gte(130)), measurementUnit(8876)),
+    measurement(dbp, valueAsNumber(gte(80)), measurementUnit(8876))
   ),
   exit = exit(
     endStrategy = observationExit()
