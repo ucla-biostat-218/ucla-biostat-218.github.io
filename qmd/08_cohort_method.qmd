@@ -320,7 +320,7 @@ Interesting, but beyond the scope of this course (ATT, ATE, etc)
 ![](figures/matching_outcomes.png){fig-align="center"}
 :::
 
-## Stratification to adjust for basline covariate imbalance
+## Stratification to adjust for baseline covariate imbalance
 
 ::: {.r-stretch}
 ![](figures/stratification_outcomes.png){fig-align="center"}
