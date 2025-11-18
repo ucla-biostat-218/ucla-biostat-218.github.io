@@ -61,7 +61,7 @@ What is the relative risk of gastrointestinal (GI) bleeding-related hospitalizat
 - Target (T): celecoxib first-exposure
 - Comparator (C): diclofenac first-exposure
 - Outcome (O): GI-bleed hospitalization
-- Time-at-risk (TAR): all time after exposure initiation
+- Time-at-risk (TAR): exposure initiation + 30 days
 - Model specification: LSPS-matched Cox proportional hazards regression
 
 ## Exposures and outcomes {.scrollable}
@@ -239,7 +239,7 @@ cohortMethodData <- loadCohortMethodData("coxibVsNonselVsGiBleed.zip")
 ```
 
 
-## Definng the study population {.scrollable}
+## Defining the study population {.scrollable}
 
 ```{r}
 studyPop <- createStudyPopulation(
