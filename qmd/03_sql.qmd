@@ -108,8 +108,8 @@ Important commands:
 ::: {#first-column}
 Data query <br> language:
 ```{sql}
-#| eval: false
-#| echo: true
+--| eval: false
+--| echo: true
 SELECT <columns>          (4)
 FROM <table / subquery>   (1)
 WHERE <predicate on rows> (2) opt
