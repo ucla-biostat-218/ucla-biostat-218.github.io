@@ -342,7 +342,7 @@ Marc A Suchard @ UCLA
 <span id="cb3-7"><a aria-hidden="true" tabindex="-1"></a><span class="fu">querySql</span>(<span class="at">connection =</span> connection,</span>
 <span id="cb3-8"><a aria-hidden="true" tabindex="-1"></a>         <span class="at">sql =</span> sql)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  SUBJECTS
+<pre><code>  subjects
 1    1e+06</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">disconnect</span>(connection)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -382,33 +382,33 @@ Marc A Suchard @ UCLA
 <span id="cb6-8"><a aria-hidden="true" tabindex="-1"></a>person <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(gender_concept_id) <span class="sc">%&gt;%</span>  <span class="co"># execute query</span></span>
 <span id="cb6-9"><a aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># Source:   SQL [2 x 2]
+<pre><code># A query:  ?? x 2
 # Database: DatabaseConnectorDbiConnection
-  gender_concept_id  count
-              &lt;dbl&gt;  &lt;dbl&gt;
-1              8507 499621
-2              8532 500379</code></pre>
+  gender_concept_id   count
+              &lt;int&gt; &lt;int64&gt;
+1              8507  499621
+2              8532  500379</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a aria-hidden="true" tabindex="-1"></a>person <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(gender_concept_id) <span class="sc">%&gt;%</span></span>
 <span id="cb8-2"><a aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
 <span id="cb8-3"><a aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_query</span>()                <span class="co"># remember GROUP BY is higher priority than SELECT</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;SQL&gt;
-SELECT gender_concept_id, COUNT(*) AS count
-FROM person
-GROUP BY gender_concept_id</code></pre>
+SELECT "gender_concept_id", COUNT(*) AS "count"
+FROM "person"
+GROUP BY "gender_concept_id"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a aria-hidden="true" tabindex="-1"></a>person <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(gender_concept_id) <span class="sc">%&gt;%</span></span>
 <span id="cb10-2"><a aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
 <span id="cb10-3"><a aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(concept <span class="sc">%&gt;%</span> <span class="fu">select</span>(concept_id, concept_name), </span>
 <span id="cb10-4"><a aria-hidden="true" tabindex="-1"></a>             <span class="at">by=</span><span class="fu">c</span>(<span class="st">"gender_concept_id"</span> <span class="ot">=</span> <span class="st">"concept_id"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># Source:   SQL [2 x 3]
+<pre><code># A query:  ?? x 3
 # Database: DatabaseConnectorDbiConnection
-  gender_concept_id  count concept_name
-              &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;       
-1              8532 500379 FEMALE      
-2              8507 499621 MALE        </code></pre>
+  gender_concept_id   count concept_name
+              &lt;int&gt; &lt;int64&gt; &lt;chr&gt;       
+1              8532  500379 FEMALE      
+2              8507  499621 MALE        </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a aria-hidden="true" tabindex="-1"></a>person <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(gender_concept_id) <span class="sc">%&gt;%</span></span>
 <span id="cb12-2"><a aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">count =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span></span>
@@ -417,14 +417,14 @@ GROUP BY gender_concept_id</code></pre>
 <span id="cb12-5"><a aria-hidden="true" tabindex="-1"></a>  <span class="fu">show_query</span>()                  <span class="co"># note the subquery</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;SQL&gt;
-SELECT LHS.*, concept_name
+SELECT "LHS".*, "concept_name"
 FROM (
-  SELECT gender_concept_id, COUNT(*) AS count
-  FROM person
-  GROUP BY gender_concept_id
-) LHS
-INNER JOIN concept
-  ON (LHS.gender_concept_id = concept.concept_id)</code></pre>
+  SELECT "gender_concept_id", COUNT(*) AS "count"
+  FROM "person"
+  GROUP BY "gender_concept_id"
+) AS "LHS"
+INNER JOIN "concept"
+  ON ("LHS"."gender_concept_id" = "concept"."concept_id")</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">disconnect</span>(connection)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -702,7 +702,7 @@ attr(,"sqlDialect")
 <span id="cb32-11"><a aria-hidden="true" tabindex="-1"></a><span class="fu">renderTranslateQuerySql</span>(<span class="at">connection =</span> connection, <span class="at">sql =</span> sql,</span>
 <span id="cb32-12"><a aria-hidden="true" tabindex="-1"></a>                        <span class="at">cdm =</span> <span class="st">"synthetic.main"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  MAX_AGE
+<pre><code>  max_age
 1     111</code></pre>
 </div>
 </div>
@@ -722,7 +722,7 @@ attr(,"sqlDialect")
 <span id="cb34-12"><a aria-hidden="true" tabindex="-1"></a><span class="fu">renderTranslateQuerySql</span>(<span class="at">connection =</span> connection, <span class="at">sql =</span> sql,</span>
 <span id="cb34-13"><a aria-hidden="true" tabindex="-1"></a>                        <span class="at">cdm =</span> <span class="st">"synthetic.main"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  MAX_AGE
+<pre><code>  max_age
 1     111</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">disconnect</span>(connection)</span>

@@ -23,8 +23,8 @@ Email: <msuchard@ucla.edu>
 
 ### Teaching Assistant
 
-Kelly Li\
-Email: <kmli@g.ucla.edu>
+Yuxi Song \
+Email: <lucillesong@g.ucla.edu>
 
 ### Class Days, Times, Locations
 
@@ -36,7 +36,7 @@ Online sessions: Tue, 5:00 - 7:30pm
 **Instructor**  
 Offered generously; please email.  
 
-**TA (Kelly Li)**  
+**TA (Yuxi Song)**
 Mondays 3-5pm PST (link on BruinLearn)
 
 ### Course Webpage
