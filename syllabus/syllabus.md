@@ -37,7 +37,7 @@ Online sessions: Tue, 5:00 - 7:30pm
 Offered generously; please email.  
 
 **TA (Yuxi Song)**
-Mondays 3-5pm PST (link on BruinLearn)
+Mondays 4-6pm PST (link on BruinLearn)
 
 ### Course Webpage
 
