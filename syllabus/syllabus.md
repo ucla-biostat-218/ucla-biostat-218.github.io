@@ -115,8 +115,8 @@ Homework assignments will generally come from the exercises provided in _The Boo
 
 Students are expected to perform an original observational health data science analysis project during this course and present their theoretical or empirical findings in a mini-seminar series (approximately 5 mins per student) during Finals week.
 Additionally, a written report of your work (max. 5 typed pages) is due on
-December 5, 2025 by 11:59pm via BruinLearn (in PDF format).  Students are responsible for finding an appropriate health domain and designing their study. One page project proposals are due
-November 14, 2025 by 11:59pm via BruinLearn (in PDF format).
+December 4, 2026 by 11:59pm via BruinLearn (in PDF format).  Students are responsible for finding an appropriate health domain and designing their study. One page project proposals are due
+November 13, 2026 by 11:59pm via BruinLearn (in PDF format).
 
 ### Grading
 
