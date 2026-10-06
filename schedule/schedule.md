@@ -15,9 +15,9 @@ Nov 21 - 22 (CHS 33-105)
 
 ### Online -- 5:00 - 7:30pm (see BruinLearn for Zoom link)
 
-Oct 7, 14, 21\
-Nov 4, 18\
-Dec 2
+Oct 6, 13, 20\
+Nov 3, 17\
+Dec 1
 
 | Week | Class Dates | Where | Tentative Topics | Posts | Due |
 |:-----------|:-----------|:-----------|:----------------------|:------------|:------------|:------------|
