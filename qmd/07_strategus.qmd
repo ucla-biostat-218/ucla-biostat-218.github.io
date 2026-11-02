@@ -49,52 +49,52 @@ In these lectures we will learn:
 
 <p>
 
-::: {.border}
-![](figures/hades.png){width=50% fig-align="center"}
+::: border
+![](figures/hades.png){width="50%" fig-align="center"}
 :::
 
 ## What is the `Strategus` framework? {.scrollable}
 
-:::: {layout="[50,50]"}
-::: {#first-column}
-
+:::::: {layout="[50,50]"}
+:::: {#first-column}
 ![](figures/strategus1.png)
 
-::: {.border}
-![](figures/hades.png){width=50% fig-align="center"}
+::: border
+![](figures/hades.png){width="50%" fig-align="center"}
 :::
+::::
 
-:::
 ::: {#second-column}
-
 - Characterization
-  * cohort diagnostics
-  * cohort features
-  * incidence rates
-  * time-to-event
-  * de-challenge / re-challenge
-  
+
+  - cohort diagnostics
+  - cohort features
+  - incidence rates
+  - time-to-event
+  - de-challenge / re-challenge
+
 - Patient-level prediction
 
 - Causal effect estimation
-  * Comparative cohort method
-  * Self-controlled case-series
-  
+
+  - Comparative cohort method
+  - Self-controlled case-series
 :::
-::::
+::::::
 
 ## What is the `Strategus` framework?
 
 ![](figures/strategus2.png)
 
-::: {.callout-important}
+::: callout-important
 ## Latinized form of στρατηγός: army leader
 :::
 
+```{=html}
 <!--::: {.callout-important}
 ## Latinized form of $\sigma \tau \rho \alpha \tau \eta \gamma$ {\'o} $\varsigma$: army leader
 :::-->
-
+```
 
 ## What is the `Strategus` framework?
 
@@ -181,15 +181,14 @@ cohortDefinitionSet <- makeCohortSet(hypertensionCohort, amiCohort)
 cohortDefinitionSet
 ```
 
-::: {.callout-important}
-- By default, cohort IDs are 1, 2, 3 ... 
+::: callout-important
+- By default, cohort IDs are 1, 2, 3 ...
 - Often useful to renumber (to avoid conflicts in `cohort` table)
 :::
 
 ## Cohort generation specification {.scrollable}
 
 Use `Strategus` to create a **shareable** JSON specification
-
 
 ```{r}
 library(Strategus)
@@ -204,8 +203,8 @@ cohortGeneratorModuleSpecifications <- cgModuleSettingsCreator$createModuleSpeci
 )
 ```
 
-::: {.callout-important}
-Note that the cohort specifications are not part of the `CohortGeneratorModule` specification.  Cohort definitions are considered to be a **shared** resource, often used by multiple modules
+::: callout-important
+Note that the cohort specifications are not part of the `CohortGeneratorModule` specification. Cohort definitions are considered to be a **shared** resource, often used by multiple modules
 :::
 
 ## Characterization analysis specification {.scrollable}
@@ -293,10 +292,10 @@ cohortIncidenceModuleSpecifications <- ciModuleSettingsCreator$createModuleSpeci
 Combine the specifications (Legos) together
 
 ```{r}
-analysisSpecifications <- Strategus::createEmptyAnalysisSpecificiations() %>%
-  Strategus::addSharedResources(cohortDefinitionShared) %>%
-  Strategus::addModuleSpecifications(cohortGeneratorModuleSpecifications) %>%
-  Strategus::addModuleSpecifications(characterizationModuleSpecifications) %>%
+analysisSpecifications <- Strategus::createEmptyAnalysisSpecifications() |>
+  Strategus::addSharedResources(cohortDefinitionShared) |>
+  Strategus::addModuleSpecifications(cohortGeneratorModuleSpecifications) |>
+  Strategus::addModuleSpecifications(characterizationModuleSpecifications) |>
   Strategus::addModuleSpecifications(cohortIncidenceModuleSpecifications) 
 
 ParallelLogger::saveSettingsToJson(
@@ -304,8 +303,9 @@ ParallelLogger::saveSettingsToJson(
   file.path(getwd(), "data", "studySpecifications.json"))
 ```
 
-::: {.callout-important}
+::: callout-important
 ## Federated analysis
+
 The file `studySpecification.json` is **all** that needs to be shared with data partners
 :::
 
@@ -318,7 +318,7 @@ analysisSpecifications <- ParallelLogger::loadSettingsFromJson(
   file.path(getwd(), "data", "studySpecifications.json"))
 ```
 
-Define the (local database) execution settings 
+Define the (local database) execution settings
 
 ```{r}
 connectionDetails <- DatabaseConnector::createConnectionDetails(
@@ -348,11 +348,11 @@ Strategus::execute(
 
 ## Managing results (overview) {.scrollable}
 
-- All results are in `strategusOutput`.  We can inspect the CSV files and safely share these with others
+- All results are in `strategusOutput`. We can inspect the CSV files and safely share these with others
 
 - Often we upload these files to a database using the `ResultsModelManager` package, and
 
-- View the results in a Shiny app using the `ShinyAppBuilder` package
+- View the results in a Shiny app using the `OhdsiShinyAppBuilder` package
 
 ## Placing results in a database {.scrollable}
 
@@ -415,12 +415,11 @@ connection <- connect(resultsConnectionDetails)
 disconnect(connection)
 ```
 
-
 ## Create the Shiny app {.scrollable}
 
 ```{r}
 #| eval: false
-library(ShinyAppBuilder)
+library(OhdsiShinyAppBuilder)
 library(OhdsiShinyModules)
 
 shinyConfig <- initializeModuleConfig() |>
@@ -448,39 +447,38 @@ shinyConfig <- initializeModuleConfig() |>
 
 # now create the shiny app based on the config file and view the results
 # based on the connection 
-ShinyAppBuilder::createShinyApp(
+OhdsiShinyAppBuilder::createShinyApp(
   config = shinyConfig, 
   connectionDetails = resultsConnectionDetails,
   resultDatabaseSettings = createDefaultResultDatabaseSettings(schema = resultsDatabaseSchema)
 )
 ```
 
-::: {.callout-important}
+::: callout-important
 ## Remainder of course
+
 We will discuss each of the other analysis types; they are much more interesting
 :::
 
 ## Open science results {.scrollable}
 
-OHDSI study artifacts are all **publicly** available.  See, e.g.
+OHDSI study artifacts are all **publicly** available. See, e.g.
 
 - [data.ohdsi.org](https://data.ohdsi.org)
 
 - [results.ohdsi.org](https://results.ohdsi.org)
 
-::: {.callout-important}
+::: callout-important
 ## Consider using these for your class projects
 :::
 
 Running [example](https://results.ohdsi.org/app/25_EstimationTutorial) for upcoming OHDSI tutorials
 
 - Indication:
-  * Type 2 diabetes mellitus
-  
+  - Type 2 diabetes mellitus
 - Exposures:
-  * GLP1 receptor agonists (GPL1RA)
-  * DPP4 inhibitors (DPP4I)
-  
+  - GLP1 receptor agonists (GPL1RA)
+  - DPP4 inhibitors (DPP4I)
 - Outcomes:
-  * Acute myocardial infarction (AMI)
-  * Diarrhea
+  - Acute myocardial infarction (AMI)
+  - Diarrhea

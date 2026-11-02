@@ -77,24 +77,55 @@
     },
     "Characterization": {
       "Package": "Characterization",
-      "Version": "4.1.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "Andromeda",
-        "DatabaseConnector",
-        "FeatureExtraction",
-        "ParallelLogger",
-        "R",
-        "ResultModelManager",
-        "SqlRender",
-        "checkmate",
+      "Version": "3.0.1",
+      "Source": "GitHub",
+      "Type": "Package",
+      "Title": "Implement Descriptive Studies Using the Common Data Model",
+      "Date": "2026-4-15",
+      "Authors@R": "c( person(\"Jenna\", \"Reps\", , \"jreps@its.jnj.com\", role = c(\"aut\", \"cre\")), person(\"Patrick\", \"Ryan\", , \"ryan@ohdsi.org\", role = c(\"aut\")), person(\"Chris\", \"Knoll\", , \"knoll@ohdsi.org\", role = c(\"aut\")) )",
+      "Maintainer": "Jenna Reps <jreps@its.jnj.com>",
+      "Description": "An end-to-end framework that enables users to implement various descriptive studies for a given set of target and outcome cohorts for data mapped to the Observational Medical Outcomes Partnership Common Data Model.",
+      "License": "Apache License 2.0",
+      "URL": "https://ohdsi.github.io/Characterization/, https://github.com/OHDSI/Characterization",
+      "BugReports": "https://github.com/OHDSI/Characterization/issues",
+      "Depends": [
+        "R (>= 4.0.0)"
+      ],
+      "Imports": [
+        "Andromeda (>= 1.0.0)",
+        "DatabaseConnector (>= 6.3.1)",
         "digest",
+        "FeatureExtraction  (>= 3.13.0)",
+        "SqlRender (>= 1.9.0)",
+        "ParallelLogger (>= 3.0.0)",
+        "ResultModelManager",
+        "checkmate",
         "dplyr",
         "readr",
         "rlang"
       ],
-      "Hash": "f96568fa905bd04e7c3860382d0055f3"
+      "Suggests": [
+        "devtools",
+        "formatR",
+        "testthat",
+        "kableExtra",
+        "knitr",
+        "markdown",
+        "rmarkdown",
+        "OhdsiShinyAppBuilder",
+        "shiny",
+        "withr"
+      ],
+      "NeedsCompilation": "no",
+      "RoxygenNote": "7.3.2",
+      "Encoding": "UTF-8",
+      "VignetteBuilder": "knitr",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "OHDSI",
+      "RemoteRepo": "Characterization",
+      "RemoteRef": "v3.0.1",
+      "RemoteSha": "ca4f13f41056b022b4f17af07eaa9d8a83e72c25"
     },
     "CirceR": {
       "Package": "CirceR",
@@ -218,20 +249,40 @@
     },
     "CommonDataModel": {
       "Package": "CommonDataModel",
-      "Version": "1.0.1",
+      "Version": "1.1.0",
       "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "DBI",
+      "Priority": null,
+      "Depends": [
+        "R (>= 4.1.0)"
+      ],
+      "Imports": [
         "DatabaseConnector",
         "SqlRender",
-        "dplyr",
-        "rJava",
-        "readr",
-        "rmarkdown",
-        "stringr"
+        "stringr",
+        "readr"
       ],
-      "Hash": "ca225f877fa347b35b84cad3494e9b52"
+      "LinkingTo": [
+        null
+      ],
+      "Suggests": [
+        "DBI",
+        "dplyr",
+        "knitr",
+        "rmarkdown",
+        "RSQLite",
+        "testthat (>= 3.0.0)",
+        "withr"
+      ],
+      "Enhances": [
+        null
+      ],
+      "License": "Apache License 2.0",
+      "License_is_FOSS": null,
+      "License_restricts_use": null,
+      "OS_type": null,
+      "NeedsCompilation": "no",
+      "Repository": "CRAN",
+      "Type": "source"
     },
     "CompQuadForm": {
       "Package": "CompQuadForm",
@@ -523,6 +574,49 @@
         "rJava"
       ],
       "Hash": "de790a065a36c08d9f95a1e60716fd86"
+    },
+    "OhdsiShinyAppBuilder": {
+      "Package": "OhdsiShinyAppBuilder",
+      "Version": "1.1.0",
+      "Source": "Repository",
+      "Priority": null,
+      "Depends": [
+        "R (>= 3.3.0)"
+      ],
+      "Imports": [
+        "checkmate",
+        "DatabaseConnector",
+        "dplyr",
+        "ParallelLogger (>=\n2.0.0)",
+        "remotes",
+        "ResultModelManager (>= 0.5.0)",
+        "rlang",
+        "shiny",
+        "shinydashboard",
+        "utils"
+      ],
+      "LinkingTo": [
+        null
+      ],
+      "Suggests": [
+        "devtools",
+        "Eunomia",
+        "jsonlite",
+        "knitr",
+        "rmarkdown",
+        "testthat",
+        "markdown"
+      ],
+      "Enhances": [
+        null
+      ],
+      "License": "Apache License 2.0",
+      "License_is_FOSS": null,
+      "License_restricts_use": null,
+      "OS_type": null,
+      "NeedsCompilation": "no",
+      "Repository": "CRAN",
+      "Type": "source"
     },
     "OhdsiShinyModules": {
       "Package": "OhdsiShinyModules",
@@ -830,6 +924,53 @@
       ],
       "Hash": "c50704243df1632c8a96abf82147569d"
     },
+    "ShinyAppBuilder": {
+      "Package": "ShinyAppBuilder",
+      "Version": "3.2.0",
+      "Source": "GitHub",
+      "Type": "Package",
+      "Title": "Viewing OHDSI Results Via Shiny Modules",
+      "Date": "2024-11-22",
+      "Authors@R": "c( person(\"Jenna\", \"Reps\", email = \"jreps@its.jnj.com\", role = c(\"aut\", \"cre\")), person(\"Nathan\", \"Hall\", role = c(\"aut\")), person(\"Josh\", \"Ide\", role = c(\"aut\")), person(\"Jamie\", \"Gibert\", role = c(\"aut\")) )",
+      "Maintainer": "Jenna Reps <jreps@its.jnj.com>",
+      "Description": "Interactively view analysis results across different types of analyses.",
+      "License": "Apache License 2.0",
+      "URL": "https://ohdsi.github.io/ShinyAppBuilder, https://github.com/OHDSI/ShinyAppBuilder",
+      "BugReports": "https://github.com/OHDSI/ShinyAppBuilder/issues",
+      "VignetteBuilder": "knitr",
+      "Depends": [
+        "R (>= 3.3.0)"
+      ],
+      "Imports": [
+        "checkmate",
+        "DatabaseConnector",
+        "dplyr",
+        "OhdsiShinyModules (>= 3.0.0)",
+        "ParallelLogger (>= 2.0.0)",
+        "ResultModelManager (>= 0.4.0)",
+        "rlang",
+        "shiny",
+        "shinydashboard"
+      ],
+      "Suggests": [
+        "Eunomia",
+        "jsonlite",
+        "knitr",
+        "rmarkdown",
+        "testthat",
+        "markdown",
+        "remotes"
+      ],
+      "Remotes": "ohdsi/Eunomia, ohdsi/OhdsiShinyModules",
+      "RoxygenNote": "7.3.1",
+      "Encoding": "UTF-8",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "OHDSI",
+      "RemoteRepo": "ShinyAppBuilder",
+      "RemoteRef": "main",
+      "RemoteSha": "c809ec3339cf5740971855f06215e43d04a3dae4"
+    },
     "SparseM": {
       "Package": "SparseM",
       "Version": "1.84-2",
@@ -846,44 +987,107 @@
     },
     "SqlRender": {
       "Package": "SqlRender",
-      "Version": "1.19.6",
+      "Version": "1.19.7",
       "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "checkmate",
-        "rJava",
-        "rlang"
+      "Priority": null,
+      "Depends": [
+        null
       ],
-      "Hash": "3c80a89d26e01b03ec10c65953777f10"
+      "Imports": [
+        "rJava",
+        "rlang",
+        "checkmate"
+      ],
+      "LinkingTo": [
+        null
+      ],
+      "Suggests": [
+        "testthat",
+        "knitr",
+        "rmarkdown",
+        "shiny",
+        "shinydashboard"
+      ],
+      "Enhances": [
+        null
+      ],
+      "License": "Apache License 2.0",
+      "License_is_FOSS": null,
+      "License_restricts_use": null,
+      "OS_type": null,
+      "NeedsCompilation": "no",
+      "Repository": "CRAN",
+      "Type": "source"
     },
     "Strategus": {
       "Package": "Strategus",
       "Version": "1.5.0",
       "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteUsername": "ohdsi",
-      "RemoteRepo": "Strategus",
-      "RemoteRef": "main",
-      "RemoteSha": "d53ff4d79ae2d9b7a96950234866b7d6eaf14a45",
-      "Requirements": [
-        "CohortGenerator",
-        "DatabaseConnector",
-        "ParallelLogger",
-        "R",
-        "R6",
-        "ResultModelManager",
-        "SqlRender",
+      "Type": "Package",
+      "Title": "Coordinate and Execute OHDSI HADES Modules",
+      "Date": "2026-03-19",
+      "Authors@R": "c( person(\"Anthony\", \"Sena\", email = \"sena@ohdsi.org\", role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0001-8630-5347\")), person(\"Martijn\", \"Schuemie\", email = \"schuemie@ohdsi.org\", role = c(\"aut\")), person(\"Jamie\", \"Gilbert\", role = c(\"aut\")), person(\"Jenna\", \"Reps\", role = c(\"ctb\")), person(\"Christopher\", \"Knoll\", role = c(\"ctb\")), person(\"Egill\", \"Fridgeirsson\", role = c(\"ctb\")), person(\"Maarten\", \"van Kessel\", role = c(\"ctb\"), comment = c(ORCID = \"0009-0006-8832-6030\")), person(\"Sivamsh\", \"Indukuri\", role = c(\"ctb\")), person(\"Observational Health Data Science and Informatics\", role = c(\"cph\")) )",
+      "Maintainer": "Anthony Sena <sena@ohdsi.org>",
+      "Description": "Coordinate and execute large scale analytics using OHDSI Health Analytics Data-to-Evidence Suite (HADES) (<https://ohdsi.github.io/Hades/>)  modules.",
+      "Depends": [
+        "R (>= 4.2.0)",
+        "CohortGenerator (>= 1.0.0)",
+        "DatabaseConnector (>= 6.2.3)",
+        "R6"
+      ],
+      "Imports": [
         "checkmate",
         "cli",
         "digest",
         "dplyr",
         "methods",
+        "stats",
+        "ParallelLogger (>= 3.1.0)",
         "purrr",
+        "ResultModelManager (>= 0.5.8)",
         "rlang",
-        "stats"
+        "SqlRender (>= 1.18.0)"
       ],
-      "Hash": "22f18c84f355b7d2fa56ce9ce0e29da6"
+      "Suggests": [
+        "Characterization (>= 3.0.0)",
+        "CirceR",
+        "CohortDiagnostics (>= 3.4.0)",
+        "CohortIncidence",
+        "CohortMethod (>= 6.0.0)",
+        "Cyclops (>= 3.6.0)",
+        "Eunomia",
+        "EvidenceSynthesis (>= 1.1.0)",
+        "meta",
+        "metafor",
+        "FeatureExtraction",
+        "fs",
+        "knitr",
+        "PatientLevelPrediction (>= 6.5.0)",
+        "readr",
+        "rmarkdown",
+        "RSQLite",
+        "SelfControlledCaseSeries (>= 6.0.0)",
+        "testthat (>= 3.0.0)",
+        "TreatmentPatterns (>= 3.1.0)",
+        "withr"
+      ],
+      "Remotes": "ohdsi/Characterization, ohdsi/CohortDiagnostics, ohdsi/CohortIncidence, ohdsi/CohortMethod",
+      "License": "Apache License 2.0",
+      "VignetteBuilder": "knitr",
+      "URL": "https://ohdsi.github.io/Strategus, https://github.com/OHDSI/Strategus",
+      "BugReports": "https://github.com/OHDSI/Strategus/issues",
+      "NeedsCompilation": "no",
+      "RoxygenNote": "7.3.3",
+      "Roxygen": "list(markdown = TRUE)",
+      "Encoding": "UTF-8",
+      "Language": "en-US",
+      "Config/testthat/edition": "3",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "OHDSI",
+      "RemoteRepo": "Strategus",
+      "RemoteRef": "v1.5.0",
+      "RemoteSha": "d53ff4d79ae2d9b7a96950234866b7d6eaf14a45"
     },
     "V8": {
       "Package": "V8",
@@ -1513,16 +1717,16 @@
     },
     "duckdb": {
       "Package": "duckdb",
-      "Version": "1.5.5",
+      "Version": "1.5.6",
       "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
+      "Depends": [
         "DBI",
-        "R",
+        "R (>= 4.2.0)"
+      ],
+      "Imports": [
         "methods",
         "utils"
-      ],
-      "Hash": "a51016a5a799c29ff482425c9964219c"
+      ]
     },
     "evaluate": {
       "Package": "evaluate",
@@ -3029,54 +3233,24 @@
       "Package": "rmarkdown",
       "Version": "2.32",
       "Source": "Repository",
-      "Priority": null,
-      "Depends": [
-        "R (>= 3.0)"
-      ],
-      "Imports": [
-        "bslib (>= 0.2.5.1)",
-        "evaluate (>= 0.13)",
-        "fontawesome (>=\n0.5.0)",
-        "htmltools (>= 0.5.1)",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "bslib",
+        "evaluate",
+        "fontawesome",
+        "htmltools",
         "jquerylib",
         "jsonlite",
-        "knitr (>=\n1.50)",
+        "knitr",
         "methods",
-        "tinytex (>= 0.31)",
+        "tinytex",
         "tools",
         "utils",
-        "xfun (>=\n0.36)",
-        "yaml (>= 2.1.19)"
+        "xfun",
+        "yaml"
       ],
-      "LinkingTo": [
-        null
-      ],
-      "Suggests": [
-        "digest",
-        "dygraphs",
-        "fs",
-        "rsconnect",
-        "downlit (>= 0.4.0)",
-        "katex\n(>= 1.4.0)",
-        "sass (>= 0.4.0)",
-        "shiny (>= 1.6.0)",
-        "testthat (>=\n3.0.3)",
-        "tibble",
-        "vctrs",
-        "cleanrmd",
-        "withr (>= 2.4.2)",
-        "xml2"
-      ],
-      "Enhances": [
-        null
-      ],
-      "License": "MIT + file LICENSE",
-      "License_is_FOSS": null,
-      "License_restricts_use": null,
-      "OS_type": null,
-      "NeedsCompilation": "no",
-      "Repository": "CRAN",
-      "Type": "source"
+      "Hash": "b1ca7a0b03d962df0a17e8079cbaa376"
     },
     "rpart": {
       "Package": "rpart",
