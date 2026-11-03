@@ -394,6 +394,7 @@ Cons:
 - Designed to run across a network of databases
   * Without sharing patient-level data
   
+<!--
 ## Minor error in course `renv.lock`
 
 Let's fix it!
@@ -404,6 +405,7 @@ Let's fix it!
 renv::install("testthat")
 renv::install("OHDSI/Capr")
 ```
+-->
 
 ## `Capr`: cohort definition application programming in R
 
