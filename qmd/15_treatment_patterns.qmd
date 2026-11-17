@@ -1,0 +1,1034 @@
+---
+title: "Treatment patterns"
+subtitle: Biostat 218
+author: "Marc A Suchard @ UCLA"
+format:
+  revealjs :
+    width: 1280
+    height: 720
+    output-ext: revealjs.html
+    footer: Biostat 218 - UCLA - Observational Health Data Sciences and Informatics (OHDSI)
+    logo: figures/logo.png
+    chalkboard: true
+    highlight-style: a11y
+    theme: [default, custom.sccs]
+    code-line-numbers: false
+  html:
+    output-ext: html
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+    highlight-style: a11y
+    code-line-numbers: false
+bibliography: "../ohdsi.bib"
+csl: "apa.csl"
+knitr:
+  opts_chunk:
+    fig.align: 'center'
+    fig.width: 6
+    fig.height: 4
+    message: FALSE
+    cache: false
+    echo: true
+    eval: false
+---
+
+## Introduction
+
+In these lectures we will learn:
+
+- What a treatment pathway is and why we characterize them
+
+- How OHDSI first standardized treatment pathways across an international network
+
+- Which design choices turn messy drug exposures into pathways
+
+- How the `TreatmentPatterns` package implements these choices
+
+- An extended example: antihypertensive pathways among U.S. Veterans
+
+## Treatment pathways {.scrollable}
+
+A **treatment pathway** is the ordered sequence of treatments that a patient receives after some index event (often a new diagnosis)
+
+- Which treatment do patients start on?
+
+- What do they *switch* to or *add* next?
+
+- How long do they stay on each treatment?
+
+- How do these patterns differ over time, across locations and between data sources?
+
+::: {.callout-important}
+## A characterization question
+Treatment pathways describe what **is** happening in clinical practice
+
+- No comparison, no causal claim
+- Often the first step in designing an estimation or prediction study
+:::
+
+## Where pathways sit in OHDSI
+
+Recall our three analytic use-cases
+
+- **Characterization**: disease natural history, incidence, *treatment utilization*
+
+- Population-level effect estimation
+
+- Patient-level prediction
+
+::: {.border}
+![](figures/hades.png){width=50% fig-align="center"}
+:::
+
+## Why do we need them? {.scrollable}
+
+Guidelines tell us what **should** happen; pathways tell us what **does** happen
+
+- Trial design: what are the current therapies that a new drug should be compared against?
+
+- Generalizability: do trial populations and practices match the real world?
+
+- Quality: is practice converging on guideline-recommended first-line therapy?
+
+- Study design: is my comparator actually used as a first-line (or second-line) drug?
+
+::: {.callout-tip}
+## Link to causal inference
+Choosing an **active comparator** for a new-user cohort design starts with knowing which drugs are used at the same point in the pathway
+:::
+
+## Characterizing treatment pathways at scale {.scrollable}
+
+::: {.border}
+![](figures/hripcsak_pnas_masthead.png){width=85% fig-align="center"}
+:::
+
+[Hripcsak et al, PNAS, 2016](https://www.pnas.org/doi/10.1073/pnas.1510502113)
+
+::: {.callout-important}
+## A first for OHDSI
+- First large-scale OHDSI network study
+- Introduced a **standardized** definition of a treatment pathway that runs unchanged at every site
+:::
+
+## The OHDSI network (in 2016) {.scrollable}
+
+11 data sources from 4 countries, covering about 250 million patients
+
+| Source | Country | Type | Patients (millions) |
+|:-------|:--------|:-----|--------------------:|
+| AUSOM  | South Korea | EHR | 2 |
+| CCAE   | US | Claims | 119 |
+| CPRD   | UK | EHR | 11 |
+| CUMC   | US | EHR | 4 |
+| GE     | US | EHR | 33 |
+| INPC   | US | EHR + claims | 15 |
+| JMDC   | Japan | Claims | 3 |
+| MDCD   | US | Claims | 17 |
+| MDCR   | US | Claims | 9 |
+| OPTUM  | US | Claims | 40 |
+| STRIDE | US | EHR | 2 |
+
+- All mapped to the OMOP **common data model**
+
+- **Distributed**: patient-level data stay behind each firewall; only aggregate results are shared
+
+## Three diseases {.scrollable}
+
+| Disease | Treatments | Diagnosis | Exclusions |
+|:--------|:-----------|:----------|:-----------|
+| Type 2 diabetes | Drugs used in diabetes | Diabetes mellitus | Pregnancy, type 1 diabetes |
+| Hypertension | Antihypertensives, diuretics, vasodilators, beta blockers, calcium channel blockers, renin-angiotensin agents | Hyperpiesis | Pregnancy |
+| Depression | Antidepressants | Depressive disorder | Pregnancy, bipolar I disorder, schizophrenia |
+
+- Drug classes come from ATC; diagnoses from SNOMED
+
+- Pathways are sequences of **ingredients** (e.g. metformin, lisinopril)
+
+::: {.callout-tip}
+## Standardized vocabularies at work
+One concept set, defined once, identifies the same drugs and diagnoses in Korean, Japanese, UK and US data
+:::
+
+## A standardized pathway definition {.scrollable}
+
+::: {.border}
+![](figures/hripcsak_pnas_fig1.jpg){width=75% fig-align="center"}
+:::
+
+- **Index**: first exposure to any relevant medication
+
+- At least 1 year of observation before index (new users)
+
+- At least 3 years of *continuous* treatment after index: an exposure in every 120-day window
+
+- At least 1 diagnosis of the disease, and none of the exclusion diagnoses
+
+- **Pathway**: the ordered sequence of distinct medications over those 3 years
+
+## Results: type 2 diabetes
+
+:::: {layout="[55,45]"}
+::: {#first-column}
+![](figures/hripcsak_pnas_fig2a.png)
+:::
+::: {#second-column}
+- Inner ring: first medication; next ring: second medication ...
+
+- About three-quarters of patients start on **metformin**
+
+- 29% take only metformin over 3 years
+
+- Practice matches the guideline-recommended first-line therapy
+:::
+::::
+
+## Results: hypertension
+
+:::: {layout="[55,45]"}
+::: {#first-column}
+![](figures/hripcsak_pnas_fig2b.png)
+:::
+::: {#second-column}
+- No dominant first-line medication
+
+- Hydrochlorothiazide is slightly the most common starter
+
+- Lisinopril is the most common **sole** therapy
+
+- Many more medications (and classes) in play
+:::
+::::
+
+## Results: depression
+
+:::: {layout="[55,45]"}
+::: {#first-column}
+![](figures/hripcsak_pnas_fig2c.png)
+:::
+::: {#second-column}
+- An even spread across first-line medications
+
+- Citalopram, sertraline, escitalopram, fluoxetine and bupropion all common
+
+- Changes tend to stay within the same drug class
+:::
+::::
+
+## How unique is a pathway? {.scrollable}
+
+Proportion of patients whose 3-year pathway is shared with **no one else** in any data source
+
+| Disease | Unique pathway |
+|:--------|---------------:|
+| Type 2 diabetes | 10% |
+| Hypertension | 24% |
+| Depression | 11% |
+
+::: {.callout-important}
+## Patients like me?
+Among 250 million patients, almost 1 in 4 people treated for hypertension have no "patient like me" in terms of their treatment sequence
+:::
+
+- May reflect trial-and-error treatment of diseases that are hard to control
+
+- We will see shortly that the number of *possible* pathways explodes combinatorially
+
+## Heterogeneity across data sources {.scrollable}
+
+Hypertension pathways in all 11 sources
+
+::: {.border}
+![](figures/hripcsak_pnas_figS2.jpg){width=75% fig-align="center"}
+:::
+
+- Starting medications are not consistent between sources
+
+- Formularies matter: the UK (CPRD) and Japan (JMDC) show no hydrochlorothiazide
+
+## Trends over time (all sources) {.scrollable}
+
+:::: {layout="[1,1,1]"}
+::: {#first-column}
+![](figures/hripcsak_pnas_fig4a.png)
+
+Monotherapy
+:::
+::: {#second-column}
+![](figures/hripcsak_pnas_fig4b.png)
+
+Only the most common monotherapy
+:::
+::: {#third-column}
+![](figures/hripcsak_pnas_fig4c.png)
+
+Start with the most common starter
+:::
+::::
+
+- Monotherapy increases from 2000 to 2012 for all three diseases
+
+- Only in diabetes is this driven by a single medication
+
+## Trends by data source {.scrollable}
+
+::: {.border}
+![](figures/hripcsak_pnas_fig5.jpg){width=75% fig-align="center"}
+:::
+
+- Similar upward trends, but real outliers (diabetes monotherapy ranges from 10% to 80% across sources)
+
+- No systematic difference between EHR (\*) and claims (#) data
+
+::: {.callout-important}
+## Lesson
+Be careful when generalizing from a single site or even a single country
+:::
+
+## Take-home messages {.scrollable}
+
+- The world is moving toward more consistent therapy over time, across diseases and locations
+
+- Significant heterogeneity remains between sources
+
+- Large-scale international observational research is **feasible**
+
+::: {.callout-tip}
+## What made this possible
+- Common data model + standardized vocabularies
+- One analysis, written once, executed locally at every site
+- Only aggregate results leave the site
+:::
+
+::: {.callout-note}
+## From study to tool
+The 2016 study used a purpose-built query; the same ideas are now generalized in the `TreatmentPatterns` HADES package
+:::
+
+## Using `TreatmentPatterns`
+
+`TreatmentPatterns` ([link](https://ohdsi.github.io/TreatmentPatterns/)) computes pathways from any set of cohorts in three steps
+
+1. **Define cohorts**: with ATLAS or `Capr`, instantiate with `CohortGenerator`
+
+2. `computePathways()`: builds patient-level pathways (stays on site)
+
+3. `export()`: aggregates into share-able results with minimum cell counts
+
+::: {.border}
+![](figures/hades.png){width=40% fig-align="center"}
+:::
+
+## Three types of cohorts {.scrollable}
+
+- **Target** (required): the people and time-window of interest; usually a disease
+
+- **Event** (at least one): the treatments that may occur during the target cohort
+
+- **Exit** (optional): events that end a pathway, like death
+
+| cohortId | cohortName      | type   |
+|---------:|:----------------|:-------|
+| 1 | Viral sinusitis | target |
+| 2 | Acetaminophen   | event  |
+| 3 | Amoxicillin     | event  |
+| 4 | Aspirin         | event  |
+| 5 | Death           | exit   |
+
+Research question: *What is the order of treatments during an infection?*
+
+## All you need is a `cohort` table {.scrollable}
+
+It does not matter how the cohorts are made (ATLAS, `Capr`, raw SQL)
+
+| cohort_definition_id | subject_id | cohort_start_date | cohort_end_date |
+|---:|---:|:---|:---|
+| 1 | 1 | 2020-01-01 | 2020-12-31 |
+| 2 | 1 | 2020-02-04 | 2020-06-27 |
+| 3 | 1 | 2020-07-03 | 2020-08-12 |
+| 4 | 1 | 2020-08-30 | 2020-11-29 |
+| 1 | 2 | 2020-03-01 | 2020-10-30 |
+| 2 | 2 | 2020-05-04 | 2020-06-27 |
+| 4 | 2 | 2020-10-03 | 2020-10-12 |
+
+::: {.callout-important}
+## Cohorts carry the clinical logic
+- **Start** and **end** dates of event cohorts define the treatment eras
+- Exit strategy and era-collapsing choices in the cohort definition matter (a lot)
+:::
+
+## Database interface {.scrollable}
+
+With `DatabaseConnector` (connection managed by `TreatmentPatterns`)
+
+```{r}
+library(TreatmentPatterns)
+
+outputEnv <- computePathways(
+  cohorts = cohorts,                 # cohortId, cohortName, type
+  cohortTableName = "cohort_table",
+  connectionDetails = connectionDetails,
+  cdmSchema = "main",
+  resultSchema = "main",
+  tempEmulationSchema = NULL)
+```
+
+or with a `CDMConnector` reference (connection managed by you)
+
+```{r}
+outputEnv <- computePathways(
+  cohorts = cohorts,
+  cohortTableName = "cohort_table",
+  cdm = cdm)
+```
+
+## Which events count? {.scrollable}
+
+`minEraDuration`: events shorter than this (in days) are ignored
+
+`filterTreatments`: which occurrences enter the pathway
+
+:::: {layout="[1,1,1]"}
+::: {#first-column}
+![](figures/tp_a011_filterTreatments_first.png)
+
+`"First"`: first occurrence of each event
+:::
+::: {#second-column}
+![](figures/tp_a011_filterTreatments_changes.png)
+
+`"Changes"`: only when the treatment changes
+:::
+::: {#third-column}
+![](figures/tp_a011_filterTreatments_all.png)
+
+`"All"`: every event
+:::
+::::
+
+## Collapsing repeated events
+
+With `filterTreatments = "All"`, `eraCollapseSize` merges repeats of the same event separated by a small gap
+
+![](figures/tp_a011_filterTreatments_all_merge.png){width=60% fig-align="center"}
+
+```{r}
+computePathways(
+  cohorts = cohorts,
+  cohortTableName = "cohort_table",
+  cdm = cdm,
+  minEraDuration = 30,
+  eraCollapseSize = 30,
+  filterTreatments = "First")
+```
+
+## Combinations {.scrollable}
+
+When two events overlap for at least `combinationWindow` days, the overlap becomes a **combination** event
+
+![](figures/tp_a05_combination_1.png){width=60% fig-align="center"}
+
+- Two records become three: A, A+B, B
+
+- `minPostCombinationDuration` then drops any left-over pieces that are too short
+
+```{r}
+computePathways(
+  cohorts = cohorts,
+  cohortTableName = "cohort_table",
+  cdm = cdm,
+  combinationWindow = 30,
+  minPostCombinationDuration = 30)
+```
+
+## Switches {.scrollable}
+
+When the overlap is shorter than `combinationWindow`, the transition is a **switch**
+
+![](figures/tp_a05_combination_2.png){width=60% fig-align="center"}
+
+`overlapMethod` controls the patient-level dates
+
+- `"truncate"`: end the first event when the second starts
+
+- `"keep"`: leave both start and end dates intact
+
+::: {.callout-note}
+The aggregate pathways are (almost always) the same; the choice matters when you examine patient-level records and durations
+:::
+
+## A worked example {.scrollable}
+
+One subject, three treatments, lasting 19, 37 and 12 days
+
+```
+2:   -------------------
+3:                        -------------------------------------
+4:                                                     ------------
+```
+
+Treatments 3 and 4 overlap for 8 days. With a 5-day `combinationWindow`
+
+```
+2:   -------------------
+3:                        -----------------------------
+3+4:                                                   --------
+4:                                                             ----
+```
+
+- `minPostCombinationDuration = 10` drops both `3+4` and `4`: pathway `2-3`
+
+- `minPostCombinationDuration = 5` keeps `3+4`: pathway `2-3-3+4`
+
+::: {.callout-tip}
+## Rules of thumb
+- `minPostCombinationDuration <= minEraDuration`
+- `combinationWindow >= minEraDuration`
+:::
+
+## Acute versus maintenance therapy
+
+`splitEventCohorts` and `splitTime` divide an event into an *acute* phase (first `splitTime` days) and a *therapy* phase (the remainder)
+
+![](figures/tp_a04_splitTime_2.png){width=60% fig-align="center"}
+
+```{r}
+outputEnv <- computePathways(
+  cohorts = cohorts,
+  cohortTableName = "cohort_table",
+  cdm = cdm,
+  splitEventCohorts = c(1, 2),
+  splitTime = 30)
+```
+
+## Event windows {.scrollable}
+
+Which part of the target cohort do we look in? Anchors (`"startDate"` or `"endDate"`) plus offsets in days
+
+:::: {layout="[1,1,1]"}
+::: {#first-column}
+![](figures/tp_a03_window_1.png)
+
+Default: start to end
+
+`windowStart = 0`, `windowEnd = 0`
+:::
+::: {#second-column}
+![](figures/tp_a03_window_2.png)
+
+Widen by 30 days
+
+`windowStart = -30`, `windowEnd = 30`
+:::
+::: {#third-column}
+![](figures/tp_a03_window_3.png)
+
+30 days *before* index
+
+both anchors `"startDate"`, `windowStart = -30`
+:::
+::::
+
+```{r}
+outputEnv <- computePathways(
+  cohorts = cohorts,
+  cohortTableName = "cohort_table",
+  cdm = cdm,
+  startAnchor = "startDate", windowStart = -30,
+  endAnchor = "startDate", windowEnd = 0)
+```
+
+## All together {.scrollable}
+
+```{r}
+outputEnv <- computePathways(
+  cohorts = cohorts,
+  cohortTableName = "cohort_table",
+  cdm = cdm,
+  analysisId = 1,
+  description = "My Treatment Pathway analysis",
+  # Window
+  startAnchor = "startDate",
+  windowStart = 0,
+  endAnchor = "endDate",
+  windowEnd = 0,
+  # Acute / Therapy
+  splitEventCohorts = NULL,
+  splitTime = NULL,
+  # Events
+  minEraDuration = 7,
+  filterTreatments = "All",
+  eraCollapseSize = 3,
+  # Combinations
+  combinationWindow = 7,
+  minPostCombinationDuration = 7,
+  overlapMethod = "truncate",
+  # Pathways
+  maxPathLength = 10,
+  concatTargets = FALSE)
+```
+
+- `maxPathLength` truncates long pathways
+
+- `concatTargets = TRUE` joins repeated target episodes (useful for chronic conditions)
+
+- The result is an `Andromeda` object holding **patient-level** data
+
+## How many pathways are possible? {.scrollable}
+
+With $n$ event cohorts and mono-therapies only
+
+- $n^n$ pathways of length $n$; still $n!$ without re-occurring treatments
+
+```{r}
+#| eval: true
+5^5
+factorial(5)
+```
+
+Combinations make it worse: each non-empty subset of events is a possible treatment
+
+:::: {layout="[45,55]"}
+::: {#first-column}
+![](figures/tp_a000_graph.png)
+:::
+::: {#second-column}
+- Total possible events: $2^n - 1$
+
+- Of which combinations: $2^n - (n + 1)$
+
+```{r}
+#| eval: true
+n <- 5
+c(total = 2^n - 1, combinations = 2^n - (n + 1))
+```
+:::
+::::
+
+::: {.callout-important}
+## Subjects get divided thinly across pathways
+- Small target cohorts should not be considered
+- Pathways with low counts should not be considered
+- Explains why so many 2016 hypertension pathways were *unique*
+:::
+
+## Exporting share-able results {.scrollable}
+
+`export()` aggregates patient-level pathways and enforces a minimum cell count
+
+```{r}
+results <- export(
+  andromeda = outputEnv,
+  minCellCount = 5,
+  censorType = "minCellCount",     # or "remove", "mean"
+  ageWindow = c(0, 18, 25, 30, 40, 50, 60, 150),
+  archiveName = "output.zip")
+```
+
+How to handle pathways below `minCellCount`
+
+- `"minCellCount"`: report them as the minimum cell count
+- `"remove"`: drop them
+- `"mean"`: report the mean of all censored groups
+
+::: {.callout-important}
+`exportPatientLevel()` writes patient-level data for **internal** use only; never share these
+:::
+
+## What comes back {.scrollable}
+
+`export()` returns a `TreatmentPatternsResults` (R6) object
+
+| Element | Content |
+|:--------|:--------|
+| `treatment_pathways` | each pathway and its frequency, by age group, sex and index year |
+| `counts_age`, `counts_sex`, `counts_year` | cohort counts by stratum |
+| `summary_event_duration` | duration statistics per event and per line of therapy |
+| `metadata` | execution details (R, package and CDM information) |
+
+Pathway notation
+
+- `+` is a combination: `amoxicillin+clavulanate`
+
+- `-` is a switch: `acetaminophen-penicillinv`
+
+Saving
+
+```{r}
+results$saveAsCsv(path = tempdir())
+results$saveAsZip(path = tempdir(), name = "tp-results.zip")
+results$uploadResultsToDb(
+  connectionDetails = connectionDetails,
+  schema = "main", prefix = "tp_", overwrite = TRUE)
+```
+
+## Built-in graphics
+
+```{r}
+results$plotSunburst()      # inner ring: first treatment, moving outwards
+
+results$plotSankey()        # same data; "Stopped" marks the end of a pathway
+
+results$plotEventDuration(minCellCount = 10) +
+  ggplot2::xlim(0, 100)     # boxplots per event and line of therapy
+```
+
+- A **line** is a level in the sunburst or Sankey diagram
+
+- Duration plots also summarize all *mono-events* and all *combination-events*
+
+## Network studies via `Strategus` {.scrollable}
+
+`TreatmentPatterns` is a `Strategus` module, so a pathways analysis ships as a JSON specification
+
+```{r}
+# Which cohorts are targets and events
+cohorts <- data.frame(
+  cohortId = cohortSet$cohortId,
+  cohortName = cohortSet$cohortName,
+  type = c(rep("event", 7), "target"))
+
+tpMod <- Strategus::TreatmentPatternsModule$new()
+tpSpec <- tpMod$createModuleSpecifications(
+  cohorts = cohorts,
+  minEraDuration = 30,
+  combinationWindow = 30,
+  minPostCombinationDuration = 30)
+
+analysisSpec <- Strategus::createEmptyAnalysisSpecificiations() |>
+  Strategus::addSharedResources(cohortSharedResource) |>
+  Strategus::addCohortGeneratorModuleSpecifications(cgSpec) |>
+  Strategus::addTreatmentPatternsModuleSpecifications(tpSpec)
+
+Strategus::execute(
+  analysisSpecifications = analysisSpec,
+  executionSettings = executeSettings,
+  connectionDetails = connectionDetails)
+```
+
+::: {.callout-tip}
+This is the 2016 PNAS study design, now as a reusable module
+:::
+
+## Extended example: hypertension in U.S. Veterans
+
+How are Veterans with newly diagnosed hypertension treated in the VA?
+
+- **Data**: VA Corporate Data Warehouse in the OMOP CDM (via VINCI)
+
+- **Target**: first diagnosis of essential hypertension, followed for 5 years
+
+- **Events**: 5 major antihypertensive drug classes (from the LEGEND-HTN study)
+
+- **Tools**: `Capr`, `CohortGenerator` and `TreatmentPatterns`
+
+::: {.callout-note}
+Code is shown as executed inside the VA; results are aggregate with a minimum cell count of 10
+:::
+
+## Cohort: Veterans with hypertension
+
+```{r}
+library(Capr) # Part of `HadesProject`
+
+essentialHypertension <- cs(
+  descendants(320128),
+  name = "Essential hypertension")
+
+targetCohortDuration <- 5 * 365 # 5 years (approximately)
+
+hypertensionCohort <- cohort(
+  entry = entry(
+    conditionOccurrence(essentialHypertension,
+                        firstOccurrence()),
+    observationWindow = continuousObservation(priorDays = 365)),
+  exit = exit(
+    endStrategy = fixedExit("startDate", targetCohortDuration)))
+
+hypertensionCohort <- list(HTN = hypertensionCohort) # Add name
+```
+
+## LEGEND-HTN exposure definitions {.scrollable}
+
+```{r}
+library(dplyr)
+allExposures <- read.csv(
+  file.path(getwd(), "LegendHtnExposuresOfInterest.csv")) |>
+  filter(indicationId == "Hypertension")
+
+drugs <- allExposures |> filter(type == "Drug") |>
+  select(name, conceptId) # Standard concepts (RxNorm)
+
+classes <- rbind(
+  allExposures |> filter(type == "Drug major class"),
+  allExposures |> filter(name == "Thiazide or thiazide-like diuretics")) |>
+  filter(!(name %in% c("Alpha-1 blockers", "Direct vasodilators", "Diuretics"))) |>
+  select(name, shortName, includedConceptIds)
+```
+
+```{=html}
+<div style="font-size: 0.7em;">
+<div style="background:#FBB4AE;padding:8px;border-radius:6px;margin:4px;"><strong>ACE inhibitors</strong><br>benazepril, captopril, enalapril, fosinopril, lisinopril, moexipril, perindopril, quinapril, ramipril, trandolapril</div>
+<div style="background:#B3CDE3;padding:8px;border-radius:6px;margin:4px;"><strong>Angiotensin receptor blockers</strong><br>azilsartan, candesartan, eprosartan, irbesartan, losartan, olmesartan, telmisartan, valsartan</div>
+<div style="background:#CCEBC5;padding:8px;border-radius:6px;margin:4px;"><strong>Beta blockers</strong><br>acebutolol, atenolol, betaxolol, bisoprolol, carvedilol, labetalol, metoprolol, nadolol, nebivolol, penbutolol, pindolol, propranolol</div>
+<div style="background:#DECBE4;padding:8px;border-radius:6px;margin:4px;"><strong>Calcium channel blockers</strong><br>amlodipine, diltiazem, felodipine, isradipine, nicardipine, nifedipine, nisoldipine, verapamil</div>
+<div style="background:#FED9A6;padding:8px;border-radius:6px;margin:4px;"><strong>Thiazide or thiazide-like diuretics</strong><br>chlorthalidone, hydrochlorothiazide, indapamide, metolazone</div>
+</div>
+```
+
+## Cohorts: HTN treatments {.scrollable}
+
+```{r}
+txConceptSets <- mapply(
+  \(name, ids)
+  cs(name = name, descendants(as.integer(strsplit(ids, ";")[[1]]))),
+  classes$shortName, classes$includedConceptIds)
+
+txCohorts <- lapply(
+  txConceptSets,
+  \(x) cohort(
+    entry = entry(drugExposure(x), qualifiedLimit = "First"),
+    attrition = attrition( # Limit data pull
+      "With prior HTN dx" = withAll(
+        atLeast(1,
+                conditionOccurrence(essentialHypertension),
+                duringInterval(eventStarts(-1 * targetCohortDuration, 0))))),
+    exit = exit(endStrategy = drugExit(x)), era = era(eraDays = 30L)))
+
+cohortDefinitionSet <- do.call( # Pass list-entries as arguments
+  makeCohortSet, c(hypertensionCohort,txCohorts))
+```
+
+::: {.callout-important}
+## Design choices live in the cohorts
+- One event cohort per drug **class** (not ingredient, as in 2016)
+- Exposure ends when the drug is stopped (`drugExit`); gaps up to 30 days are bridged (`eraDays`)
+:::
+
+## Connection details {.scrollable}
+
+Inside the VA
+
+```{r}
+connectionDetails <- DatabaseConnector::createConnectionDetails(
+  dbms = "sql server",
+  server = Sys.getenv("VINCI_CDW_SERVER"))
+
+cdmDatabaseSchema <- "CDW_OMOP.OMOPV5"
+cohortDatabaseSchema <- "VINCI_OMOP.scratch_msuchard"
+
+cohortTableNames <- CohortGenerator::getCohortTableNames(
+  cohortTable = "demo_patterns")
+```
+
+::: {.callout-tip}
+## Try it yourself
+The same code runs unchanged against our synthetic data
+
+```{r}
+connectionDetails <- DatabaseConnector::createConnectionDetails(
+  dbms = "duckdb",
+  server = file.path(getwd(), "data", "synthetic.duckdb"))
+cdmDatabaseSchema <- "main"
+cohortDatabaseSchema <- "main"
+```
+:::
+
+## Cohort generation {.scrollable}
+
+```{r}
+CohortGenerator::createCohortTables(
+  connectionDetails = connectionDetails,
+  cohortDatabaseSchema = cohortDatabaseSchema,
+  cohortTableNames = cohortTableNames)
+
+cohortsGenerated <- CohortGenerator::generateCohortSet(
+  connectionDetails = connectionDetails,
+  cdmDatabaseSchema = cdmDatabaseSchema,
+  cohortDatabaseSchema = cohortDatabaseSchema,
+  cohortTableNames = cohortTableNames,
+  cohortDefinitionSet = cohortDefinitionSet)
+```
+
+```{r}
+CohortGenerator::getCohortCounts(
+  connectionDetails = connectionDetails,
+  cohortDatabaseSchema = cohortDatabaseSchema,
+  cohortTable = cohortTableNames$cohortTable) |>
+  inner_join(cohortDefinitionSet |>
+               select(cohortId, cohortName)) |> arrange(cohortId)
+```
+
+| cohortId | cohortEntries | cohortSubjects | cohortName |
+|---:|---:|---:|:---|
+| 1 | 6,014,083 | 6,014,083 | HTN |
+| 2 | 4,334,703 | 4,334,703 | ACEIs |
+| 3 | 1,942,372 | 1,942,372 | ARBs |
+| 4 | 3,754,042 | 3,754,042 | BBs |
+| 5 | 3,640,086 | 3,640,086 | CCBs |
+| 6 | 3,554,286 | 3,554,286 | TDs |
+
+- Over 6 million Veterans with hypertension
+
+## Run `TreatmentPatterns`
+
+```{r}
+library(TreatmentPatterns) ## Part of `HadesProject`
+
+patientLevelResults <- computePathways(
+  cohorts = cohortDefinitionSet |>
+    select(cohortId, cohortName) |>
+    mutate(type = case_when(cohortId == 1 ~ 'target',
+                            TRUE ~ 'event')),
+  cohortTableName = cohortTableNames$cohortTable,
+  connectionDetails = connectionDetails,
+  cdmSchema = cdmDatabaseSchema,
+  resultSchema = cohortDatabaseSchema,
+  maxPathLength = 3)
+```
+
+- Cohort 1 (HTN) is the **target**; the 5 drug classes are **events**
+
+- Pathways are truncated at 3 steps
+
+## Saving and aggregating results
+
+```{r}
+Andromeda::saveAndromeda(patientLevelResults, fileName = "computedPathways")
+patientLevelResults <- Andromeda::loadAndromeda("computedPathways")
+```
+
+```{r}
+shareableResults <- TreatmentPatterns::export(
+  andromeda = patientLevelResults,
+  minCellCount = 10)
+```
+
+::: {.callout-important}
+- `patientLevelResults` never leaves the VA
+- `shareableResults` holds only aggregate statistics
+:::
+
+## Sunburst plot {.scrollable}
+
+```{r}
+shareableResults$plotSunburst(legend = TRUE)
+```
+
+![](figures/tp_vinci_sunburst.png){width=80% fig-align="center"}
+
+- About 3.5 million Veterans with at least one treatment in the 5-year window
+
+- ACE inhibitors lead first-line therapy (24%); no class dominates
+
+- 29% start on a combination of classes (most often ACEIs+TDs)
+
+## Sankey plot {.scrollable}
+
+```{r}
+shareableResults$plotSankey()
+```
+
+![](figures/tp_vinci_alluvial.png){width=85% fig-align="center"}
+
+- All combinations are grouped here for legibility
+
+- 57% have a single-step pathway; 15% reach a third step
+
+- "Stopped" marks the end of the *pathway*, not necessarily of treatment
+
+## Most common pathways {.scrollable}
+
+| Pathway | Veterans | % of pathways |
+|:--------|---------:|--------------:|
+| ACEIs | 507,121 | 14.5 |
+| CCBs | 286,842 | 8.2 |
+| BBs | 266,029 | 7.6 |
+| TDs | 264,470 | 7.6 |
+| ARBs | 153,509 | 4.4 |
+| ACEIs+TDs | 151,086 | 4.3 |
+| TDs-ACEIs | 69,528 | 2.0 |
+| ACEIs+BBs | 67,801 | 1.9 |
+| ACEIs-TDs | 67,329 | 1.9 |
+| ACEIs-BBs | 50,915 | 1.5 |
+
+- Recall: `+` is a combination and `-` is a switch
+
+- The top 10 pathways cover just over half of treated Veterans; thousands of rarer pathways make up the rest
+
+## Event durations {.scrollable}
+
+```{r}
+library(ggplot2)
+yr <- 365.25
+shareableResults$plotEventDuration() +
+  coord_cartesian(xlim = c(0, 1) * yr) + scale_x_continuous(
+    labels = \(x) x / yr, breaks = c(0, 0.5, 1) * yr) +
+  xlab("time (years)")
+```
+
+![](figures/tp_vinci_event_duration.png){width=75% fig-align="center"}
+
+## Many underlying statistics {.scrollable}
+
+```{r}
+gt::gt(
+  shareableResults$summary_event_duration |>
+    select(event_name, event_count, duration_q1, duration_median, duration_q2)) |>
+  gt::tab_options(
+    data_row.padding = gt::px(4))
+```
+
+Selected rows (overall, across all lines; durations in days)
+
+| event_name | event_count | duration_q1 | duration_median | duration_q2 |
+|:-----------|------------:|------------:|----------------:|------------:|
+| mono-event | 4,109,350 | 60 | 90 | 160 |
+| combination-event | 1,402,835 | 60 | 90 | 121 |
+| ACEIs | 1,207,762 | 69 | 90 | 161 |
+| ARBs | 438,353 | 63 | 90 | 162 |
+| BBs | 777,688 | 58 | 90 | 156 |
+| CCBs | 839,979 | 59 | 90 | 158 |
+| TDs | 845,568 | 60 | 90 | 157 |
+| ACEIs+TDs | 333,956 | 60 | 90 | 141 |
+| ACEIs+BBs | 185,740 | 70 | 90 | 144 |
+| ACEIs+ARBs | 15,675 | 37 | 53 | 70 |
+
+::: {.callout-tip}
+## Reading the output critically
+- Median of 90 days almost everywhere: consistent with 90-day supplies
+- ACEIs+ARBs is rare and short: more likely an overlap while *switching* than a true combination
+- Would a longer `combinationWindow` change the picture?
+:::
+
+## Then and now {.scrollable}
+
+| | Hripcsak et al, 2016 | VA example |
+|:--|:--|:--|
+| Data | 11 sources, 4 countries | 1 source (VA) |
+| Target | first relevant drug exposure | first hypertension diagnosis |
+| Follow-up | 3 years, continuous treatment required | 5 years, no treatment requirement |
+| Events | ingredients | 5 drug classes |
+| Sequence | changes and additions, in order | switches (`-`) and combinations (`+`) |
+| Tool | study-specific query | `TreatmentPatterns` |
+
+::: {.callout-important}
+Pathways are only comparable when their **definitions** are; standardized tools make these definitions explicit and repeatable
+:::
+
+## Quick review
+
+- Treatment pathways characterize what happens in practice: first-line choice, switches, additions and durations
+
+- Hripcsak et al (2016) standardized pathways across 11 data sources and 250 million patients
+  * consistency is increasing, but heterogeneity remains
+
+- `TreatmentPatterns` generalizes the approach to any **target** and **event** cohorts
+  * `computePathways()` works at the patient-level; `export()` returns share-able aggregates
+  * era, combination and window settings drive the results
+
+- The number of possible pathways explodes, so mind small cohorts and small cells
