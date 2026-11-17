@@ -141,7 +141,7 @@ Use the `Eunomia` data source to demonstrate (actual results from Optum EHR)
 #| output: false
 library(CohortGenerator)
 
-connectionDetails <- Eunomia::getEunomiaConnectionDetails()
+connectionDetails <- Eunomia::getEunomiaConnectionDetails(overwrite = FALSE)
 cdmDatabaseSchema <- "main"
 cohortDatabaseSchema <- "main"
 cohortTableNames <- getCohortTableNames(cohortTable = "my_cohorts")
@@ -174,6 +174,7 @@ getCohortCounts(connectionDetails = connectionDetails,
 ```{r}
 #| eval: false
 # Define which types of covariates must be constructed:
+library(FeatureExtraction)
 covSettings <- createDefaultCovariateSettings(
   excludedCovariateConceptIds = c(diclofenacConceptId, celecoxibConceptId),
   addDescendantsToExclude = TRUE)
@@ -185,16 +186,24 @@ cohortMethodData <- getDbCohortMethodData(
   targetId = 1,
   comparatorId = 2,
   outcomeIds = 77,
-  firstExposureOnly = FALSE,
-  removeDuplicateSubjects = "keep all",
-  restrictToCommonPeriod = FALSE,
-  washoutPeriod = 0,
+  firstExposureOnly = FALSE,            # See note
+  removeDuplicateSubjects = "keep all", # See note
+  restrictToCommonPeriod = FALSE,       # See note
+  washoutPeriod = 0,                    # See note
   exposureDatabaseSchema = cohortDatabaseSchema,
   exposureTable = cohortTableNames$cohortTable,
   outcomeDatabaseSchema = cohortDatabaseSchema,
   outcomeTable = cohortTableNames$cohortTable,
   covariateSettings = covSettings)
 ```
+
+::: {.callout-note}
+These options could have defined in
+
+- the cohorts (fastest, least re-usable)
+- `getDbCohortMethodData()` (middle-ground, what we did)
+- `createStudyPopulation()` (slowest, most re-usable, now deprecated)
+:::
 
 ## Simulating patient-level data from a shareable profile {.scrollable}
 
@@ -245,26 +254,24 @@ cohortMethodData <- loadCohortMethodData("coxibVsNonselVsGiBleed.zip")
 studyPop <- createStudyPopulation(
   cohortMethodData = cohortMethodData,
   outcomeId = 77,
-  firstExposureOnly = FALSE,        # See note
-  restrictToCommonPeriod = FALSE,   # See note
-  washoutPeriod = 0,                # See note
-  removeDuplicateSubjects = "keep all",
-  removeSubjectsWithPriorOutcome = TRUE,
-  minDaysAtRisk = 1,
-  riskWindowStart = 0,
-  startAnchor = "cohort start",
-  riskWindowEnd = 30,
-  endAnchor = "cohort end"
+  createStudyPopulationArgs = createCreateStudyPopulationArgs(
+    removeSubjectsWithPriorOutcome = TRUE,
+    minDaysAtRisk = 1,
+    riskWindowStart = 0,
+    startAnchor = "cohort start",
+    riskWindowEnd = 30,
+    endAnchor = "cohort end"    
+  )
 )
 ```
 
-::: {.callout-note}
+<!--::: {.callout-note}
 These options could have defined in
 
 - the cohorts (fastest, least re-usable)
 - `getDbCohortMethodData()` (middle-ground, what we did)
 - `createStudyPopulation()` (slowest, most re-usable)
-:::
+:::-->
 
 ```{r}
 DT::datatable(getAttritionTable(studyPop))
@@ -279,10 +286,11 @@ Building a large-scale propensity score (LSPS) model is straight-forward:
 ps <- createPs(
   cohortMethodData = cohortMethodData, 
   population = studyPop,
-  # excludedCovariateConceptIds = c(diclofenacConceptId, celecoxibConceptId),
-  control = Cyclops::createControl(
-    seed = 1,      # reproducibility of CV
-    threads = 4))  # multicore parallelization
+  createPsArgs = createCreatePsArgs(
+    # excludedCovariateConceptIds = c(diclofenacConceptId, celecoxibConceptId),
+    control = Cyclops::createControl(
+      seed = 1,      # reproducibility of CV
+      threads = 4)))  # multicore parallelization
 ```
 
 - `excludeCovariateIds` parameter is not needed; exposure variables removed in data fetch
@@ -319,7 +327,7 @@ plotPs(ps,
        scale = "preference", 
        showCountsLabel = TRUE, 
        showAucLabel = TRUE, 
-       showEquiposeLabel = TRUE)
+       showEquipoiseLabel = TRUE)
 ```
 
 ## Propensity score diagnostics {.scrollable}
@@ -364,17 +372,18 @@ Match, stratify or weigh our population
 Stratification:
 
 ```{r}
-stratifiedPop <- stratifyByPs(ps, numberOfStrata = 5)
+stratifiedPop <- stratifyByPs(ps, stratifyByPsArgs = createStratifyByPsArgs(
+                                numberOfStrata = 5))
 plotPs(stratifiedPop, ps, scale = "preference")
 ```
 
 Matching:
 
 ```{r}
-  matchedPop <- matchOnPs(ps, 
-                          caliper = 0.2, 
-                          caliperScale = "standardized logit", 
-                          maxRatio = 1) # 1-to-1 matching
+  matchedPop <- matchOnPs(ps, matchOnPsArgs = createMatchOnPsArgs(
+                            caliper = 0.2, 
+                            caliperScale = "standardized logit", 
+                            maxRatio = 1)) # 1-to-1 matching
   plotPs(matchedPop, ps)
 ```
 
@@ -508,8 +517,9 @@ Using a Cox proportional hazards model
 - univariate: treatment-effect only
 
 ```{r}
-outcomeModel <- fitOutcomeModel(population = matchedPop,
-                                modelType = "cox")
+outcomeModel <- fitOutcomeModel(population = matchedPop, 
+                                fitOutcomeModelArgs = createFitOutcomeModelArgs(
+                                  modelType = "cox"))
 outcomeModel
 ```
 
@@ -522,8 +532,9 @@ interactionCovariateIds <- c(8532001)
 # 8532001 = Female
 outcomeModel <- fitOutcomeModel(population = matchedPop,
                                 cohortMethodData = cohortMethodData,
-                                modelType = "cox",
-                                interactionCovariateIds = interactionCovariateIds)
+                                fitOutcomeModelArgs = createFitOutcomeModelArgs(
+                                  modelType = "cox",
+                                  interactionCovariateIds = interactionCovariateIds))
 outcomeModel
 ```
 
@@ -571,7 +582,7 @@ generateNegativeControlOutcomeCohorts(
   connectionDetails = connectionDetails,
   cdmDatabaseSchema = cdmDatabaseSchema, 
   cohortDatabaseSchema = cohortDatabaseSchema,
-  cohortTable = cohortTableNames$cohortTable, 
+  cohortTableNames = cohortTableNames,
   negativeControlOutcomeCohortSet = negativeControlCohorts
 )
 ```

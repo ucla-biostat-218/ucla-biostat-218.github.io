@@ -391,18 +391,39 @@
     },
     "Eunomia": {
       "Package": "Eunomia",
-      "Version": "2.1.0",
+      "Version": "2.2.0",
       "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "CommonDataModel",
-        "DBI",
-        "RSQLite",
-        "arrow",
-        "readr",
-        "rlang"
+      "Priority": null,
+      "Depends": [
+        null
       ],
-      "Hash": "fdddcb1343fe92effa03051e2f2145bf"
+      "Imports": [
+        "arrow",
+        "CommonDataModel (>= 1.1.0)",
+        "DBI",
+        "readr",
+        "rlang",
+        "RSQLite"
+      ],
+      "LinkingTo": [
+        null
+      ],
+      "Suggests": [
+        "DatabaseConnector",
+        "duckdb",
+        "testthat",
+        "withr"
+      ],
+      "Enhances": [
+        null
+      ],
+      "License": "Apache License 2.0",
+      "License_is_FOSS": null,
+      "License_restricts_use": null,
+      "OS_type": null,
+      "NeedsCompilation": "no",
+      "Repository": "CRAN",
+      "Type": "source"
     },
     "EvidenceSynthesis": {
       "Package": "EvidenceSynthesis",
@@ -712,6 +733,46 @@
       ],
       "Hash": "d36e491a6b02429a20690420686cf2df"
     },
+    "PhenotypeLibrary": {
+      "Package": "PhenotypeLibrary",
+      "Version": "3.37.0",
+      "Source": "GitHub",
+      "Type": "Package",
+      "Title": "The OHDSI Phenotype Library",
+      "Date": "2026-04-08",
+      "Author": "Gowtham Rao [aut, cre]",
+      "Maintainer": "Gowtham Rao <rao@ohdsi.org>",
+      "Description": "A repository to store the content of the OHDSI Phenotype library.",
+      "Depends": [
+        "R (>= 4.1.0)"
+      ],
+      "Imports": [
+        "checkmate",
+        "readr",
+        "stringr",
+        "dplyr",
+        "rlang"
+      ],
+      "Suggests": [
+        "reactable",
+        "testthat",
+        "knitr"
+      ],
+      "License": "Apache License",
+      "RoxygenNote": "7.3.3",
+      "Roxygen": "list(markdown = TRUE)",
+      "Encoding": "UTF-8",
+      "Language": "en-US",
+      "VignetteBuilder": "knitr",
+      "URL": "https://ohdsi.github.io/PhenotypeLibrary/, https://github.com/OHDSI/PhenotypeLibrary",
+      "BugReports": "https://github.com/OHDSI/PhenotypeLibrary/issues",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "OHDSI",
+      "RemoteRepo": "PhenotypeLibrary",
+      "RemoteRef": "main",
+      "RemoteSha": "40106e4e2892d883c208b9df10ad56711da3e21d"
+    },
     "R6": {
       "Package": "R6",
       "Version": "2.6.1",
@@ -741,6 +802,60 @@
         "methods"
       ],
       "Hash": "f006efd3232b55806a00db5a14dd2cf6"
+    },
+    "ROhdsiWebApi": {
+      "Package": "ROhdsiWebApi",
+      "Version": "1.3.3",
+      "Source": "GitHub",
+      "Type": "Package",
+      "Title": "Interacting With an OHDSI WebApi Instance",
+      "Date": "2023-03-14",
+      "Authors@R": "c( person(\"Gowtham\", \"Rao\", email = \"rao@ohdsi.org\", role = c(\"aut\", \"cre\")), person(\"Martijn\", \"Schuemie\", role = c(\"aut\")), person(\"Jamie\", \"Gilbert\", email = \"JGilber2@its.jnj.com\", role = c(\"aut\")), person(\"Observational Health Data Science and Informatics\", role = c(\"cph\")) )",
+      "Maintainer": "Gowtham Rao <rao@ohdsi.org>",
+      "Description": "ROhdsiWebApi is an R based interface to OHDSI WebAPI services, and performs GET/PULL/POST/DELETE calls via the WebApi.  All objects starting from R or output to R - are analysis ready R-objects like list and data.frame.  The package handles the intermediary steps by converting R-objects to JSON and vice versa.",
+      "License": "Apache License 2.0",
+      "Depends": [
+        "R (>= 3.1.0)"
+      ],
+      "Imports": [
+        "checkmate",
+        "dplyr",
+        "httr (>= 1.3.1)",
+        "lubridate",
+        "openxlsx (>= 4.0.17)",
+        "purrr",
+        "readr",
+        "RJSONIO",
+        "scales",
+        "SqlRender",
+        "stringr",
+        "tibble",
+        "tidyr",
+        "rlang"
+      ],
+      "Suggests": [
+        "testthat",
+        "knitr",
+        "rmarkdown",
+        "httpuv",
+        "jsonlite",
+        "withr",
+        "httptest",
+        "stringi"
+      ],
+      "URL": "https://ohdsi.github.io/ROhdsiWebApi/, https://github.com/OHDSI/ROhdsiWebApi",
+      "BugReports": "https://github.com/OHDSI/ROhdsiWebApi/issues",
+      "NeedsCompilation": "no",
+      "RoxygenNote": "7.2.3",
+      "Encoding": "UTF-8",
+      "VignetteBuilder": "knitr",
+      "Language": "en-US",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "OHDSI",
+      "RemoteRepo": "ROhdsiWebApi",
+      "RemoteRef": "main",
+      "RemoteSha": "44e549a92f7c4d51b7e090d2ac4b5032ed974ce0"
     },
     "RSQLite": {
       "Package": "RSQLite",
@@ -923,53 +1038,6 @@
         "utils"
       ],
       "Hash": "c50704243df1632c8a96abf82147569d"
-    },
-    "ShinyAppBuilder": {
-      "Package": "ShinyAppBuilder",
-      "Version": "3.2.0",
-      "Source": "GitHub",
-      "Type": "Package",
-      "Title": "Viewing OHDSI Results Via Shiny Modules",
-      "Date": "2024-11-22",
-      "Authors@R": "c( person(\"Jenna\", \"Reps\", email = \"jreps@its.jnj.com\", role = c(\"aut\", \"cre\")), person(\"Nathan\", \"Hall\", role = c(\"aut\")), person(\"Josh\", \"Ide\", role = c(\"aut\")), person(\"Jamie\", \"Gibert\", role = c(\"aut\")) )",
-      "Maintainer": "Jenna Reps <jreps@its.jnj.com>",
-      "Description": "Interactively view analysis results across different types of analyses.",
-      "License": "Apache License 2.0",
-      "URL": "https://ohdsi.github.io/ShinyAppBuilder, https://github.com/OHDSI/ShinyAppBuilder",
-      "BugReports": "https://github.com/OHDSI/ShinyAppBuilder/issues",
-      "VignetteBuilder": "knitr",
-      "Depends": [
-        "R (>= 3.3.0)"
-      ],
-      "Imports": [
-        "checkmate",
-        "DatabaseConnector",
-        "dplyr",
-        "OhdsiShinyModules (>= 3.0.0)",
-        "ParallelLogger (>= 2.0.0)",
-        "ResultModelManager (>= 0.4.0)",
-        "rlang",
-        "shiny",
-        "shinydashboard"
-      ],
-      "Suggests": [
-        "Eunomia",
-        "jsonlite",
-        "knitr",
-        "rmarkdown",
-        "testthat",
-        "markdown",
-        "remotes"
-      ],
-      "Remotes": "ohdsi/Eunomia, ohdsi/OhdsiShinyModules",
-      "RoxygenNote": "7.3.1",
-      "Encoding": "UTF-8",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteUsername": "OHDSI",
-      "RemoteRepo": "ShinyAppBuilder",
-      "RemoteRef": "main",
-      "RemoteSha": "c809ec3339cf5740971855f06215e43d04a3dae4"
     },
     "SparseM": {
       "Package": "SparseM",
