@@ -1,5 +1,5 @@
 ---
-title: "Treatment patterns"
+title: "Treatment patterns / pathways"
 subtitle: Biostat 218
 author: "Marc A Suchard @ UCLA"
 format:
@@ -238,6 +238,7 @@ Among 250 million patients, almost 1 in 4 people treated for hypertension have n
 
 - We will see shortly that the number of *possible* pathways explodes combinatorially
 
+<!--
 ## Heterogeneity across data sources {.scrollable}
 
 Hypertension pathways in all 11 sources
@@ -303,6 +304,7 @@ Be careful when generalizing from a single site or even a single country
 - One analysis, written once, executed locally at every site
 - Only aggregate results leave the site
 :::
+-->
 
 ::: {.callout-note}
 ## From study to tool
@@ -361,6 +363,7 @@ It does not matter how the cohorts are made (ATLAS, `Capr`, raw SQL)
 - Exit strategy and era-collapsing choices in the cohort definition matter (a lot)
 :::
 
+<!--
 ## Database interface {.scrollable}
 
 With `DatabaseConnector` (connection managed by `TreatmentPatterns`)
@@ -385,6 +388,7 @@ outputEnv <- computePathways(
   cohortTableName = "cohort_table",
   cdm = cdm)
 ```
+-->
 
 ## Which events count? {.scrollable}
 
@@ -417,6 +421,7 @@ With `filterTreatments = "All"`, `eraCollapseSize` merges repeats of the same ev
 ![](figures/tp_a011_filterTreatments_all_merge.png){width=60% fig-align="center"}
 
 ```{r}
+library(TreatmentPatterns)
 computePathways(
   cohorts = cohorts,
   cohortTableName = "cohort_table",
