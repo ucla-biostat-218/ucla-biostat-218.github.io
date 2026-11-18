@@ -31,7 +31,7 @@ Dec 1
 |    | Oct 25 | In-person | Incidence / Strategus \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/07_strategus.qmd), [html](../slides/07_strategus.revealjs.html)\] |
 |  6 |        | No class  | 
 |  7 | Nov 3  | Online    | Comparative Cohort Method \[slides 1: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/08_cohort_method.qmd), [html](../slides/08_cohort_method.revealjs.html)\] \[slides 2: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/09_cohort_method_demo.qmd), [html](../slides/09_cohort_method_demo.revealjs.html)\] |
-|  8 | Nov 10 | Online    | Treatment Pathways / Patterns| | Final project abstract (due Nov 13 by 11:59pm on BruinLearn) |
+|  8 | Nov 10 | Online    | Treatment Pathways / Patterns \[slides: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/15_treatment_patterns.qmd), [html](../slides/15_treatment_patterns.revealjs.html)\] | | Final project abstract (due Nov 13 by 11:59pm on BruinLearn) |
 |  9 | Nov 17 | Online    | Comparative Cohort Method
 |    | Nov 21 | In-person | Patient-Level Prediction \[slides 1: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/10_prediction.qmd), [html](../slides/10_prediction.revealjs.html)\] |
 |    | Nov 22 | In-person | Patient-Level Prediction \[slides 2: [qmd](https://raw.githubusercontent.com/ucla-biostat-218/ucla-biostat-218.github.io/master/qmd/11_prediction_demo.qmd), [html](../slides/11_prediction_demo.revealjs.html)\] |
