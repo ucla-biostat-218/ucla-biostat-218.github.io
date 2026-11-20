@@ -255,8 +255,8 @@ window.Quarto = {
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>hypertensionCohort <span class="ot">&lt;-</span> <span class="fu">cohort</span>(</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">entry =</span> <span class="fu">entry</span>(</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">conditionOccurrence</span>(essentialHypertension),</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">measurement</span>(sbp, <span class="fu">valueAsNumber</span>(<span class="fu">gte</span>(<span class="dv">130</span>)), <span class="fu">unit</span>(<span class="dv">8876</span>)),</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">measurement</span>(dbp, <span class="fu">valueAsNumber</span>(<span class="fu">gte</span>(<span class="dv">80</span>)), <span class="fu">unit</span>(<span class="dv">8876</span>))</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">measurement</span>(sbp, <span class="fu">valueAsNumber</span>(<span class="fu">gte</span>(<span class="dv">130</span>)), <span class="fu">measurementUnit</span>(<span class="dv">8876</span>)),</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">measurement</span>(dbp, <span class="fu">valueAsNumber</span>(<span class="fu">gte</span>(<span class="dv">80</span>)), <span class="fu">measurementUnit</span>(<span class="dv">8876</span>))</span>
 <span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  ),</span>
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">exit =</span> <span class="fu">exit</span>(</span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">endStrategy =</span> <span class="fu">observationExit</span>()</span>

@@ -257,8 +257,8 @@ Marc A Suchard @ UCLA
 <span id="cb1-12"><a aria-hidden="true" tabindex="-1"></a>hypertensionCohort <span class="ot">&lt;-</span> <span class="fu">cohort</span>(</span>
 <span id="cb1-13"><a aria-hidden="true" tabindex="-1"></a>  <span class="at">entry =</span> <span class="fu">entry</span>(</span>
 <span id="cb1-14"><a aria-hidden="true" tabindex="-1"></a>    <span class="fu">conditionOccurrence</span>(essentialHypertension),</span>
-<span id="cb1-15"><a aria-hidden="true" tabindex="-1"></a>    <span class="fu">measurement</span>(sbp, <span class="fu">valueAsNumber</span>(<span class="fu">gte</span>(<span class="dv">130</span>)), <span class="fu">unit</span>(<span class="dv">8876</span>)),</span>
-<span id="cb1-16"><a aria-hidden="true" tabindex="-1"></a>    <span class="fu">measurement</span>(dbp, <span class="fu">valueAsNumber</span>(<span class="fu">gte</span>(<span class="dv">80</span>)), <span class="fu">unit</span>(<span class="dv">8876</span>))</span>
+<span id="cb1-15"><a aria-hidden="true" tabindex="-1"></a>    <span class="fu">measurement</span>(sbp, <span class="fu">valueAsNumber</span>(<span class="fu">gte</span>(<span class="dv">130</span>)), <span class="fu">measurementUnit</span>(<span class="dv">8876</span>)),</span>
+<span id="cb1-16"><a aria-hidden="true" tabindex="-1"></a>    <span class="fu">measurement</span>(dbp, <span class="fu">valueAsNumber</span>(<span class="fu">gte</span>(<span class="dv">80</span>)), <span class="fu">measurementUnit</span>(<span class="dv">8876</span>))</span>
 <span id="cb1-17"><a aria-hidden="true" tabindex="-1"></a>  ),</span>
 <span id="cb1-18"><a aria-hidden="true" tabindex="-1"></a>  <span class="at">exit =</span> <span class="fu">exit</span>(</span>
 <span id="cb1-19"><a aria-hidden="true" tabindex="-1"></a>    <span class="at">endStrategy =</span> <span class="fu">observationExit</span>()</span>
@@ -331,8 +331,8 @@ Marc A Suchard @ UCLA
 <span id="cb3-5"><a aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  cohortId cohortEntries cohortSubjects
-1        2         10091          10091
-2        1        605861         605861</code></pre>
+1        1        605861         605861
+2        2         10091          10091</code></pre>
 </div>
 </div>
 </section>
